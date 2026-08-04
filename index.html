@@ -3,792 +3,242 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>DHAWAN MART - Flipkart Style E-Commerce</title>
-  <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <!-- React & React DOM CDN -->
-  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-  <!-- Babel CDN for inline JSX execution -->
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <title>Dhawan Store</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
-    body {
-      font-family: 'Inter', sans-serif;
-      background-color: #f1f3f6;
-      color: #212121;
-    }
-    .no-scrollbar::-webkit-scrollbar {
-      display: none;
-    }
-    .no-scrollbar {
-      -ms-overflow-style: none;
-      scrollbar-width: none;
-    }
-    input, textarea, select {
-      color: #000000 !important;
-      background-color: #ffffff !important;
-    }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    body { margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, sans-serif; background: #f4f6f8; user-select: none; }
+    
+    /* Top Header */
+    .top-header { background: #1a73e8; color: #fff; text-align: center; padding: 12px; font-weight: bold; font-size: 1.2rem; }
+    
+    /* Search Bar */
+    .search-container { padding: 10px; background: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.08); }
+    .search-input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px; outline: none; }
+
+    /* Category Chips */
+    .categories { display: flex; gap: 8px; overflow-x: auto; padding: 10px; background: #fff; }
+    .chip { padding: 6px 14px; background: #e8f0fe; color: #1a73e8; border-radius: 20px; font-size: 0.85rem; white-space: nowrap; cursor: pointer; border: none; }
+    .chip.active { background: #1a73e8; color: #fff; }
+
+    /* Layout & Cards */
+    .container { padding: 15px; margin-bottom: 60px; }
+    .product-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .product-card { background: #fff; border-radius: 8px; padding: 10px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+    .product-card img { max-width: 100%; height: 80px; object-fit: contain; }
+    .product-title { font-size: 0.9rem; font-weight: 600; margin: 8px 0 4px; }
+    .product-price { color: #2e7d32; font-weight: bold; font-size: 0.9rem; }
+    .btn-add { background: #1a73e8; color: #fff; border: none; padding: 6px 12px; border-radius: 4px; margin-top: 8px; cursor: pointer; width: 100%; }
+
+    /* Summary & Buttons */
+    .bill-summary { background: #fff; padding: 15px; border-radius: 8px; margin-top: 15px; }
+    .bill-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.95rem; }
+    .bill-row.total { border-top: 1px solid #eee; padding-top: 10px; font-weight: bold; font-size: 1.1rem; }
+    .btn-action { width: 100%; background: #ff6f00; color: #fff; border: none; padding: 12px; border-radius: 8px; font-weight: bold; font-size: 1rem; cursor: pointer; margin-top: 10px; }
+
+    /* Bottom Nav */
+    .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: #fff; display: flex; border-top: 1px solid #ddd; }
+    .nav-item { flex: 1; text-align: center; padding: 10px; background: none; border: none; font-size: 0.85rem; color: #555; }
+    .nav-item.active { color: #1a73e8; font-weight: bold; }
+
+    /* Forms */
+    .form-group { margin-bottom: 12px; }
+    .form-group label { display: block; margin-bottom: 4px; font-size: 0.85rem; }
+    .form-group input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; }
   </style>
 </head>
 <body>
-  <div id="root"></div>
 
-  <script type="text/babel">
-    const { useState, useEffect, useMemo } = React;
+  <!-- Top Header -->
+  <div class="top-header">DHAWAN STORE</div>
 
-    // --- 20 PACKED CATEGORIES DATA ---
-    const CATEGORIES = [
-      { id: 1, name: 'Chips (Lays, Kurkure, Bingo)', icon: '🍟' },
-      { id: 2, name: 'Biscuits (Parle-G, Oreo, Good Day)', icon: '🍪' },
-      { id: 3, name: 'Namkeen (Bhujia, Mixture, Chana)', icon: '🥨' },
-      { id: 4, name: 'Instant Noodles (Maggi, Yippee)', icon: '🍜' },
-      { id: 5, name: 'Pasta / Macaroni', icon: '🍝' },
-      { id: 6, name: 'Dal / Chawal (1kg, 5kg packets)', icon: '🌾' },
-      { id: 7, name: 'Aata (5kg, 10kg packets)', icon: '🌾' },
-      { id: 8, name: 'Chini / Namak', icon: '🧂' },
-      { id: 9, name: 'Masale (Haldi, Mirchi, Dhania powder)', icon: '🌶️' },
-      { id: 10, name: 'Tea / Coffee (Tata Tea, Nescafe)', icon: '☕' },
-      { id: 11, name: 'Milk Powder (Amul, Everyday)', icon: '🥛' },
-      { id: 12, name: 'Bread / Pav', icon: '🍞' },
-      { id: 13, name: 'Chocolates (Dairy Milk, KitKat)', icon: '🍫' },
-      { id: 14, name: 'Detergent Powder (Surf Excel, Ariel)', icon: '🧺' },
-      { id: 15, name: 'Soaps (3-4 Multi-packs)', icon: '🧼' },
-      { id: 16, name: 'Tissue / Wet Wipes', icon: '🧻' },
-      { id: 17, name: 'Pooja Items (Agarbatti, Dhoopbatti, Rui Phoolbatti)', icon: '🪔' },
-      { id: 18, name: 'Hair Oil (Dabur Amla, Coconut Oil, Sarson Amla, Kesh King)', icon: '🧴' },
-      { id: 19, name: 'Matches & Lighters (Maachis, Gas Lighter)', icon: '🕯️' },
-      { id: 20, name: 'Notebooks (₹10 to ₹20 range)', icon: '📓' }
+  <!-- Main View Container -->
+  <div id="app-content"></div>
+
+  <!-- Bottom Navigation -->
+  <div class="bottom-nav">
+    <button class="nav-item active" onclick="switchPage('home')">Home</button>
+    <button class="nav-item" onclick="switchPage('categories')">Categories</button>
+    <button class="nav-item" onclick="switchPage('cart')">Cart (<span id="cart-count">0</span>)</button>
+    <button class="nav-item" onclick="switchPage('profile')">Profile</button>
+  </div>
+
+  <script>
+    // State Management
+    let currentPage = 'home';
+    let searchQuery = '';
+    let selectedCategory = 'All';
+    let cart = [];
+    let user = JSON.parse(localStorage.getItem('dhawan_user')) || null;
+
+    // 20 Mock Products
+    const products = [
+      { id: 1, name: "Lays Classic Chips", category: "Chips", price: 20, img: "https://via.placeholder.com/100?text=Chips" },
+      { id: 2, name: "Uncle Chips Spicy", category: "Chips", price: 10, img: "https://via.placeholder.com/100?text=Chips" },
+      { id: 3, name: "Classmate Notebook", category: "Notebooks", price: 60, img: "https://via.placeholder.com/100?text=Notebook" },
+      { id: 4, name: "Spiral Rough Register", category: "Notebooks", price: 45, img: "https://via.placeholder.com/100?text=Notebook" },
+      { id: 5, name: "Blue Gel Pen Set", category: "Stationery", price: 30, img: "https://via.placeholder.com/100?text=Pen" },
+      { id: 6, name: "Kurkure Masala Munch", category: "Chips", price: 20, img: "https://via.placeholder.com/100?text=Kurkure" },
+      { id: 7, name: "A4 Size Paper Pack", category: "Stationery", price: 150, img: "https://via.placeholder.com/100?text=A4+Paper" },
+      { id: 8, name: "Cadbury Dairy Milk", category: "Chocolates", price: 40, img: "https://via.placeholder.com/100?text=Chocolate" },
+      { id: 9, name: "Geometry Box", category: "Stationery", price: 85, img: "https://via.placeholder.com/100?text=Geometry" },
+      { id: 10, name: "Sticky Notes", category: "Stationery", price: 25, img: "https://via.placeholder.com/100?text=Notes" },
+      { id: 11, name: "Bingo Mad Angles", category: "Chips", price: 10, img: "https://via.placeholder.com/100?text=Bingo" },
+      { id: 12, name: "Practical Lab File", category: "Notebooks", price: 35, img: "https://via.placeholder.com/100?text=Lab+File" },
+      { id: 13, name: "5 Subject Notebook", category: "Notebooks", price: 120, img: "https://via.placeholder.com/100?text=5+Sub+Book" },
+      { id: 14, name: "Highlighter Marker", category: "Stationery", price: 20, img: "https://via.placeholder.com/100?text=Marker" },
+      { id: 15, name: "KitKat Chocolate", category: "Chocolates", price: 25, img: "https://via.placeholder.com/100?text=KitKat" },
+      { id: 16, name: "Potato Chips Salted", category: "Chips", price: 15, img: "https://via.placeholder.com/100?text=Chips" },
+      { id: 17, name: "Drawing File", category: "Notebooks", price: 50, img: "https://via.placeholder.com/100?text=Drawing" },
+      { id: 18, name: "Eraser & Sharpener Combo", category: "Stationery", price: 10, img: "https://via.placeholder.com/100?text=Stationery" },
+      { id: 19, name: "Five Star Chocolate", category: "Chocolates", price: 15, img: "https://via.placeholder.com/100?text=Chocolate" },
+      { id: 20, name: "Pencil Pack (10 Pcs)", category: "Stationery", price: 40, img: "https://via.placeholder.com/100?text=Pencils" }
     ];
 
-    const PRODUCTS = [
-      // 1. Chips
-      { id: 'p1', categoryId: 1, categoryName: 'Chips (Lays, Kurkure, Bingo)', name: "Lay's Magic Masala Potato Chips", mrp: 20, price: 18, unit: '50g Pack', image: 'https://images.unsplash.com/photo-1566478989037-eec170784d0b?w=500&q=80', rating: 4.5, ratingCount: 1420, stockLimit: 10 },
-      { id: 'p2', categoryId: 1, categoryName: 'Chips (Lays, Kurkure, Bingo)', name: 'Kurkure Naughty Tomato Crunch', mrp: 20, price: 18, unit: '80g Pack', image: 'https://images.unsplash.com/photo-1621447504864-d8686e12698c?w=500&q=80', rating: 4.4, ratingCount: 980, stockLimit: 10 },
-
-      // 2. Biscuits
-      { id: 'p3', categoryId: 2, categoryName: 'Biscuits (Parle-G, Oreo, Good Day)', name: 'Parle-G Gold Glucose Biscuits', mrp: 30, price: 27, unit: '1kg Pack', image: 'https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=500&q=80', rating: 4.8, ratingCount: 3200, stockLimit: 10 },
-      { id: 'p4', categoryId: 2, categoryName: 'Biscuits (Parle-G, Oreo, Good Day)', name: 'Cadbury Oreo Original Cream Biscuits', mrp: 40, price: 35, unit: '120g Pack', image: 'https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?w=500&q=80', rating: 4.6, ratingCount: 2100, stockLimit: 10 },
-
-      // 3. Namkeen
-      { id: 'p5', categoryId: 3, categoryName: 'Namkeen (Bhujia, Mixture, Chana)', name: 'Haldiram’s Aloo Bhujia Namkeen', mrp: 60, price: 52, unit: '200g Pack', image: 'https://images.unsplash.com/photo-1621996346565-e3d5d6281282?w=500&q=80', rating: 4.7, ratingCount: 2400, stockLimit: 10 },
-
-      // 4. Instant Noodles
-      { id: 'p6', categoryId: 4, categoryName: 'Instant Noodles (Maggi, Yippee)', name: 'Maggi 2-Minute Masala Noodles (Pack of 4)', mrp: 56, price: 50, unit: '280g Pack', image: 'https://images.unsplash.com/photo-1612927601601-6638404737ce?w=500&q=80', rating: 4.9, ratingCount: 4500, stockLimit: 10 },
-
-      // 5. Pasta / Macaroni
-      { id: 'p7', categoryId: 5, categoryName: 'Pasta / Macaroni', name: 'Bambino Macaroni Pasta 100% Durum Wheat', mrp: 55, price: 48, unit: '500g Pack', image: 'https://images.unsplash.com/photo-1551183053-bf91a1d81141?w=500&q=80', rating: 4.4, ratingCount: 820, stockLimit: 10 },
-
-      // 6. Dal / Chawal
-      { id: 'p8', categoryId: 6, categoryName: 'Dal / Chawal (1kg, 5kg packets)', name: 'Fortune Arhar / Toor Dal Premium', mrp: 175, price: 155, unit: '1kg Packet', image: 'https://images.unsplash.com/photo-1586201375761-83865001e31c?w=500&q=80', rating: 4.6, ratingCount: 1900, stockLimit: 10 },
-      { id: 'p9', categoryId: 6, categoryName: 'Dal / Chawal (1kg, 5kg packets)', name: 'Fortune Everyday Basmati Rice Packet', mrp: 520, price: 460, unit: '5kg Packet', image: 'https://images.unsplash.com/photo-1536304929831-ee1ca9d44906?w=500&q=80', rating: 4.8, ratingCount: 2800, stockLimit: 10 },
-
-      // 7. Aata
-      { id: 'p10', categoryId: 7, categoryName: 'Aata (5kg, 10kg packets)', name: 'Aashirvaad Shuddh Chakki Whole Wheat Atta', mrp: 260, price: 235, unit: '5kg Packet', image: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=500&q=80', rating: 4.9, ratingCount: 5100, stockLimit: 10 },
-
-      // 8. Chini / Namak
-      { id: 'p11', categoryId: 8, categoryName: 'Chini / Namak', name: 'Madhur Pure Refined Sugar', mrp: 60, price: 52, unit: '1kg Packet', image: 'https://images.unsplash.com/photo-1628102491629-778571d893a3?w=500&q=80', rating: 4.7, ratingCount: 1600, stockLimit: 10 },
-      { id: 'p12', categoryId: 8, categoryName: 'Chini / Namak', name: 'Tata Vacuum Salt Iodized', mrp: 28, price: 24, unit: '1kg Packet', image: 'https://images.unsplash.com/photo-1518110168401-f28435863670?w=500&q=80', rating: 4.9, ratingCount: 4200, stockLimit: 10 },
-
-      // 9. Masale
-      { id: 'p13', categoryId: 9, categoryName: 'Masale (Haldi, Mirchi, Dhania powder)', name: 'MDH Turmeric Powder (Haldi)', mrp: 42, price: 36, unit: '100g Pack', image: 'https://images.unsplash.com/photo-1615485290382-441e4d049cb5?w=500&q=80', rating: 4.8, ratingCount: 1100, stockLimit: 10 },
-
-      // 10. Tea / Coffee
-      { id: 'p14', categoryId: 10, categoryName: 'Tea / Coffee (Tata Tea, Nescafe)', name: 'Tata Tea Gold Rich Taste Tea', mrp: 180, price: 155, unit: '250g Pack', image: 'https://images.unsplash.com/photo-1544787219-7f47ccb76574?w=500&q=80', rating: 4.8, ratingCount: 2900, stockLimit: 10 },
-
-      // 11. Milk Powder
-      { id: 'p15', categoryId: 11, categoryName: 'Milk Powder (Amul, Everyday)', name: 'Amulya Dairy Whitener Milk Powder', mrp: 145, price: 130, unit: '200g Pack', image: 'https://images.unsplash.com/photo-1550583724-b2692b85b150?w=500&q=80', rating: 4.6, ratingCount: 780, stockLimit: 10 },
-
-      // 12. Bread / Pav
-      { id: 'p16', categoryId: 12, categoryName: 'Bread / Pav', name: 'Britannia 100% Whole Wheat Bread', mrp: 45, price: 40, unit: '400g Fresh Pack', image: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=500&q=80', rating: 4.5, ratingCount: 1250, stockLimit: 10 },
-
-      // 13. Chocolates
-      { id: 'p17', categoryId: 13, categoryName: 'Chocolates (Dairy Milk, KitKat)', name: 'Cadbury Dairy Milk Silk Chocolate', mrp: 80, price: 70, unit: '60g Bar', image: 'https://images.unsplash.com/photo-1511381939415-e44015466834?w=500&q=80', rating: 4.9, ratingCount: 3900, stockLimit: 10 },
-
-      // 14. Detergent Powder
-      { id: 'p18', categoryId: 14, categoryName: 'Detergent Powder (Surf Excel, Ariel)', name: 'Surf Excel Easy Wash Detergent Powder', mrp: 140, price: 122, unit: '1kg Pack', image: 'https://images.unsplash.com/photo-1585830812416-a6c86bb14576?w=500&q=80', rating: 4.8, ratingCount: 3100, stockLimit: 10 },
-
-      // 15. Soaps
-      { id: 'p19', categoryId: 15, categoryName: 'Soaps (3-4 Multi-packs)', name: 'Dettol Original Germ Protection Soap (Pack of 4)', mrp: 195, price: 168, unit: '4 x 125g Pack', image: 'https://images.unsplash.com/photo-1600857544200-b2f666a9a2ec?w=500&q=80', rating: 4.8, ratingCount: 2600, stockLimit: 10 },
-
-      // 16. Tissue / Wet Wipes
-      { id: 'p20', categoryId: 16, categoryName: 'Tissue / Wet Wipes', name: 'Himalaya Gentle Baby Wipes (72 Wipes)', mrp: 190, price: 155, unit: '72 Wipes Pack', image: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=500&q=80', rating: 4.7, ratingCount: 1120, stockLimit: 10 },
-
-      // 17. Pooja Items
-      { id: 'p21', categoryId: 17, categoryName: 'Pooja Items (Agarbatti, Dhoopbatti, Rui Phoolbatti)', name: 'Cycle Pure Agarbatti Cycle Three in One', mrp: 75, price: 65, unit: '200g Pack', image: 'https://images.unsplash.com/photo-1606293926075-69a00dbfde81?w=500&q=80', rating: 4.8, ratingCount: 2100, stockLimit: 10 },
-
-      // 18. Hair Oil
-      { id: 'p22', categoryId: 18, categoryName: 'Hair Oil (Dabur Amla, Coconut Oil, Sarson Amla, Kesh King)', name: 'Dabur Amla Hair Oil', mrp: 130, price: 112, unit: '275ml Bottle', image: 'https://images.unsplash.com/photo-1608248597309-1a6f05b539c3?w=500&q=80', rating: 4.7, ratingCount: 1950, stockLimit: 10 },
-
-      // 19. Matches & Lighters
-      { id: 'p23', categoryId: 19, categoryName: 'Matches & Lighters (Maachis, Gas Lighter)', name: 'Homelite Safety Match Box (Pack of 10)', mrp: 30, price: 25, unit: '10 Boxes Bundle', image: 'https://images.unsplash.com/photo-1518331647614-7a1f04cd34cf?w=500&q=80', rating: 4.5, ratingCount: 640, stockLimit: 10 },
-
-      // 20. Notebooks
-      { id: 'p24', categoryId: 20, categoryName: 'Notebooks (₹10 to ₹20 range)', name: 'Classmate Single Line Small Practice Notebook', mrp: 15, price: 12, unit: '64 Pages Single Line', image: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=500&q=80', rating: 4.6, ratingCount: 1400, stockLimit: 10 }
-    ];
-
-    // --- MAIN REACT APPLICATION ---
-    function App() {
-      const [customer, setCustomer] = useState(() => {
-        try {
-          const saved = localStorage.getItem('dhawan_mart_customer');
-          return saved ? JSON.parse(saved) : null;
-        } catch { return null; }
-      });
-
-      const [isLoginModalOpen, setIsLoginModalOpen] = useState(!customer);
-      const [isAddressEditing, setIsAddressEditing] = useState(false);
-      const [cart, setCart] = useState(() => {
-        try {
-          const saved = localStorage.getItem('dhawan_mart_cart');
-          return saved ? JSON.parse(saved) : [];
-        } catch { return []; }
-      });
-
-      const [selectedCategoryId, setSelectedCategoryId] = useState(null);
-      const [searchQuery, setSearchQuery] = useState('');
-      const [priceSort, setPriceSort] = useState('default');
-
-      const [isCartOpen, setIsCartOpen] = useState(false);
-      const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
-      const [checkoutDistanceKm, setCheckoutDistanceKm] = useState(2);
-      const [placedOrder, setPlacedOrder] = useState(null);
-      const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
-
-      useEffect(() => {
-        if (customer) localStorage.setItem('dhawan_mart_customer', JSON.stringify(customer));
-      }, [customer]);
-
-      useEffect(() => {
-        localStorage.setItem('dhawan_mart_cart', JSON.stringify(cart));
-      }, [cart]);
-
-      const handleAddToCart = (product) => {
-        setCart((prev) => {
-          const existing = prev.find((item) => item.product.id === product.id);
-          if (existing) {
-            if (existing.quantity >= product.stockLimit) return prev;
-            return prev.map((item) => item.product.id === product.id ? { ...item, quantity: item.quantity + 1 } : item);
-          }
-          return [...prev, { product, quantity: 1 }];
-        });
-      };
-
-      const handleUpdateQuantity = (productId, newQuantity) => {
-        if (newQuantity <= 0) {
-          setCart((prev) => prev.filter((item) => item.product.id !== productId));
-        } else {
-          setCart((prev) => prev.map((item) => {
-            if (item.product.id === productId) {
-              return { ...item, quantity: Math.min(newQuantity, item.product.stockLimit) };
-            }
-            return item;
-          }));
-        }
-      };
-
-      const filteredProducts = useMemo(() => {
-        return PRODUCTS.filter((product) => {
-          if (selectedCategoryId !== null && product.categoryId !== selectedCategoryId) return false;
-          if (searchQuery.trim()) {
-            const query = searchQuery.toLowerCase();
-            return product.name.toLowerCase().includes(query) || product.categoryName.toLowerCase().includes(query);
-          }
-          return true;
-        }).sort((a, b) => {
-          if (priceSort === 'low-high') return a.price - b.price;
-          if (priceSort === 'high-low') return b.price - a.price;
-          return 0;
-        });
-      }, [selectedCategoryId, searchQuery, priceSort]);
-
-      const totalCartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
-
-      return (
-        <div className="min-h-screen bg-[#f1f3f6] flex flex-col font-sans">
-          {/* Header */}
-          <header className="sticky top-0 z-40 bg-[#2874f0] text-white shadow-md">
-            <div className="bg-[#1b5ec2] py-1 px-4 text-center text-[11px] font-medium text-yellow-300">
-              ✦ Flipkart Fee Structure Applied: ₹7 Packaging Fee | FREE Delivery above ₹500 ✦
-            </div>
-            <div className="max-w-7xl mx-auto px-3 sm:px-6 py-2.5 flex items-center justify-between gap-3 sm:gap-6">
-              <div className="flex flex-col shrink-0">
-                <span className="text-xl sm:text-2xl font-black text-white tracking-wider flex items-center gap-1">
-                  <span className="text-yellow-300">🛒</span> DHAWAN <span className="text-yellow-300">MART</span>
-                </span>
-                <span className="text-[10px] italic font-medium text-amber-200">Explore Plus ✦</span>
-              </div>
-
-              <div className="flex-1 max-w-2xl relative">
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search for products, brands and grocery items..."
-                  className="w-full bg-white text-black pl-4 pr-10 py-2 text-xs sm:text-sm rounded-sm outline-none font-medium placeholder-gray-500"
-                />
-              </div>
-
-              <div className="flex items-center gap-3 shrink-0">
-                {customer && (
-                  <button
-                    onClick={() => { setIsAddressEditing(true); setIsLoginModalOpen(true); }}
-                    className="hidden md:flex items-center gap-1 text-xs bg-white/10 px-2.5 py-1.5 rounded hover:bg-white/20 transition cursor-pointer"
-                  >
-                    <span>📍</span>
-                    <div className="text-left leading-tight">
-                      <p className="font-bold truncate max-w-[90px]">{customer.name}</p>
-                      <p className="text-yellow-200 text-[10px]">{customer.pincode}</p>
-                    </div>
-                  </button>
-                )}
-
-                <button
-                  onClick={() => setIsCartOpen(true)}
-                  className="bg-[#fb641b] hover:bg-[#e25612] text-white px-3 sm:px-4 py-1.5 rounded-sm font-bold text-xs sm:text-sm flex items-center gap-1.5 shadow-md cursor-pointer"
-                >
-                  <span>🛒 Cart</span>
-                  {totalCartCount > 0 && (
-                    <span className="bg-yellow-300 text-[#2874f0] text-xs font-black px-1.5 py-0.2 rounded-full">
-                      {totalCartCount}
-                    </span>
-                  )}
-                </button>
-              </div>
-            </div>
-          </header>
-
-          {/* Categories Bar */}
-          <div className="bg-white border-b border-gray-200 py-2 px-3 sm:px-6 shadow-xs">
-            <div className="max-w-7xl mx-auto flex items-center gap-2 overflow-x-auto no-scrollbar">
-              <button
-                onClick={() => setSelectedCategoryId(null)}
-                className={`shrink-0 px-3 py-1.5 rounded-full text-xs font-bold transition cursor-pointer ${
-                  selectedCategoryId === null ? 'bg-[#2874f0] text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`}
-              >
-                All 20 Categories
-              </button>
-              {CATEGORIES.map((cat) => (
-                <button
-                  key={cat.id}
-                  onClick={() => setSelectedCategoryId(cat.id)}
-                  className={`shrink-0 px-3 py-1.5 rounded-full text-xs font-semibold border transition cursor-pointer ${
-                    selectedCategoryId === cat.id ? 'bg-[#2874f0] text-white border-[#2874f0]' : 'bg-white text-gray-800 border-gray-200 hover:bg-gray-50'
-                  }`}
-                >
-                  {cat.icon} {cat.name.split(' (')[0]}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Main Catalog */}
-          <main className="flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 py-4 space-y-4">
-            <div className="bg-white rounded-md p-3 sm:p-4 border border-gray-200 flex flex-wrap items-center justify-between gap-3 shadow-2xs">
-              <h1 className="text-sm sm:text-base font-extrabold text-gray-900">
-                {selectedCategoryId ? CATEGORIES.find(c => c.id === selectedCategoryId)?.name : 'All Packed Grocery & Essentials'}
-                <span className="ml-2 text-xs font-semibold text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full">
-                  {filteredProducts.length} Items
-                </span>
-              </h1>
-              <div className="flex items-center gap-2">
-                <span className="text-xs font-bold text-gray-600">Sort By:</span>
-                <select
-                  value={priceSort}
-                  onChange={(e) => setPriceSort(e.target.value)}
-                  className="bg-gray-50 border border-gray-300 text-black text-xs font-semibold rounded px-2 py-1 outline-none cursor-pointer"
-                >
-                  <option value="default">Relevance</option>
-                  <option value="low-high">Price: Low to High</option>
-                  <option value="high-low">Price: High to Low</option>
-                </select>
-              </div>
-            </div>
-
-            {/* Product Cards */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4">
-              {filteredProducts.map((product) => {
-                const cartItem = cart.find((i) => i.product.id === product.id);
-                const qty = cartItem ? cartItem.quantity : 0;
-                const discount = Math.round(((product.mrp - product.price) / product.mrp) * 100);
-
-                return (
-                  <div key={product.id} className="bg-white rounded-md border border-gray-200 p-3 flex flex-col justify-between hover:shadow-md transition relative">
-                    {discount > 0 && (
-                      <span className="absolute top-2 left-2 bg-green-600 text-white text-[10px] font-black px-1.5 py-0.5 rounded uppercase">
-                        {discount}% OFF
-                      </span>
-                    )}
-                    <div className="w-full h-36 bg-gray-50 rounded flex items-center justify-center p-2 mb-2">
-                      <img src={product.image} alt={product.name} className="max-h-full max-w-full object-contain" />
-                    </div>
-                    <div>
-                      <span className="text-[10px] text-gray-500 uppercase font-semibold block truncate">{product.categoryName.split(' (')[0]}</span>
-                      <h3 className="text-xs font-bold text-gray-900 line-clamp-2 min-h-[32px] mt-0.5">{product.name}</h3>
-                      <p className="text-[11px] text-gray-600 bg-gray-100 inline-block px-1.5 py-0.5 rounded mt-1 font-medium">{product.unit}</p>
-
-                      <div className="flex items-baseline gap-1.5 mt-2">
-                        <span className="text-base font-black text-gray-900">₹{product.price}</span>
-                        {product.mrp > product.price && <span className="text-xs text-gray-400 line-through">₹{product.mrp}</span>}
-                      </div>
-                    </div>
-
-                    <div className="mt-3">
-                      {qty === 0 ? (
-                        <button
-                          onClick={() => handleAddToCart(product)}
-                          className="w-full py-1.5 bg-amber-400 hover:bg-amber-500 text-gray-900 font-bold text-xs uppercase rounded transition cursor-pointer"
-                        >
-                          + ADD
-                        </button>
-                      ) : (
-                        <div className="flex items-center justify-between bg-[#2874f0] text-white rounded overflow-hidden">
-                          <button onClick={() => handleUpdateQuantity(product.id, qty - 1)} className="px-2.5 py-1 hover:bg-blue-700 font-bold cursor-pointer">-</button>
-                          <span className="px-2 text-xs font-black bg-white text-[#2874f0]">{qty}</span>
-                          <button onClick={() => handleUpdateQuantity(product.id, qty + 1)} className="px-2.5 py-1 hover:bg-blue-700 font-bold cursor-pointer">+</button>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </main>
-
-          {/* 1. MANDATORY LOGIN MODAL */}
-          {isLoginModalOpen && (
-            <LoginModalModal
-              initialDetails={customer}
-              isEditable={isAddressEditing}
-              onClose={() => { setIsLoginModalOpen(false); setIsAddressEditing(false); }}
-              onSuccess={(data) => {
-                setCustomer(data);
-                setIsLoginModalOpen(false);
-                setIsAddressEditing(false);
-              }}
-            />
-          )}
-
-          {/* 2. CART DRAWER */}
-          {isCartOpen && (
-            <CartDrawerModal
-              cart={cart}
-              customer={customer}
-              onClose={() => setIsCartOpen(false)}
-              onUpdateQuantity={handleUpdateQuantity}
-              onClearCart={() => setCart([])}
-              onProceed={(dist) => {
-                setCheckoutDistanceKm(dist);
-                setIsCartOpen(false);
-                setIsCheckoutOpen(true);
-              }}
-              onChangeAddress={() => {
-                setIsCartOpen(false);
-                setIsAddressEditing(true);
-                setIsLoginModalOpen(true);
-              }}
-            />
-          )}
-
-          {/* 3. CHECKOUT MODAL */}
-          {isCheckoutOpen && customer && (
-            <CheckoutModalModal
-              cart={cart}
-              customer={customer}
-              distanceKm={checkoutDistanceKm}
-              onClose={() => setIsCheckoutOpen(false)}
-              onSuccess={(orderObj) => {
-                setIsCheckoutOpen(false);
-                setCart([]);
-                setPlacedOrder(orderObj);
-                setIsSuccessModalOpen(true);
-              }}
-            />
-          )}
-
-          {/* 4. SUCCESS MODAL */}
-          {isSuccessModalOpen && placedOrder && (
-            <SuccessModalModal
-              order={placedOrder}
-              onClose={() => setIsSuccessModalOpen(false)}
-            />
-          )}
-        </div>
-      );
+    // Delivery Slab Logic
+    function getDeliveryCharge(subtotal) {
+      if (subtotal <= 0) return 0;
+      if (subtotal <= 50) return 10;
+      if (subtotal <= 100) return 20;
+      if (subtotal <= 150) return 30;
+      if (subtotal <= 200) return 40;
+      return 50;
     }
 
-    // --- MANDATORY LOGIN FORM (NO PRE-FILLED DATA) ---
-    function LoginModalModal({ initialDetails, isEditable, onClose, onSuccess }) {
-      const [name, setName] = useState(initialDetails ? initialDetails.name : '');
-      const [mobile, setMobile] = useState(initialDetails ? initialDetails.mobile : '');
-      const [address, setAddress] = useState(initialDetails ? initialDetails.address : '');
-      const [pincode, setPincode] = useState(initialDetails ? initialDetails.pincode : '');
-      const [error, setError] = useState('');
+    function addToCart(pId) {
+      const item = products.find(p => p.id === pId);
+      cart.push(item);
+      document.getElementById('cart-count').innerText = cart.length;
+      alert(`${item.name} added to cart!`);
+    }
 
-      const handleSubmit = (e) => {
-        e.preventDefault();
-        if (!name.trim() || name.trim().length < 2) return setError('Poora naam enter karein');
-        if (!/^[6-9]\d{9}$/.test(mobile.trim())) return setError('Valid 10-digit mobile number enter karein');
-        if (!address.trim() || address.trim().length < 5) return setError('Poora delivery address enter karein');
-        if (!/^\d{6}$/.test(pincode.trim())) return setError('Valid 6-digit Pincode enter karein');
-
-        onSuccess({ name: name.trim(), mobile: mobile.trim(), address: address.trim(), pincode: pincode.trim() });
-      };
-
-      return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/65 p-4">
-          <div className="bg-white rounded-lg shadow-2xl w-full max-w-md overflow-hidden">
-            <div className="bg-[#2874f0] text-white p-5 flex justify-between items-center">
-              <div>
-                <h2 className="text-xl font-bold">🛒 DHAWAN MART</h2>
-                <p className="text-xs text-yellow-300 mt-1">Enter details to access store & prices</p>
-              </div>
-            </div>
-
-            <form onSubmit={handleSubmit} className="p-6 space-y-4">
-              {error && <div className="bg-red-50 border border-red-300 text-red-700 text-xs rounded p-2.5 font-bold">⚠️ {error}</div>}
-
-              <div>
-                <label className="block text-xs font-bold text-gray-700 mb-1">Full Name (Poora Naam) *</label>
-                <input
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder="Enter your full name"
-                  required
-                  className="w-full px-3 py-2 bg-white text-black border border-gray-300 rounded text-sm font-medium outline-none focus:border-[#2874f0]"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-gray-700 mb-1">10-Digit Mobile Number *</label>
-                <div className="flex">
-                  <span className="px-3 py-2 bg-gray-100 border border-r-0 border-gray-300 text-gray-700 text-xs font-bold rounded-l flex items-center">+91</span>
-                  <input
-                    type="tel"
-                    maxLength={10}
-                    value={mobile}
-                    onChange={(e) => setMobile(e.target.value.replace(/\D/g, ''))}
-                    placeholder="10-digit mobile number"
-                    required
-                    className="w-full px-3 py-2 bg-white text-black border border-gray-300 rounded-r text-sm font-medium outline-none focus:border-[#2874f0]"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-gray-700 mb-1">Full Delivery Address *</label>
-                <textarea
-                  rows={2}
-                  value={address}
-                  onChange={(e) => setAddress(e.target.value)}
-                  placeholder="House/Shop No., Street, Colony, Landmark"
-                  required
-                  className="w-full px-3 py-2 bg-white text-black border border-gray-300 rounded text-sm font-medium outline-none focus:border-[#2874f0] resize-none"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-gray-700 mb-1">6-Digit Area Pincode *</label>
-                <input
-                  type="text"
-                  maxLength={6}
-                  value={pincode}
-                  onChange={(e) => setPincode(e.target.value.replace(/\D/g, ''))}
-                  placeholder="e.g. 110001"
-                  required
-                  className="w-full px-3 py-2 bg-white text-black border border-gray-300 rounded text-sm font-medium outline-none focus:border-[#2874f0]"
-                />
-              </div>
-
-              <div className="pt-2 flex gap-2">
-                {isEditable && <button type="button" onClick={onClose} className="w-1/3 py-2.5 border border-gray-300 text-gray-700 font-bold rounded text-xs">Cancel</button>}
-                <button type="submit" className="flex-1 py-3 bg-[#fb641b] hover:bg-[#e25612] text-white font-extrabold rounded text-xs uppercase shadow-md cursor-pointer">
-                  Continue to Store 🛒
-                </button>
-              </div>
+    function renderApp() {
+      const app = document.getElementById('app-content');
+      
+      // Force Login View if not logged in
+      if (!user) {
+        app.innerHTML = `
+          <div class="container" style="background:#fff; padding:20px; border-radius:8px; margin-top:20px;">
+            <h3>Login to Dhawan Store</h3>
+            <form onsubmit="handleLogin(event)">
+              <div class="form-group"><label>Full Name</label><input type="text" id="l-name" required /></div>
+              <div class="form-group"><label>Mobile Number</label><input type="tel" id="l-mobile" placeholder="10 Digits" required /></div>
+              <div class="form-group"><label>Email</label><input type="email" id="l-email" required /></div>
+              <div class="form-group"><label>Password (Min 8 Digits)</label><input type="password" id="l-pass" required /></div>
+              <button class="btn-action" type="submit">LOGIN / REGISTER</button>
             </form>
           </div>
-        </div>
-      );
-    }
+        `;
+        return;
+      }
 
-    // --- CART DRAWER ---
-    function CartDrawerModal({ cart, customer, onClose, onUpdateQuantity, onClearCart, onProceed, onChangeAddress }) {
-      const [distanceKm, setDistanceKm] = useState(2);
+      // Page Views
+      if (currentPage === 'home' || currentPage === 'categories') {
+        const categories = ["All", "Chips", "Notebooks", "Stationery", "Chocolates"];
+        const filtered = products.filter(p => {
+          const matchCat = selectedCategory === 'All' || p.category === selectedCategory;
+          const matchSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase());
+          return matchCat && matchSearch;
+        });
 
-      const itemTotal = cart.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
-      const mrpTotal = cart.reduce((sum, item) => sum + item.product.mrp * item.quantity, 0);
-      const totalSavings = mrpTotal - itemTotal;
-
-      const platformFee = cart.length > 0 ? 7 : 0;
-      let standardDeliveryFee = itemTotal < 500 ? 40 : 0;
-      let distanceCharge = itemTotal < 500 ? distanceKm * 10 : (distanceKm > 3 ? (distanceKm - 3) * 10 : 0);
-      const deliveryCharge = standardDeliveryFee + distanceCharge;
-      const grandTotal = itemTotal + platformFee + deliveryCharge;
-
-      return (
-        <div className="fixed inset-0 z-50 flex justify-end bg-black/60">
-          <div className="bg-[#f1f3f6] w-full max-w-lg h-full flex flex-col shadow-2xl">
-            <div className="bg-[#2874f0] text-white p-4 flex justify-between items-center">
-              <h2 className="text-lg font-bold">🛒 My Cart ({cart.reduce((a,b)=>a+b.quantity,0)} Items)</h2>
-              <button onClick={onClose} className="text-2xl font-bold cursor-pointer">&times;</button>
-            </div>
-
-            {customer && (
-              <div className="bg-white px-4 py-2 border-b border-gray-200 flex justify-between items-center text-xs">
-                <span>Deliver to: <strong className="text-black">{customer.name}</strong> ({customer.pincode})</span>
-                <button onClick={onChangeAddress} className="text-[#2874f0] font-bold underline cursor-pointer">Change</button>
-              </div>
-            )}
-
-            <div className="flex-1 overflow-y-auto p-3 space-y-3">
-              {cart.length === 0 ? (
-                <div className="h-full flex flex-col items-center justify-center text-center p-6 bg-white rounded my-4">
-                  <div className="text-5xl mb-2">🛒</div>
-                  <h3 className="text-base font-bold text-gray-800">Your Cart is Empty!</h3>
-                  <button onClick={onClose} className="mt-4 px-6 py-2 bg-[#2874f0] text-white font-bold rounded text-xs uppercase cursor-pointer">Shop Now</button>
-                </div>
-              ) : (
-                cart.map((item) => (
-                  <div key={item.product.id} className="bg-white rounded p-3 flex gap-3 items-center border border-gray-200">
-                    <img src={item.product.image} alt={item.product.name} className="w-14 h-14 object-contain bg-gray-50 rounded p-1 shrink-0" />
-                    <div className="flex-1 min-w-0">
-                      <h4 className="text-xs font-bold text-gray-900 truncate">{item.product.name}</h4>
-                      <p className="text-[10px] text-gray-500">{item.product.unit}</p>
-                      <div className="flex items-baseline gap-1.5 mt-1">
-                        <span className="text-sm font-black text-gray-900">₹{item.product.price}</span>
-                        {item.product.mrp > item.product.price && <span className="text-xs text-gray-400 line-through">₹{item.product.mrp}</span>}
-                      </div>
-                    </div>
-                    <div className="flex items-center border border-gray-300 rounded overflow-hidden">
-                      <button onClick={() => onUpdateQuantity(item.product.id, item.quantity - 1)} className="px-2 py-0.5 bg-gray-100 font-bold">-</button>
-                      <span className="px-2 text-xs font-bold text-black">{item.quantity}</span>
-                      <button onClick={() => onUpdateQuantity(item.product.id, item.quantity + 1)} className="px-2 py-0.5 bg-gray-100 font-bold">+</button>
-                    </div>
-                  </div>
-                ))
-              )}
-            </div>
-
-            {cart.length > 0 && (
-              <div className="bg-white border-t border-gray-200 p-4 space-y-3 shadow-lg shrink-0 text-xs">
-                <div className="bg-gray-50 border border-gray-200 rounded p-2.5">
-                  <div className="flex justify-between font-bold text-gray-700 mb-1">
-                    <span>Delivery Distance:</span>
-                    <span className="text-[#2874f0]">{distanceKm} KM</span>
-                  </div>
-                  <input type="range" min={1} max={20} value={distanceKm} onChange={(e) => setDistanceKm(Number(e.target.value))} className="w-full cursor-pointer accent-[#2874f0]" />
-                </div>
-
-                <div className="space-y-1.5">
-                  <div className="flex justify-between"><span>Items Price</span><span>₹{itemTotal}</span></div>
-                  <div className="flex justify-between"><span>Platform / Packaging Fee</span><span className="font-bold">₹{platformFee}</span></div>
-                  <div className="flex justify-between"><span>Delivery Charges</span><span className="font-bold">{deliveryCharge === 0 ? 'FREE' : `₹${deliveryCharge}`}</span></div>
-                  <div className="flex justify-between text-green-700 font-bold"><span>Total Savings</span><span>- ₹{totalSavings}</span></div>
-                  <div className="pt-2 border-t border-gray-300 flex justify-between font-black text-sm">
-                    <span>Total Amount</span>
-                    <span className="text-[#2874f0]">₹{grandTotal}</span>
-                  </div>
-                </div>
-
-                <div className="pt-2 flex gap-2">
-                  <button onClick={onClearCart} className="w-1/3 py-2.5 border border-red-300 text-red-600 font-bold rounded cursor-pointer">Clear</button>
-                  <button onClick={() => onProceed(distanceKm)} className="w-2/3 py-2.5 bg-[#fb641b] hover:bg-[#e25612] text-white font-extrabold rounded uppercase cursor-pointer">Proceed to Checkout</button>
-                </div>
-              </div>
-            )}
+        app.innerHTML = `
+          <div class="search-container">
+            <input type="text" class="search-input" placeholder="Search products..." value="${searchQuery}" oninput="searchQuery=this.value; renderApp();" />
           </div>
-        </div>
-      );
-    }
-
-    // --- CHECKOUT & WHATSAPP DISPATCH MODAL ---
-    function CheckoutModalModal({ cart, customer, distanceKm, onClose, onSuccess }) {
-      const [paymentMethod, setPaymentMethod] = useState('COD');
-      const [utrNumber, setUtrNumber] = useState('');
-      const [isSubmitting, setIsSubmitting] = useState(false);
-
-      const itemTotal = cart.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
-      const mrpTotal = cart.reduce((sum, item) => sum + item.product.mrp * item.quantity, 0);
-      const totalSavings = mrpTotal - itemTotal;
-
-      const platformFee = 7;
-      let standardDeliveryFee = itemTotal < 500 ? 40 : 0;
-      let distanceCharge = itemTotal < 500 ? distanceKm * 10 : (distanceKm > 3 ? (distanceKm - 3) * 10 : 0);
-      const deliveryCharge = standardDeliveryFee + distanceCharge;
-      const grandTotal = itemTotal + platformFee + deliveryCharge;
-
-      const isOnlinePaymentUnlocked = itemTotal >= 500;
-
-      const handlePlaceOrder = (e) => {
-        e.preventDefault();
-        setIsSubmitting(true);
-
-        const orderId = 'DM-' + Math.floor(100000 + Math.random() * 900000);
-        const orderDate = new Date().toLocaleString('en-IN');
-
-        const orderObj = { orderId, customer, items: cart, itemTotal, mrpTotal, totalSavings, platformFee, deliveryCharge, distanceKm, grandTotal, paymentMethod, utrNumber: paymentMethod === 'UPI' ? utrNumber : '', orderDate };
-
-        const itemsText = cart.map((item, idx) => `${idx + 1}. *${item.product.name}* (${item.product.unit})\n   Qty: ${item.quantity} x ₹${item.product.price} = *₹${item.product.price * item.quantity}*`).join('\n');
-
-        const whatsappMessage = `🛒 *NEW ORDER - DHAWAN MART* 🛒
-*Order ID:* ${orderId}
-*Date:* ${orderDate}
-----------------------------------
-👤 *CUSTOMER DETAILS:*
-• *Name:* ${customer.name}
-• *Mobile:* +91 ${customer.mobile}
-• *Address:* ${customer.address}
-• *Pincode:* ${customer.pincode}
-• *Distance:* ${distanceKm} KM
-
-📦 *ORDERED ITEMS:*
-${itemsText}
-
-💰 *BILL BREAKDOWN:*
-• Items Total: ₹${itemTotal}
-• Platform / Packaging Fee: ₹7
-• Delivery Charges: ₹${deliveryCharge}
-• Total Savings on MRP: ₹${totalSavings}
-----------------------------------
-💵 *GRAND TOTAL PAYABLE:* ₹${grandTotal}
-💳 *Payment Mode:* ${paymentMethod === 'COD' ? 'Cash on Delivery (COD)' : `Online UPI QR ${utrNumber ? `(UTR: ${utrNumber})` : ''}`}
-🚚 *Expected Delivery:* 2 to 4 Days
-----------------------------------
-Thank you for shopping at *DHAWAN MART*!`;
-
-        const waUrl = `https://api.whatsapp.com/send?phone=918690631139&text=${encodeURIComponent(whatsappMessage)}`;
-        window.open(waUrl, '_blank');
-
-        setTimeout(() => {
-          setIsSubmitting(false);
-          onSuccess(orderObj);
-        }, 300);
-      };
-
-      const upiQrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=upi://pay?pa=8690631139@upi&pn=DHAWAN%20MART&am=${grandTotal}&cu=INR`;
-
-      return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/65 p-3 overflow-y-auto">
-          <div className="bg-white rounded-lg shadow-2xl w-full max-w-lg overflow-hidden my-6">
-            <div className="bg-[#2874f0] text-white p-4 flex justify-between items-center">
-              <div>
-                <h2 className="text-lg font-bold">Order Summary & Payment</h2>
-                <p className="text-xs text-yellow-300">Deliver to: {customer.name} ({customer.pincode})</p>
-              </div>
-              <button onClick={onClose} className="text-xl font-bold cursor-pointer">&times;</button>
-            </div>
-
-            <form onSubmit={handlePlaceOrder} className="p-5 space-y-4 max-h-[80vh] overflow-y-auto text-xs">
-              <div className="bg-blue-50 border border-blue-200 rounded p-3 text-gray-800">
-                <p className="font-bold">{customer.name} (+91 {customer.mobile})</p>
-                <p>{customer.address} - <strong>{customer.pincode}</strong></p>
-              </div>
-
-              <div>
-                <label className="block font-bold text-gray-800 uppercase mb-2">Select Payment Option</label>
-                <div className="space-y-2">
-                  <label className={`flex items-start p-3 border rounded cursor-pointer ${paymentMethod === 'COD' ? 'border-[#2874f0] bg-blue-50' : 'border-gray-200'}`}>
-                    <input type="radio" name="payment" value="COD" checked={paymentMethod === 'COD'} onChange={() => setPaymentMethod('COD')} className="mt-1" />
-                    <div className="ml-2">
-                      <span className="font-bold text-sm text-gray-900">Cash on Delivery (COD)</span>
-                      <p className="text-gray-500">Pay cash or UPI to delivery agent on order arrival.</p>
-                    </div>
-                  </label>
-
-                  <label className={`flex items-start p-3 border rounded ${!isOnlinePaymentUnlocked ? 'opacity-70 bg-gray-50' : paymentMethod === 'UPI' ? 'border-[#2874f0] bg-blue-50' : 'border-gray-200'} cursor-pointer`}>
-                    <input type="radio" name="payment" value="UPI" disabled={!isOnlinePaymentUnlocked} checked={paymentMethod === 'UPI'} onChange={() => setPaymentMethod('UPI')} className="mt-1" />
-                    <div className="ml-2 flex-1">
-                      <span className="font-bold text-sm text-gray-900">Online Payment (UPI QR Code)</span>
-                      {!isOnlinePaymentUnlocked && <p className="text-amber-800 font-bold mt-1">⚠️ Unlocks on orders ₹500 or more (Add ₹{500 - itemTotal} more)</p>}
-
-                      {isOnlinePaymentUnlocked && paymentMethod === 'UPI' && (
-                        <div className="mt-3 p-3 bg-white border border-gray-200 rounded text-center space-y-2">
-                          <p className="font-bold text-gray-800">Scan QR Code with GPay / PhonePe / Paytm:</p>
-                          <img src={upiQrUrl} alt="UPI QR" className="w-40 h-40 mx-auto border p-1 rounded" />
-                          <p className="font-bold text-[#2874f0]">UPI ID: 8690631139@upi</p>
-                          <input
-                            type="text"
-                            value={utrNumber}
-                            onChange={(e) => setUtrNumber(e.target.value)}
-                            placeholder="UPI Transaction / UTR Number (Optional)"
-                            className="w-full px-2.5 py-1.5 border border-gray-300 rounded text-xs font-medium text-black bg-white"
-                          />
-                        </div>
-                      )}
-                    </div>
-                  </label>
-                </div>
-              </div>
-
-              <div className="bg-gray-50 border border-gray-200 rounded p-3 space-y-1">
-                <div className="flex justify-between"><span>Items Subtotal:</span><span>₹{itemTotal}</span></div>
-                <div className="flex justify-between"><span>Platform / Packaging Fee:</span><span>₹7</span></div>
-                <div className="flex justify-between"><span>Delivery Fee:</span><span>{deliveryCharge === 0 ? 'FREE' : `₹${deliveryCharge}`}</span></div>
-                <div className="pt-1 border-t border-gray-300 flex justify-between font-black text-sm">
-                  <span>Grand Total:</span>
-                  <span className="text-[#2874f0]">₹{grandTotal}</span>
-                </div>
-              </div>
-
-              {/* MANDATORY BUTTON TEXT */}
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className="w-full py-3.5 bg-[#fb641b] hover:bg-[#e25612] text-white font-extrabold rounded text-sm tracking-wider uppercase shadow-lg cursor-pointer"
-              >
-                {isSubmitting ? 'Processing Order...' : `CONFIRM ORDER (₹${grandTotal})`}
-              </button>
-            </form>
+          <div class="categories">
+            ${categories.map(c => `<button class="chip ${selectedCategory === c ? 'active' : ''}" onclick="selectedCategory='${c}'; renderApp();">${c}</button>`).join('')}
           </div>
-        </div>
-      );
-    }
-
-    // --- SUCCESS CONFIRMATION MODAL ---
-    function SuccessModalModal({ order, onClose }) {
-      return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
-          <div className="bg-white rounded-xl shadow-2xl w-full max-w-md overflow-hidden text-center">
-            <div className="bg-[#2874f0] text-white p-6">
-              <div className="w-14 h-14 bg-white rounded-full flex items-center justify-center mx-auto mb-2 text-2xl text-green-600 font-bold shadow">
-                ✓
-              </div>
-              <h2 className="text-xl font-black">🎉 Order Placed Successfully!</h2>
-              <p className="text-xs text-yellow-300 font-bold mt-1">Delivery in 2 to 4 Days</p>
-            </div>
-
-            <div className="p-5 space-y-3 text-xs text-left text-gray-700">
-              <div className="bg-gray-50 border border-gray-200 rounded p-3 space-y-1.5">
-                <div className="flex justify-between font-bold"><span>Order ID:</span><span className="text-[#2874f0]">{order.orderId}</span></div>
-                <div className="flex justify-between"><span>Order Date:</span><span>{order.orderDate}</span></div>
-                <div className="flex justify-between"><span>Payment Mode:</span><span className="text-green-700 font-bold">{order.paymentMethod === 'COD' ? 'Cash on Delivery' : 'Online UPI QR'}</span></div>
-                <div className="flex justify-between pt-1 border-t font-black text-sm"><span>Total Paid:</span><span className="text-[#2874f0]">₹{order.grandTotal}</span></div>
-              </div>
-
-              <div className="border border-gray-200 rounded p-3">
-                <p className="font-bold text-gray-900 mb-1">📍 Delivery Address</p>
-                <p className="font-semibold">{order.customer.name}</p>
-                <p>+91 {order.customer.mobile}</p>
-                <p>{order.customer.address} - <strong>{order.customer.pincode}</strong></p>
-              </div>
-
-              <button
-                onClick={onClose}
-                className="w-full py-3 bg-[#2874f0] hover:bg-blue-700 text-white font-extrabold rounded text-xs uppercase tracking-wider cursor-pointer shadow-md"
-              >
-                Continue Shopping 🛒
-              </button>
+          <div class="container">
+            <div class="product-grid">
+              ${filtered.map(p => `
+                <div class="product-card">
+                  <img src="${p.img}" />
+                  <div class="product-title">${p.name}</div>
+                  <div class="product-price">₹${p.price}</div>
+                  <button class="btn-add" onclick="addToCart(${p.id})">Add to Cart</button>
+                </div>
+              `).join('')}
             </div>
           </div>
-        </div>
-      );
+        `;
+      } else if (currentPage === 'cart') {
+        const subtotal = cart.reduce((sum, item) => sum + item.price, 0);
+        const delivery = getDeliveryCharge(subtotal);
+        const total = subtotal + delivery;
+
+        app.innerHTML = `
+          <div class="container">
+            <h3>Your Cart (${cart.length} Items)</h3>
+            ${cart.map((item, idx) => `
+              <div style="background:#fff; padding:10px; border-radius:6px; margin-bottom:8px; display:flex; justify-content:space-between;">
+                <span>${item.name}</span>
+                <strong>₹${item.price}</strong>
+              </div>
+            `).join('')}
+
+            <div class="bill-summary">
+              <div class="bill-row"><span>Items Price</span><span>₹${subtotal}</span></div>
+              <div class="bill-row"><span>Delivery Charges</span><span>₹${delivery}</span></div>
+              <div class="bill-row total"><span>Total Amount</span><span>₹${total}</span></div>
+              <button class="btn-action" onclick="placeOrder(${total})">PLACE ORDER</button>
+            </div>
+          </div>
+        `;
+      } else if (currentPage === 'profile') {
+        app.innerHTML = `
+          <div class="container" style="background:#fff; padding:20px; border-radius:8px;">
+            <h3>My Profile</h3>
+            <div class="form-group"><label>Full Name</label><input type="text" id="p-name" value="${user.name}" /></div>
+            <div class="form-group"><label>Mobile Number</label><input type="tel" id="p-mobile" value="${user.mobile}" /></div>
+            <div class="form-group"><label>Delivery Address</label><input type="text" id="p-address" value="${user.address || ''}" placeholder="Enter full address" /></div>
+            <button class="btn-action" onclick="updateProfile()">UPDATE DETAILS</button>
+            <button class="btn-action" style="background:#d32f2f; margin-top:10px;" onclick="localStorage.clear(); user=null; renderApp();">LOGOUT</button>
+          </div>
+        `;
+      }
     }
 
-    // Render React App
-    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+    function handleLogin(e) {
+      e.preventDefault();
+      const name = document.getElementById('l-name').value.trim();
+      const mobile = document.getElementById('l-mobile').value.trim();
+      const email = document.getElementById('l-email').value.trim();
+      const pass = document.getElementById('l-pass').value;
+
+      if (!/^[0-9]{10}$/.test(mobile)) { alert("Enter valid 10-digit mobile number!"); return; }
+      if (pass.length < 8) { alert("Password must be at least 8 digits!"); return; }
+
+      user = { name, mobile, email, address: '' };
+      localStorage.setItem('dhawan_user', JSON.stringify(user));
+      renderApp();
+    }
+
+    function updateProfile() {
+      user.name = document.getElementById('p-name').value;
+      user.mobile = document.getElementById('p-mobile').value;
+      user.address = document.getElementById('p-address').value;
+      localStorage.setItem('dhawan_user', JSON.stringify(user));
+      alert("Profile details saved!");
+    }
+
+    function placeOrder(total) {
+      if (cart.length === 0) { alert("Cart is empty!"); return; }
+      if (!user.address) { alert("Please set your delivery address in Profile tab first!"); switchPage('profile'); return; }
+
+      // Direct In-App Confirmation (No Page Change / No WhatsApp)
+      alert(`🎉 Order Placed Successfully!\n\nTotal Amount: ₹${total}\nDetails sent via SMS to ${user.mobile}.`);
+      cart = [];
+      document.getElementById('cart-count').innerText = 0;
+      switchPage('home');
+    }
+
+    function switchPage(page) {
+      currentPage = page;
+      document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
+      renderApp();
+    }
+
+    // Initial Render
+    renderApp();
   </script>
 </body>
 </html>
