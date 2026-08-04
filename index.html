@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+      <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -8,39 +8,31 @@
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
     body { margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, sans-serif; background: #f4f6f8; user-select: none; }
     
-    /* Top Header */
     .top-header { background: #1a73e8; color: #fff; text-align: center; padding: 12px; font-weight: bold; font-size: 1.2rem; }
-    
-    /* Search Bar */
     .search-container { padding: 10px; background: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.08); }
     .search-input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px; outline: none; }
 
-    /* Category Chips */
     .categories { display: flex; gap: 8px; overflow-x: auto; padding: 10px; background: #fff; }
     .chip { padding: 6px 14px; background: #e8f0fe; color: #1a73e8; border-radius: 20px; font-size: 0.85rem; white-space: nowrap; cursor: pointer; border: none; }
     .chip.active { background: #1a73e8; color: #fff; }
 
-    /* Layout & Cards */
     .container { padding: 15px; margin-bottom: 60px; }
     .product-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
     .product-card { background: #fff; border-radius: 8px; padding: 10px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-    .product-card img { max-width: 100%; height: 80px; object-fit: contain; }
-    .product-title { font-size: 0.9rem; font-weight: 600; margin: 8px 0 4px; }
+    .product-card img { width: 100%; height: 100px; object-fit: cover; border-radius: 6px; }
+    .product-title { font-size: 0.85rem; font-weight: 600; margin: 8px 0 4px; height: 32px; overflow: hidden; }
     .product-price { color: #2e7d32; font-weight: bold; font-size: 0.9rem; }
     .btn-add { background: #1a73e8; color: #fff; border: none; padding: 6px 12px; border-radius: 4px; margin-top: 8px; cursor: pointer; width: 100%; }
 
-    /* Summary & Buttons */
     .bill-summary { background: #fff; padding: 15px; border-radius: 8px; margin-top: 15px; }
     .bill-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.95rem; }
     .bill-row.total { border-top: 1px solid #eee; padding-top: 10px; font-weight: bold; font-size: 1.1rem; }
     .btn-action { width: 100%; background: #ff6f00; color: #fff; border: none; padding: 12px; border-radius: 8px; font-weight: bold; font-size: 1rem; cursor: pointer; margin-top: 10px; }
 
-    /* Bottom Nav */
-    .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: #fff; display: flex; border-top: 1px solid #ddd; }
+    .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: #fff; display: flex; border-top: 1px solid #ddd; z-index: 100; }
     .nav-item { flex: 1; text-align: center; padding: 10px; background: none; border: none; font-size: 0.85rem; color: #555; }
     .nav-item.active { color: #1a73e8; font-weight: bold; }
 
-    /* Forms */
     .form-group { margin-bottom: 12px; }
     .form-group label { display: block; margin-bottom: 4px; font-size: 0.85rem; }
     .form-group input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; }
@@ -48,13 +40,9 @@
 </head>
 <body>
 
-  <!-- Top Header -->
   <div class="top-header">DHAWAN STORE</div>
-
-  <!-- Main View Container -->
   <div id="app-content"></div>
 
-  <!-- Bottom Navigation -->
   <div class="bottom-nav">
     <button class="nav-item active" onclick="switchPage('home')">Home</button>
     <button class="nav-item" onclick="switchPage('categories')">Categories</button>
@@ -63,38 +51,25 @@
   </div>
 
   <script>
-    // State Management
     let currentPage = 'home';
     let searchQuery = '';
     let selectedCategory = 'All';
     let cart = [];
     let user = JSON.parse(localStorage.getItem('dhawan_user')) || null;
 
-    // 20 Mock Products
     const products = [
-      { id: 1, name: "Lays Classic Chips", category: "Chips", price: 20, img: "https://via.placeholder.com/100?text=Chips" },
-      { id: 2, name: "Uncle Chips Spicy", category: "Chips", price: 10, img: "https://via.placeholder.com/100?text=Chips" },
-      { id: 3, name: "Classmate Notebook", category: "Notebooks", price: 60, img: "https://via.placeholder.com/100?text=Notebook" },
-      { id: 4, name: "Spiral Rough Register", category: "Notebooks", price: 45, img: "https://via.placeholder.com/100?text=Notebook" },
-      { id: 5, name: "Blue Gel Pen Set", category: "Stationery", price: 30, img: "https://via.placeholder.com/100?text=Pen" },
-      { id: 6, name: "Kurkure Masala Munch", category: "Chips", price: 20, img: "https://via.placeholder.com/100?text=Kurkure" },
-      { id: 7, name: "A4 Size Paper Pack", category: "Stationery", price: 150, img: "https://via.placeholder.com/100?text=A4+Paper" },
-      { id: 8, name: "Cadbury Dairy Milk", category: "Chocolates", price: 40, img: "https://via.placeholder.com/100?text=Chocolate" },
-      { id: 9, name: "Geometry Box", category: "Stationery", price: 85, img: "https://via.placeholder.com/100?text=Geometry" },
-      { id: 10, name: "Sticky Notes", category: "Stationery", price: 25, img: "https://via.placeholder.com/100?text=Notes" },
-      { id: 11, name: "Bingo Mad Angles", category: "Chips", price: 10, img: "https://via.placeholder.com/100?text=Bingo" },
-      { id: 12, name: "Practical Lab File", category: "Notebooks", price: 35, img: "https://via.placeholder.com/100?text=Lab+File" },
-      { id: 13, name: "5 Subject Notebook", category: "Notebooks", price: 120, img: "https://via.placeholder.com/100?text=5+Sub+Book" },
-      { id: 14, name: "Highlighter Marker", category: "Stationery", price: 20, img: "https://via.placeholder.com/100?text=Marker" },
-      { id: 15, name: "KitKat Chocolate", category: "Chocolates", price: 25, img: "https://via.placeholder.com/100?text=KitKat" },
-      { id: 16, name: "Potato Chips Salted", category: "Chips", price: 15, img: "https://via.placeholder.com/100?text=Chips" },
-      { id: 17, name: "Drawing File", category: "Notebooks", price: 50, img: "https://via.placeholder.com/100?text=Drawing" },
-      { id: 18, name: "Eraser & Sharpener Combo", category: "Stationery", price: 10, img: "https://via.placeholder.com/100?text=Stationery" },
-      { id: 19, name: "Five Star Chocolate", category: "Chocolates", price: 15, img: "https://via.placeholder.com/100?text=Chocolate" },
-      { id: 20, name: "Pencil Pack (10 Pcs)", category: "Stationery", price: 40, img: "https://via.placeholder.com/100?text=Pencils" }
+      { id: 1, name: "Lays Classic Chips", category: "Chips", price: 20, img: "https://images.unsplash.com/photo-1566478989037-eec170784d0b?w=300" },
+      { id: 2, name: "Spicy Potato Chips", category: "Chips", price: 10, img: "https://images.unsplash.com/photo-1528751014936-863e6e7a319c?w=300" },
+      { id: 3, name: "Classmate Notebook", category: "Notebooks", price: 60, img: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=300" },
+      { id: 4, name: "Spiral Register", category: "Notebooks", price: 45, img: "https://images.unsplash.com/photo-1589829085413-56de8ae18c73?w=300" },
+      { id: 5, name: "Blue Gel Pen Set", category: "Stationery", price: 30, img: "https://images.unsplash.com/photo-1585336261026-875a60a1c96b?w=300" },
+      { id: 6, name: "Crunchy Masala Munch", category: "Chips", price: 20, img: "https://images.unsplash.com/photo-1621447504864-d8686e12698c?w=300" },
+      { id: 7, name: "A4 Size Paper Pack", category: "Stationery", price: 150, img: "https://images.unsplash.com/photo-1586075010923-2dd4570fb338?w=300" },
+      { id: 8, name: "Dairy Milk Chocolate", category: "Chocolates", price: 40, img: "https://images.unsplash.com/photo-1511381939415-e44015466834?w=300" },
+      { id: 9, name: "Geometry Box", category: "Stationery", price: 85, img: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=300" },
+      { id: 10, name: "Sticky Notes Pack", category: "Stationery", price: 25, img: "https://images.unsplash.com/photo-1586075010923-2dd4570fb338?w=300" }
     ];
 
-    // Delivery Slab Logic
     function getDeliveryCharge(subtotal) {
       if (subtotal <= 0) return 0;
       if (subtotal <= 50) return 10;
@@ -108,13 +83,12 @@
       const item = products.find(p => p.id === pId);
       cart.push(item);
       document.getElementById('cart-count').innerText = cart.length;
-      alert(`${item.name} added to cart!`);
+      alert(item.name + " cart me add ho gaya!");
     }
 
     function renderApp() {
       const app = document.getElementById('app-content');
       
-      // Force Login View if not logged in
       if (!user) {
         app.innerHTML = `
           <div class="container" style="background:#fff; padding:20px; border-radius:8px; margin-top:20px;">
@@ -131,7 +105,6 @@
         return;
       }
 
-      // Page Views
       if (currentPage === 'home' || currentPage === 'categories') {
         const categories = ["All", "Chips", "Notebooks", "Stationery", "Chocolates"];
         const filtered = products.filter(p => {
@@ -151,7 +124,7 @@
             <div class="product-grid">
               ${filtered.map(p => `
                 <div class="product-card">
-                  <img src="${p.img}" />
+                  <img src="${p.img}" alt="${p.name}" />
                   <div class="product-title">${p.name}</div>
                   <div class="product-price">₹${p.price}</div>
                   <button class="btn-add" onclick="addToCart(${p.id})">Add to Cart</button>
@@ -168,7 +141,7 @@
         app.innerHTML = `
           <div class="container">
             <h3>Your Cart (${cart.length} Items)</h3>
-            ${cart.map((item, idx) => `
+            ${cart.map((item) => `
               <div style="background:#fff; padding:10px; border-radius:6px; margin-bottom:8px; display:flex; justify-content:space-between;">
                 <span>${item.name}</span>
                 <strong>₹${item.price}</strong>
@@ -224,8 +197,7 @@
       if (cart.length === 0) { alert("Cart is empty!"); return; }
       if (!user.address) { alert("Please set your delivery address in Profile tab first!"); switchPage('profile'); return; }
 
-      // Direct In-App Confirmation (No Page Change / No WhatsApp)
-      alert(`🎉 Order Placed Successfully!\n\nTotal Amount: ₹${total}\nDetails sent via SMS to ${user.mobile}.`);
+      alert("🎉 Order Placed Successfully!\n\nTotal Amount: ₹" + total + "\nDetails sent via SMS to " + user.mobile + ".");
       cart = [];
       document.getElementById('cart-count').innerText = 0;
       switchPage('home');
@@ -237,8 +209,8 @@
       renderApp();
     }
 
-    // Initial Render
     renderApp();
   </script>
 </body>
 </html>
+    
