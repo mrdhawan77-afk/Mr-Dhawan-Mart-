@@ -175,11 +175,36 @@
   { name: "Catch Turmeric Powder (Haldi) 100g", cat: "Groceries", price: 38, img: "https://images.unsplash.com/photo-1615485290382-441e4d049cb5?w=300" },
   { name: "MDH Garam Masala 50g Box", cat: "Groceries", price: 48, img: "https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=300" },
   { name: "Fortune Sunlite Sunflower Oil 1L Pouch", cat: "Groceries", price: 135, img: "https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=300" }
+ ];
+    const products = [];
+    let pIdCounter = 1;
+    for (let i = 1; i <= 8; i++) {
+      baseItems.forEach(item => {
+        products.push({
+          id: pIdCounter++,
+          name: i === 1 ? item.name : `${item.name} Vol.${i}`,
+          category: item.cat,
+          price: item.price + ((i - 1) * 5),
+          desc: "High quality premium product available at Dhawan Mart with fast delivery.",
+          img: item.img
+        });
+      });
+    }
 
+    function shareApp() {
+      const shareData = {
+        title: 'Dhawan Mart',
+        text: 'Dhawan Mart se snacks, stationery aur daily needs order karein best prices par!',
+        url: window.location.href
+      };
 
-  
-
-    ];
+      if (navigator.share) {
+        navigator.share(shareData).catch(() => {});
+      } else {
+        navigator.clipboard.writeText(window.location.href);
+        showToast("App link copied to clipboard!");
+      }
+    }
 
     function getDeliveryCharge(subtotal) {
       if (subtotal <= 0) return 0;
