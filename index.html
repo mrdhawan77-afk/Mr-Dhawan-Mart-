@@ -6,41 +6,49 @@
   <title>Dhawan Store</title>
   <style>
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-    body { margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, sans-serif; background: #f4f6f8; user-select: none; }
+    body { margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, sans-serif; background: #f1f3f6; user-select: none; }
     
-    .top-header { background: #1a73e8; color: #fff; text-align: center; padding: 12px; font-weight: bold; font-size: 1.2rem; }
-    .search-container { padding: 10px; background: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.08); }
-    .search-input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px; outline: none; }
+    .top-header { background: #2874f0; color: #fff; text-align: center; padding: 12px; font-weight: bold; font-size: 1.2rem; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    .search-container { padding: 8px 10px; background: #2874f0; }
+    .search-input { width: 100%; padding: 10px 12px; border: none; border-radius: 4px; outline: none; font-size: 0.95rem; }
 
-    .categories { display: flex; gap: 8px; overflow-x: auto; padding: 10px; background: #fff; }
-    .chip { padding: 6px 14px; background: #e8f0fe; color: #1a73e8; border-radius: 20px; font-size: 0.85rem; white-space: nowrap; cursor: pointer; border: none; }
-    .chip.active { background: #1a73e8; color: #fff; }
+    .categories { display: flex; gap: 8px; overflow-x: auto; padding: 10px; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+    .categories::-webkit-scrollbar { display: none; }
+    .chip { padding: 6px 14px; background: #f0f2f5; color: #333; border-radius: 16px; font-size: 0.85rem; white-space: nowrap; cursor: pointer; border: 1px solid #e0e0e0; font-weight: 500; }
+    .chip.active { background: #2874f0; color: #fff; border-color: #2874f0; }
 
-    .container { padding: 15px; margin-bottom: 60px; }
-    .product-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    .product-card { background: #fff; border-radius: 8px; padding: 10px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-    .product-card img { width: 100%; height: 100px; object-fit: cover; border-radius: 6px; }
-    .product-title { font-size: 0.85rem; font-weight: 600; margin: 8px 0 4px; height: 32px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
-    .product-price { color: #2e7d32; font-weight: bold; font-size: 0.9rem; }
-    .btn-add { background: #1a73e8; color: #fff; border: none; padding: 6px 12px; border-radius: 4px; margin-top: 8px; cursor: pointer; width: 100%; }
+    .container { padding: 8px; margin-bottom: 60px; }
+    .product-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .product-card { background: #fff; border-radius: 4px; padding: 10px; text-align: left; box-shadow: 0 1px 2px 0 rgba(0,0,0,0.1); display: flex; flex-direction: column; justify-content: space-between; cursor: pointer; }
+    .product-card img { width: 100%; height: 130px; object-fit: contain; border-radius: 2px; }
+    .product-title { font-size: 0.85rem; color: #212121; font-weight: 500; margin: 8px 0 4px; height: 36px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+    .product-price { color: #388e3c; font-weight: bold; font-size: 1rem; margin-bottom: 6px; }
+    .btn-add { background: #ff9f00; color: #fff; border: none; padding: 8px; border-radius: 2px; font-weight: 500; cursor: pointer; width: 100%; font-size: 0.85rem; text-align: center; }
 
-    .bill-summary { background: #fff; padding: 15px; border-radius: 8px; margin-top: 15px; }
-    .bill-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.95rem; }
-    .bill-row.total { border-top: 1px solid #eee; padding-top: 10px; font-weight: bold; font-size: 1.1rem; }
-    .btn-action { width: 100%; background: #ff6f00; color: #fff; border: none; padding: 12px; border-radius: 8px; font-weight: bold; font-size: 1rem; cursor: pointer; margin-top: 10px; }
+    /* Flipkart Detail Page Styling */
+    .detail-container { background: #fff; padding: 15px; min-height: 80vh; }
+    .detail-img { width: 100%; height: 250px; object-fit: contain; margin-bottom: 15px; }
+    .detail-title { font-size: 1.1rem; font-weight: 600; color: #212121; margin-bottom: 8px; }
+    .detail-price { font-size: 1.4rem; color: #388e3c; font-weight: bold; margin-bottom: 12px; }
+    .detail-desc { font-size: 0.9rem; color: #666; line-height: 1.4; margin-bottom: 20px; border-top: 1px solid #f0f0f0; border-bottom: 1px solid #f0f0f0; padding: 10px 0; }
 
-    .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: #fff; display: flex; border-top: 1px solid #ddd; z-index: 100; }
-    .nav-item { flex: 1; text-align: center; padding: 10px; background: none; border: none; font-size: 0.85rem; color: #555; }
-    .nav-item.active { color: #1a73e8; font-weight: bold; }
+    .bill-summary { background: #fff; padding: 15px; border-radius: 4px; margin-top: 10px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+    .bill-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.95rem; color: #555; }
+    .bill-row.total { border-top: 1px solid #eee; padding-top: 10px; font-weight: bold; font-size: 1.1rem; color: #212121; }
+    .btn-action { width: 100%; background: #fb641b; color: #fff; border: none; padding: 12px; border-radius: 2px; font-weight: bold; font-size: 1rem; cursor: pointer; margin-top: 10px; text-align: center; }
+
+    .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: #fff; display: flex; border-top: 1px solid #e0e0e0; z-index: 100; box-shadow: 0 -2px 5px rgba(0,0,0,0.05); }
+    .nav-item { flex: 1; text-align: center; padding: 10px; background: none; border: none; font-size: 0.8rem; color: #555; cursor: pointer; font-weight: 500; }
+    .nav-item.active { color: #2874f0; font-weight: bold; }
 
     .form-group { margin-bottom: 12px; }
-    .form-group label { display: block; margin-bottom: 4px; font-size: 0.85rem; }
-    .form-group input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; }
+    .form-group label { display: block; margin-bottom: 4px; font-size: 0.85rem; color: #555; }
+    .form-group input { width: 100%; padding: 10px; border: 1px solid #dcdcdc; border-radius: 2px; outline: none; }
   </style>
 </head>
 <body>
 
-  <div class="top-header">DHAWAN STORE</div>
+  <div class="top-header">Dhawan Mart</div>
   <div id="app-content"></div>
 
   <div class="bottom-nav">
@@ -54,123 +62,26 @@
     let currentPage = 'home';
     let searchQuery = '';
     let selectedCategory = 'All';
+    let selectedProduct = null;
     let cart = [];
     let user = JSON.parse(localStorage.getItem('dhawan_user')) || null;
 
     const products = [
-      // Chips & Snacks (1-15)
-      { id: 1, name: "Lays Classic Salted", category: "Chips", price: 20, img: "https://images.unsplash.com/photo-1566478989037-eec170784d0b?w=300" },
-      { id: 2, name: "Lays American Cream & Onion", category: "Chips", price: 20, img: "https://images.unsplash.com/photo-1528751014936-863e6e7a319c?w=300" },
-      { id: 3, name: "Kurkure Masala Munch", category: "Chips", price: 20, img: "https://images.unsplash.com/photo-1621447504864-d8686e12698c?w=300" },
-      { id: 4, name: "Uncle Chips Spicy Treat", category: "Chips", price: 10, img: "https://images.unsplash.com/photo-1566478989037-eec170784d0b?w=300" },
-      { id: 5, name: "Bingo Mad Angles Cheese", category: "Chips", price: 10, img: "https://images.unsplash.com/photo-1528751014936-863e6e7a319c?w=300" },
-      { id: 6, name: "Pringles Potato Chips", category: "Chips", price: 110, img: "https://images.unsplash.com/photo-1566478989037-eec170784d0b?w=300" },
-      { id: 7, name: "Aloo Bhujia Haldiram", category: "Snacks", price: 45, img: "https://images.unsplash.com/photo-1601050690597-df0568f70950?w=300" },
-      { id: 8, name: "Moong Dal Haldiram", category: "Snacks", price: 35, img: "https://images.unsplash.com/photo-1601050690597-df0568f70950?w=300" },
-      { id: 9, name: "Navratna Mixture", category: "Snacks", price: 50, img: "https://images.unsplash.com/photo-1601050690597-df0568f70950?w=300" },
-      { id: 10, name: "Roasted Salted Peanuts", category: "Snacks", price: 25, img: "https://images.unsplash.com/photo-1566478989037-eec170784d0b?w=300" },
-      { id: 11, name: "Doritos Nacho Cheese", category: "Chips", price: 30, img: "https://images.unsplash.com/photo-1528751014936-863e6e7a319c?w=300" },
-      { id: 12, name: "Popcorn Salted Box", category: "Snacks", price: 40, img: "https://images.unsplash.com/photo-1578849278619-e73505e9610f?w=300" },
-      { id: 13, name: "Act II Butter Popcorn", category: "Snacks", price: 20, img: "https://images.unsplash.com/photo-1578849278619-e73505e9610f?w=300" },
-      { id: 14, name: "Chana Jor Garam", category: "Snacks", price: 30, img: "https://images.unsplash.com/photo-1601050690597-df0568f70950?w=300" },
-      { id: 15, name: "Khatta Meetha Namkeen", category: "Snacks", price: 40, img: "https://images.unsplash.com/photo-1601050690597-df0568f70950?w=300" },
-
-      // Notebooks (16-28)
-      { id: 16, name: "Classmate Long Notebook", category: "Notebooks", price: 65, img: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=300" },
-      { id: 17, name: "Classmate Spiral Notebook", category: "Notebooks", price: 90, img: "https://images.unsplash.com/photo-1589829085413-56de8ae18c73?w=300" },
-      { id: 18, name: "A4 Size Rough Register", category: "Notebooks", price: 50, img: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=300" },
-      { id: 19, name: "Practical Lab Record File", category: "Notebooks", price: 40, img: "https://images.unsplash.com/photo-1589829085413-56de8ae18c73?w=300" },
-      { id: 20, name: "Drawing Art Book", category: "Notebooks", price: 55, img: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=300" },
-      { id: 21, name: "5 Subject College Register", category: "Notebooks", price: 140, img: "https://images.unsplash.com/photo-1589829085413-56de8ae18c73?w=300" },
-      { id: 22, name: "Pocket Diary Memo Pad", category: "Notebooks", price: 30, img: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=300" },
-      { id: 23, name: "Hardbound Executive Journal", category: "Notebooks", price: 180, img: "https://images.unsplash.com/photo-1589829085413-56de8ae18c73?w=300" },
-      { id: 24, name: "Graph Book 50 Pages", category: "Notebooks", price: 25, img: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=300" },
-      { id: 25, name: "Scrap Book Large", category: "Notebooks", price: 60, img: "https://images.unsplash.com/photo-1589829085413-56de8ae18c73?w=300" },
-      { id: 26, name: "Single Line Medium Note", category: "Notebooks", price: 35, img: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=300" },
-      { id: 27, name: "Four Line Kids Notebook", category: "Notebooks", price: 35, img: "https://images.unsplash.com/photo-1589829085413-56de8ae18c73?w=300" },
-      { id: 28, name: "Maths Square Notebook", category: "Notebooks", price: 35, img: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=300" },
-
-      // Stationery (29-45)
-      { id: 29, name: "Blue Gel Pen Set (5 Pcs)", category: "Stationery", price: 50, img: "https://images.unsplash.com/photo-1585336261026-875a60a1c96b?w=300" },
-      { id: 30, name: "Cello Ball Pen Blue (Pack 10)", category: "Stationery", price: 50, img: "https://images.unsplash.com/photo-1585336261026-875a60a1c96b?w=300" },
-      { id: 31, name: "Apsara Extra Dark Pencil Pack", category: "Stationery", price: 45, img: "https://images.unsplash.com/photo-1585336261026-875a60a1c96b?w=300" },
-      { id: 32, name: "A4 Printing Paper Rim (500)", category: "Stationery", price: 260, img: "https://images.unsplash.com/photo-1586075010923-2dd4570fb338?w=300" },
-      { id: 33, name: "Camlin Geometry Box", category: "Stationery", price: 95, img: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=300" },
-      { id: 34, name: "Yellow Sticky Notes Pad", category: "Stationery", price: 30, img: "https://images.unsplash.com/photo-1586075010923-2dd4570fb338?w=300" },
-      { id: 35, name: "Fevicol MR Squeeze Bottle", category: "Stationery", price: 25, img: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=300" },
-      { id: 36, name: "Fevistick Glue Stick 15g", category: "Stationery", price: 35, img: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=300" },
-      { id: 37, name: "Highlighter Marker Set (4)", category: "Stationery", price: 80, img: "https://images.unsplash.com/photo-1585336261026-875a60a1c96b?w=300" },
-      { id: 38, name: "Permanent Marker Black", category: "Stationery", price: 20, img: "https://images.unsplash.com/photo-1585336261026-875a60a1c96b?w=300" },
-      { id: 39, name: "Eraser & Sharpener Combo", category: "Stationery", price: 15, img: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=300" },
-      { id: 40, name: "Stainless Steel Scale 30cm", category: "Stationery", price: 25, img: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=300" },
-      { id: 41, name: "Correction Tape White", category: "Stationery", price: 40, img: "https://images.unsplash.com/photo-1586075010923-2dd4570fb338?w=300" },
-      { id: 42, name: "Clear Tape Roll 1 Inch", category: "Stationery", price: 20, img: "https://images.unsplash.com/photo-1586075010923-2dd4570fb338?w=300" },
-      { id: 43, name: "Document Folder File Bag", category: "Stationery", price: 45, img: "https://images.unsplash.com/photo-1586075010923-2dd4570fb338?w=300" },
-      { id: 44, name: "Stapler with 1000 Pins", category: "Stationery", price: 65, img: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=300" },
-      { id: 45, name: "Scientific Calculator", category: "Stationery", price: 450, img: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=300" },
-
-      // Chocolates (46-60)
-      { id: 46, name: "Cadbury Dairy Milk Silk", category: "Chocolates", price: 80, img: "https://images.unsplash.com/photo-1511381939415-e44015466834?w=300" },
-      { id: 47, name: "Cadbury Dairy Milk Rs.20", category: "Chocolates", price: 20, img: "https://images.unsplash.com/photo-1511381939415-e44015466834?w=300" },
-      { id: 48, name: "KitKat 4 Finger Chocolate", category: "Chocolates", price: 30, img: "https://images.unsplash.com/photo-1511381939415-e44015466834?w=300" },
-      { id: 49, name: "Nestle Munch Crisp", category: "Chocolates", price: 10, img: "https://images.unsplash.com/photo-1511381939415-e44015466834?w=300" },
-      { id: 50, name: "Cadbury 5 Star Bar", category: "Chocolates", price: 15, img: "https://images.unsplash.com/photo-1511381939415-e44015466834?w=300" },
-      { id: 51, name: "Ferrero Rocher Box (4 Pcs)", category: "Chocolates", price: 150, img: "https://images.unsplash.com/photo-1511381939415-e44015466834?w=300" },
-      { id: 52, name: "Snickers Peanut Bar", category: "Chocolates", price: 40, img: "https://images.unsplash.com/photo-1511381939415-e44015466834?w=300" },
-      { id: 53, name: "Perk Chocolate Bar", category: "Chocolates", price: 10, img: "https://images.unsplash.com/photo-1511381939415-e44015466834?w=300" },
-      { id: 54, name: "Cadbury Shots Box", category: "Chocolates", price: 20, img: "https://images.unsplash.com/photo-1511381939415-e44015466834?w=300" },
-      { id: 55, name: "Amul Dark Chocolate 150g", category: "Chocolates", price: 120, img: "https://images.unsplash.com/photo-1511381939415-e44015466834?w=300" },
-      { id: 56, name: "Kinder Joy Boy/Girl", category: "Chocolates", price: 45, img: "https://images.unsplash.com/photo-1511381939415-e44015466834?w=300" },
-      { id: 57, name: "Cadbury Gems Pouch", category: "Chocolates", price: 20, img: "https://images.unsplash.com/photo-1511381939415-e44015466834?w=300" },
-      { id: 58, name: "Milkybar Nestle", category: "Chocolates", price: 20, img: "https://images.unsplash.com/photo-1511381939415-e44015466834?w=300" },
-      { id: 59, name: "Bournville Dark Chocolate", category: "Chocolates", price: 100, img: "https://images.unsplash.com/photo-1511381939415-e44015466834?w=300" },
-      { id: 60, name: "Choco Pie Lotte Pack", category: "Chocolates", price: 35, img: "https://images.unsplash.com/photo-1511381939415-e44015466834?w=300" },
-
-      // Cold Drinks & Beverages (61-75)
-      { id: 61, name: "Coca Cola Bottle 750ml", category: "Drinks", price: 40, img: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=300" },
-      { id: 62, name: "Sprite Soft Drink 750ml", category: "Drinks", price: 40, img: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=300" },
-      { id: 63, name: "Thums Up Cold Drink", category: "Drinks", price: 40, img: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=300" },
-      { id: 64, name: "Frooti Mango Drink 125ml", category: "Drinks", price: 10, img: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=300" },
-      { id: 65, name: "Red Bull Energy Drink", category: "Drinks", price: 125, img: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=300" },
-      { id: 66, name: "Amul Kool Cold Coffee", category: "Drinks", price: 35, img: "https://images.unsplash.com/photo-1517701604599-bb29b565090c?w=300" },
-      { id: 67, name: "Amul Lassi Pack 200ml", category: "Drinks", price: 20, img: "https://images.unsplash.com/photo-1517701604599-bb29b565090c?w=300" },
-      { id: 68, name: "Maaza Mango Juice 600ml", category: "Drinks", price: 38, img: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=300" },
-      { id: 69, name: "Real Mixed Fruit Juice 1L", category: "Drinks", price: 110, img: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=300" },
-      { id: 70, name: "Appy Fizz Sparkling Juice", category: "Drinks", price: 20, img: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=300" },
-      { id: 71, name: "Kinley Mineral Water 1L", category: "Drinks", price: 20, img: "https://images.unsplash.com/photo-1560023907-5f339617ea30?w=300" },
-      { id: 72, name: " Sting Energy Drink 250ml", category: "Drinks", price: 20, img: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=300" },
-      { id: 73, name: "Paper Boat Aamras Juice", category: "Drinks", price: 35, img: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=300" },
-      { id: 74, name: "Mountain Dew 750ml", category: "Drinks", price: 40, img: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=300" },
-      { id: 75, name: "Nimbooz Lemon Soda", category: "Drinks", price: 20, img: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=300" },
-
-      // Bakery & Biscuits (76-88)
-      { id: 76, name: "Parle-G Biscuit Big Pack", category: "Bakery", price: 25, img: "https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=300" },
-      { id: 77, name: "Britannia Good Day Butter", category: "Bakery", price: 30, img: "https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=300" },
-      { id: 78, name: "Oreo Choco Cream Biscuit", category: "Bakery", price: 35, img: "https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=300" },
-      { id: 79, name: "Hide & Seek Choco Chip", category: "Bakery", price: 30, img: "https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=300" },
-      { id: 80, name: "Britannia Bourbon Biscuit", category: "Bakery", price: 20, img: "https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=300" },
-      { id: 81, name: "Monaco Salted Biscuits", category: "Bakery", price: 10, img: "https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=300" },
-      { id: 82, name: "Marie Gold Biscuits", category: "Bakery", price: 25, img: "https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=300" },
-      { id: 83, name: "Little Hearts Biscuit", category: "Bakery", price: 10, img: "https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=300" },
-      { id: 84, name: "Britannia Cake Slice Vanilla", category: "Bakery", price: 15, img: "https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=300" },
-      { id: 85, name: "Dark Fantasy Choco Fills", category: "Bakery", price: 40, img: "https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=300" },
-      { id: 86, name: "Fresh White Bread Packet", category: "Bakery", price: 40, img: "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=300" },
-      { id: 87, name: "Amul Butter 100g", category: "Bakery", price: 58, img: "https://images.unsplash.com/photo-1589985270826-4b7bb135bc9d?w=300" },
-      { id: 88, name: "Toast Rusk Britannia", category: "Bakery", price: 45, img: "https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=300" },
-
-      // Daily Needs & Personal Care (89-100)
-      { id: 89, name: "Maggi 2-Minute Noodles 4 Pack", category: "Daily Needs", price: 56, img: "https://images.unsplash.com/photo-1612927601601-6638404737ce?w=300" },
-      { id: 90, name: "Yippee Noodle Masala", category: "Daily Needs", price: 14, img: "https://images.unsplash.com/photo-1612927601601-6638404737ce?w=300" },
-      { id: 91, name: "Colgate Toothpaste 100g", category: "Daily Needs", price: 65, img: "https://images.unsplash.com/photo-1559598467-f8b76c8155d0?w=300" },
-      { id: 92, name: "Dettol Bath Soap 75g", category: "Daily Needs", price: 38, img: "https://images.unsplash.com/photo-1607006344380-b6775a0824a7?w=300" },
-      { id: 93, name: "Dove Shampoo Pouch (Pack 10)", category: "Daily Needs", price: 20, img: "https://images.unsplash.com/photo-1535585209827-a15fcdbc4c2d?w=300" },
-      { id: 94, name: "Hand Sanitizer 100ml", category: "Daily Needs", price: 50, img: "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=300" },
-      { id: 95, name: "Pocket Tissue Paper Pack", category: "Daily Needs", price: 15, img: "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=300" },
-      { id: 96, name: "Toothbrush Medium Soft", category: "Daily Needs", price: 30, img: "https://images.unsplash.com/photo-1559598467-f8b76c8155d0?w=300" },
-      { id: 97, name: "Knorr Tomato Soup Packet", category: "Daily Needs", price: 15, img: "https://images.unsplash.com/photo-1612927601601-6638404737ce?w=300" },
-      { id: 98, name: "Nescafe Classic Coffee 25g", category: "Daily Needs", price: 90, img: "https://images.unsplash.com/photo-1517701604599-bb29b565090c?w=300" },
-      { id: 99, name: "Tata Tea Gold 100g", category: "Daily Needs", price: 60, img: "https://images.unsplash.com/photo-1517701604599-bb29b565090c?w=300" },
-      { id: 100, name: "Sugar Free Green Tabs", category: "Daily Needs", price: 110, img: "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=300" }
+      { id: 1, name: "Lays Classic Salted Chips", category: "Chips", price: 20, desc: "Crispy and tasty classic salted potato chips made from high-quality potatoes.", img: "https://images.unsplash.com/photo-1566478989037-eec170784d0b?w=300" },
+      { id: 2, name: "Lays American Cream & Onion", category: "Chips", price: 20, desc: "Crunchy potato chips flavored with delicious creamy onion seasoning.", img: "https://images.unsplash.com/photo-1528751014936-863e6e7a319c?w=300" },
+      { id: 3, name: "Kurkure Masala Munch", category: "Chips", price: 20, desc: "The solid masti snack packed with Indian spices and crunch.", img: "https://images.unsplash.com/photo-1621447504864-d8686e12698c?w=300" },
+      { id: 4, name: "Uncle Chips Spicy Treat", category: "Chips", price: 10, desc: "Spicy and tangy potato wafers for chatpata snack lovers.", img: "https://images.unsplash.com/photo-1566478989037-eec170784d0b?w=300" },
+      { id: 5, name: "Bingo Mad Angles Cheese", category: "Chips", price: 10, desc: "Triangle-shaped crispy chips loaded with cheesy flavor.", img: "https://images.unsplash.com/photo-1528751014936-863e6e7a319c?w=300" },
+      { id: 6, name: "Aloo Bhujia Haldiram", category: "Snacks", price: 45, desc: "Traditional crispy spicy sev made with dew gram and potatoes.", img: "https://images.unsplash.com/photo-1601050690597-df0568f70950?w=300" },
+      { id: 7, name: "Classmate Long Notebook", category: "Notebooks", price: 65, desc: "High quality pages single line long notebook for school & college.", img: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=300" },
+      { id: 8, name: "Classmate Spiral Notebook", category: "Notebooks", price: 90, desc: "Sturdy wire-bound spiral notebook with smooth pages.", img: "https://images.unsplash.com/photo-1589829085413-56de8ae18c73?w=300" },
+      { id: 9, name: "Blue Gel Pen Set (5 Pcs)", category: "Stationery", price: 50, desc: "Smooth-flowing gel ink pens for neat and fast handwriting.", img: "https://images.unsplash.com/photo-1585336261026-875a60a1c96b?w=300" },
+      { id: 10, name: "Cadbury Dairy Milk Silk", category: "Chocolates", price: 80, desc: "Extremely smooth and creamy milk chocolate bar.", img: "https://images.unsplash.com/photo-1511381939415-e44015466834?w=300" },
+      { id: 11, name: "KitKat 4 Finger Chocolate", category: "Chocolates", price: 30, desc: "Crispy wafer fingers covered in delicious milk chocolate.", img: "https://images.unsplash.com/photo-1511381939415-e44015466834?w=300" },
+      { id: 12, name: "Coca Cola Bottle 750ml", category: "Drinks", price: 40, desc: "Refreshing carbonated soft drink to beat the heat.", img: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=300" },
+      { id: 13, name: "Sprite Soft Drink 750ml", category: "Drinks", price: 40, desc: "Crisp lemon-lime flavored clear sparkling drink.", img: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=300" },
+      { id: 14, name: "Parle-G Biscuit Big Pack", category: "Bakery", price: 25, desc: "India's favorite glucose biscuits packed with energy and taste.", img: "https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=300" },
+      { id: 15, name: "Maggi 2-Minute Noodles 4 Pack", category: "Daily Needs", price: 56, desc: "Instant masala noodles ready in just 2 minutes.", img: "https://images.unsplash.com/photo-1612927601601-6638404737ce?w=300" }
     ];
 
     function getDeliveryCharge(subtotal) {
@@ -182,11 +93,69 @@
       return 50;
     }
 
-    function addToCart(pId) {
+    function addToCart(pId, event) {
+      if(event) event.stopPropagation();
       const item = products.find(p => p.id === pId);
       cart.push(item);
       document.getElementById('cart-count').innerText = cart.length;
-      alert(item.name + " cart me add ho gaya!");
+      showToast(item.name + " cart me add ho gaya!");
+    }
+
+    function showToast(msg) {
+      let toast = document.getElementById("toast");
+      if (!toast) {
+        toast = document.createElement("div");
+        toast.id = "toast";
+        toast.style.cssText = "position:fixed; bottom:70px; left:50%; transform:translateX(-50%); background:rgba(0,0,0,0.85); color:#fff; padding:10px 18px; border-radius:20px; font-size:0.85rem; z-index:1000; transition:opacity 0.3s; font-weight:500;";
+        document.body.appendChild(toast);
+      }
+      toast.innerText = msg;
+      toast.style.opacity = "1";
+      setTimeout(() => { toast.style.opacity = "0"; }, 1500);
+    }
+
+    function viewProductDetail(pId) {
+      selectedProduct = products.find(p => p.id === pId);
+      currentPage = 'detail';
+      renderApp();
+      window.scrollTo(0, 0);
+    }
+
+    function placeOrder(total) {
+      if (cart.length === 0) { alert("Cart is empty!"); return; }
+      if (!user.address) { alert("Please set your delivery address in Profile tab first!"); switchPage('profile'); return; }
+
+      // LINE 202-203: YAHAN APNA BOT TOKEN AUR CHAT ID DAALEIN
+      const telegramBotToken = "8735436494:AAGWN69EV9j2b89kielRj5PSOPsh0JY4uxY";
+      const telegramChatId = "8024913770";
+
+      let orderItems = cart.map(item => `- ${item.name} (Rs.${item.price})`).join('\n');
+      
+      let msg = `🛒 *NEW ORDER RECEIVED - DHAWAN MART*\n\n` +
+                `👤 *Name:* ${user.name}\n` +
+                `📞 *Mobile:* ${user.mobile}\n` +
+                `📍 *Address:* ${user.address}\n\n` +
+                `📦 *Items:*\n${orderItems}\n\n` +
+                `💰 *Total Amount:* Rs.${total}`;
+
+      fetch(`https://api.telegram.org/bot${telegramBotToken}/sendMessage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          chat_id: telegramChatId,
+          text: msg,
+          parse_mode: 'Markdown'
+        })
+      })
+      .then(response => {
+        showToast("🎉 Order Placed Successfully!");
+        cart = [];
+        document.getElementById('cart-count').innerText = 0;
+        switchPage('home');
+      })
+      .catch(error => {
+        alert("Order place karne me error aaya.");
+      });
     }
 
     function renderApp() {
@@ -194,8 +163,8 @@
       
       if (!user) {
         app.innerHTML = `
-          <div class="container" style="background:#fff; padding:20px; border-radius:8px; margin-top:20px;">
-            <h3>Login to Dhawan Store</h3>
+          <div class="container" style="background:#fff; padding:20px; border-radius:4px; margin-top:20px;">
+            <h3>Login to Dhawan Mart</h3>
             <form onsubmit="handleLogin(event)">
               <div class="form-group"><label>Full Name</label><input type="text" id="l-name" required /></div>
               <div class="form-group"><label>Mobile Number</label><input type="tel" id="l-mobile" placeholder="10 Digits" required /></div>
@@ -218,7 +187,7 @@
 
         app.innerHTML = `
           <div class="search-container">
-            <input type="text" class="search-input" placeholder="Search 100+ products..." value="${searchQuery}" oninput="searchQuery=this.value; renderApp();" />
+            <input type="text" class="search-input" placeholder="Search for products..." value="${searchQuery}" oninput="searchQuery=this.value; renderApp();" />
           </div>
           <div class="categories">
             ${categories.map(c => `<button class="chip ${selectedCategory === c ? 'active' : ''}" onclick="selectedCategory='${c}'; renderApp();">${c}</button>`).join('')}
@@ -226,14 +195,27 @@
           <div class="container">
             <div class="product-grid">
               ${filtered.map(p => `
-                <div class="product-card">
+                <div class="product-card" onclick="viewProductDetail(${p.id})">
                   <img src="${p.img}" alt="${p.name}" loading="lazy" />
                   <div class="product-title">${p.name}</div>
                   <div class="product-price">₹${p.price}</div>
-                  <button class="btn-add" onclick="addToCart(${p.id})">Add to Cart</button>
+                  <button class="btn-add" onclick="addToCart(${p.id}, event)">Add to Cart</button>
                 </div>
               `).join('')}
             </div>
+          </div>
+        `;
+      } else if (currentPage === 'detail' && selectedProduct) {
+        app.innerHTML = `
+          <div class="detail-container">
+            <button onclick="switchPage('home')" style="background:none; border:none; color:#2874f0; font-weight:bold; cursor:pointer; margin-bottom:10px;">← Back to Products</button>
+            <img src="${selectedProduct.img}" class="detail-img" alt="${selectedProduct.name}" />
+            <div class="detail-title">${selectedProduct.name}</div>
+            <div class="detail-price">₹${selectedProduct.price}</div>
+            <div style="font-size:0.85rem; color:#388e3c; font-weight:bold; margin-bottom:10px;">In Stock • Delivery Available</div>
+            <div class="detail-desc"><strong>Product Details:</strong><br>${selectedProduct.desc}</div>
+            <button class="btn-action" onclick="addToCart(${selectedProduct.id}); switchPage('cart');">BUY NOW / GO TO CART</button>
+            <button class="btn-action" style="background:#ff9f00; margin-top:8px;" onclick="addToCart(${selectedProduct.id})">ADD TO CART</button>
           </div>
         `;
       } else if (currentPage === 'cart') {
@@ -243,25 +225,31 @@
 
         app.innerHTML = `
           <div class="container">
-            <h3>Your Cart (${cart.length} Items)</h3>
-            ${cart.map((item) => `
-              <div style="background:#fff; padding:10px; border-radius:6px; margin-bottom:8px; display:flex; justify-content:space-between;">
-                <span>${item.name}</span>
-                <strong>₹${item.price}</strong>
+            <h3>My Cart (${cart.length} Items)</h3>
+            ${cart.length === 0 ? '<p style="text-align:center; color:#777; margin-top:40px;">Your cart is empty!</p>' : ''}
+            ${cart.map((item, index) => `
+              <div style="background:#fff; padding:10px; border-radius:4px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center; box-shadow:0 1px 2px rgba(0,0,0,0.05);">
+                <div>
+                  <div style="font-weight:500; font-size:0.9rem;">${item.name}</div>
+                  <div style="color:#388e3c; font-weight:bold; font-size:0.9rem; margin-top:4px;">₹${item.price}</div>
+                </div>
+                <button onclick="cart.splice(${index},1); renderApp(); document.getElementById('cart-count').innerText=cart.length;" style="background:none; border:none; color:red; font-size:1.1rem; cursor:pointer;">×</button>
               </div>
             `).join('')}
 
-            <div class="bill-summary">
-              <div class="bill-row"><span>Items Price</span><span>₹${subtotal}</span></div>
-              <div class="bill-row"><span>Delivery Charges</span><span>₹${delivery}</span></div>
-              <div class="bill-row total"><span>Total Amount</span><span>₹${total}</span></div>
-              <button class="btn-action" onclick="placeOrder(${total})">PLACE ORDER</button>
-            </div>
+            ${cart.length > 0 ? `
+              <div class="bill-summary">
+                <div class="bill-row"><span>Items Price</span><span>₹${subtotal}</span></div>
+                <div class="bill-row"><span>Delivery Charges</span><span>₹${delivery}</span></div>
+                <div class="bill-row total"><span>Total Amount</span><span>₹${total}</span></div>
+                <button class="btn-action" onclick="placeOrder(${total})">PLACE ORDER</button>
+              </div>
+            ` : ''}
           </div>
         `;
       } else if (currentPage === 'profile') {
         app.innerHTML = `
-          <div class="container" style="background:#fff; padding:20px; border-radius:8px;">
+          <div class="container" style="background:#fff; padding:20px; border-radius:4px;">
             <h3>My Profile</h3>
             <div class="form-group"><label>Full Name</label><input type="text" id="p-name" value="${user.name}" /></div>
             <div class="form-group"><label>Mobile Number</label><input type="tel" id="p-mobile" value="${user.mobile}" /></div>
@@ -293,23 +281,17 @@
       user.mobile = document.getElementById('p-mobile').value;
       user.address = document.getElementById('p-address').value;
       localStorage.setItem('dhawan_user', JSON.stringify(user));
-      alert("Profile details saved!");
-    }
-
-    function placeOrder(total) {
-      if (cart.length === 0) { alert("Cart is empty!"); return; }
-      if (!user.address) { alert("Please set your delivery address in Profile tab first!"); switchPage('profile'); return; }
-
-      alert("🎉 Order Placed Successfully!\n\nTotal Amount: ₹" + total + "\nOrder details received.");
-      cart = [];
-      document.getElementById('cart-count').innerText = 0;
-      switchPage('home');
+      showToast("Profile details saved!");
     }
 
     function switchPage(page) {
       currentPage = page;
       document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
+      if(page === 'home' || page === 'categories') {
+        document.querySelectorAll('.nav-item')[0].classList.add('active');
+      }
       renderApp();
+      window.scrollTo(0, 0);
     }
 
     renderApp();
