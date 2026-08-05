@@ -72,15 +72,15 @@
     let cart = [];
     let user = JSON.parse(localStorage.getItem('dhawan_user')) || null;
 
-    // BUILT-IN SVG IMAGES (NO EXTERNAL URL DEPENDENCY - 100% RELIABLE)
-    const imgChip = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'><rect width='200' height='200' fill='%23ffe082'/><circle cx='100' cy='100' r='60' fill='%23ffa000'/><text x='50%' y='55%' font-size='22' font-family='Arial' font-weight='bold' fill='%23fff' text-anchor='middle'>CHIPS</text></svg>";
-    const imgSnack = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'><rect width='200' height='200' fill='%23ffcc80'/><polygon points='100,30 160,160 40,160' fill='%23e65100'/><text x='50%' y='65%' font-size='20' font-family='Arial' font-weight='bold' fill='%23fff' text-anchor='middle'>SNACKS</text></svg>";
-    const imgBakery = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'><rect width='200' height='200' fill='%23d7ccc8'/><rect x='40' y='50' width='120' height='100' rx='15' fill='%236d4c41'/><text x='50%' y='55%' font-size='20' font-family='Arial' font-weight='bold' fill='%23fff' text-anchor='middle'>BISCUIT</text></svg>";
-    const imgChoco = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'><rect width='200' height='200' fill='%23bcaaa4'/><rect x='40' y='40' width='120' height='120' rx='10' fill='%234e342e'/><text x='50%' y='55%' font-size='18' font-family='Arial' font-weight='bold' fill='%23fff' text-anchor='middle'>CHOCO</text></svg>";
-    const imgDrink = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'><rect width='200' height='200' fill='%2380deea'/><rect x='70' y='30' width='60' height='140' rx='10' fill='%2300838f'/><text x='50%' y='55%' font-size='20' font-family='Arial' font-weight='bold' fill='%23fff' text-anchor='middle'>DRINK</text></svg>";
-    const imgBook = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'><rect width='200' height='200' fill='%23bbdefb'/><rect x='40' y='30' width='120' height='140' rx='5' fill='%231565c0'/><text x='50%' y='55%' font-size='18' font-family='Arial' font-weight='bold' fill='%23fff' text-anchor='middle'>NOTEBOOK</text></svg>";
-    const imgPen = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'><rect width='200' height='200' fill='%23ce93d8'/><rect x='85' y='20' width='30' height='160' rx='5' fill='%236a1b9a'/><text x='50%' y='55%' font-size='18' font-family='Arial' font-weight='bold' fill='%23fff' text-anchor='middle'>PEN</text></svg>";
-    const imgDaily = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'><rect width='200' height='200' fill='%23c8e6c9'/><circle cx='100' cy='100' r='60' fill='%232e7d32'/><text x='50%' y='55%' font-size='18' font-family='Arial' font-weight='bold' fill='%23fff' text-anchor='middle'>DAILY</text></svg>";
+    // HIGH QUALITY PUBLIC IMAGE DIRECT LINKS
+    const imgChip = "https://cdn-icons-png.flaticon.com/512/2553/2553691.png";
+    const imgSnack = "https://cdn-icons-png.flaticon.com/512/2553/2553603.png";
+    const imgBakery = "https://cdn-icons-png.flaticon.com/512/992/992747.png";
+    const imgChoco = "https://cdn-icons-png.flaticon.com/512/2553/2553591.png";
+    const imgDrink = "https://cdn-icons-png.flaticon.com/512/2405/2405479.png";
+    const imgBook = "https://cdn-icons-png.flaticon.com/512/3389/3389081.png";
+    const imgPen = "https://cdn-icons-png.flaticon.com/512/2543/2543292.png";
+    const imgDaily = "https://cdn-icons-png.flaticon.com/512/3082/3082011.png";
 
     const products = [
       // CHIPS & SNACKS (20 Items)
@@ -156,7 +156,7 @@
       { id: 64, name: "Amul Kool Badam Milk", category: "Drinks", price: 35, desc: "Chilled almond milk beverage.", img: imgDrink },
       { id: 65, name: "Bisleri Mineral Water 1L", category: "Drinks", price: 20, desc: "Purified drinking water.", img: imgDrink },
 
-      // NOTEBOOKS & STATIONERY (20 Items)
+      // NOTEBOOKS & STATIONERY (20 Items) - FIXED MAPPING
       { id: 66, name: "Classmate Long Notebook 172 Pgs", category: "Notebooks", price: 65, desc: "Single line ruled notebook.", img: imgBook },
       { id: 67, name: "Classmate Spiral Notebook 200 Pgs", category: "Notebooks", price: 110, desc: "Spiral bound notebook.", img: imgBook },
       { id: 68, name: "Classmate Register A4 300 Pgs", category: "Notebooks", price: 160, desc: "Hardcover thick register.", img: imgBook },
@@ -178,7 +178,27 @@
       { id: 84, name: "Kangaro Mini Stapler No.10", category: "Stationery", price: 60, desc: "Stapler with staple pins.", img: imgPen },
       { id: 85, name: "Sticky Notes Yellow Pad", category: "Stationery", price: 40, desc: "Self adhesive sticky memo.", img: imgBook },
 
-    
+      // DAILY NEEDS & INSTANT FOOD (20 Items) - FIXED MAPPING
+      { id: 86, name: "Maggi 2-Min Noodles 280g", category: "Daily Needs", price: 56, desc: "Masala instant noodles.", img: imgDaily },
+      { id: 87, name: "Yippee Magic Masala Noodles", category: "Daily Needs", price: 48, desc: "Non sticky long noodles.", img: imgDaily },
+      { id: 88, name: "Knorr Cup-a-Soup Tomato", category: "Daily Needs", price: 35, desc: "Instant hot soup mix.", img: imgDaily },
+      { id: 89, name: "Nescafe Classic Coffee 50g", category: "Daily Needs", price: 175, desc: "Pure instant coffee powder.", img: imgDaily },
+      { id: 90, name: "Taj Mahal Tea 250g", category: "Daily Needs", price: 180, desc: "Premium black tea leaves.", img: imgDaily },
+      { id: 91, name: "Tata Tea Gold 250g", category: "Daily Needs", price: 160, desc: "Rich aroma CTC tea.", img: imgDaily },
+      { id: 92, name: "Amul Butter 100g Box", category: "Daily Needs", price: 56, desc: "Salted cooking butter.", img: imgDaily },
+      { id: 93, name: "Amul Cheese Slices 200g", category: "Daily Needs", price: 140, desc: "Processed cheese slices.", img: imgDaily },
+      { id: 94, name: "Dettol Original Soap 125g", category: "Daily Needs", price: 45, desc: "Germ protection bath soap.", img: imgDaily },
+      { id: 95, name: "Dove Cream Beauty Bar Soap", category: "Daily Needs", price: 60, desc: "Moisturizing bath soap.", img: imgDaily },
+      { id: 96, name: "Colgate Strong Teeth 100g", category: "Daily Needs", price: 65, desc: "Calcium toothpaste.", img: imgDaily },
+      { id: 97, name: "Sensodyne Fresh Mint 75g", category: "Daily Needs", price: 120, desc: "Sensitivity toothpaste.", img: imgDaily },
+      { id: 98, name: "Head & Shoulders Shampoo 180ml", category: "Daily Needs", price: 180, desc: "Anti dandruff shampoo.", img: imgDaily },
+      { id: 99, name: "Clinic Plus Shampoo 175ml", category: "Daily Needs", price: 110, desc: "Strong and long hair shampoo.", img: imgDaily },
+      { id: 100, name: "Nivea Soft Cream 100ml", category: "Daily Needs", price: 190, desc: "Light moisturizing cream.", img: imgDaily },
+      { id: 101, name: "Dabur Honey 250g Jar", category: "Daily Needs", price: 120, desc: "100% pure natural honey.", img: imgDaily },
+      { id: 102, name: "Kissan Tomato Ketchup 950g", category: "Daily Needs", price: 135, desc: "Fresh tomato ketchup pouch.", img: imgDaily },
+      { id: 103, name: "Nutella Hazelnut Spread 350g", category: "Daily Needs", price: 380, desc: "Cocoa hazelnut spread.", img: imgDaily },
+      { id: 104, name: "Quaker Oats 1kg Pack", category: "Daily Needs", price: 195, desc: "100% whole grain oats.", img: imgDaily },
+      { id: 105, name: "Kellogg's Corn Flakes 475g", category: "Daily Needs", price: 185, desc: "Healthy breakfast cereal.", img: imgDaily }
     ];
 
     function shareApp() {
