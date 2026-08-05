@@ -8,10 +8,9 @@
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
     body { margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, sans-serif; background: #f1f3f6; user-select: none; }
     
-    .top-header { background: #2874f0; color: #fff; text-align: center; padding: 12px 15px; font-weight: bold; font-size: 1.2rem; box-shadow: 0 2px 4px rgba(0,0,0,0.1); display: flex; justify-content: space-between; align-items: center; }
-    .header-title { flex-grow: 1; text-align: center; margin-left: 30px; }
-    .share-btn { background: rgba(255, 255, 255, 0.2); border: none; color: #fff; padding: 6px 12px; border-radius: 16px; font-size: 0.85rem; cursor: pointer; display: flex; align-items: center; gap: 4px; font-weight: 500; }
-    .share-btn:active { background: rgba(255, 255, 255, 0.4); }
+    .top-header { background: #2874f0; color: #fff; padding: 10px 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 12px; }
+    .brand-logo { width: 38px; height: 38px; border-radius: 50%; background: #fff; color: #2874f0; display: flex; justify-content: center; align-items: center; font-weight: bold; font-size: 1.1rem; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+    .brand-title { font-size: 1.25rem; font-weight: 800; letter-spacing: 0.5px; color: #fff; }
 
     .search-container { padding: 8px 10px; background: #2874f0; }
     .search-input { width: 100%; padding: 10px 12px; border: none; border-radius: 4px; outline: none; font-size: 0.95rem; }
@@ -52,8 +51,8 @@
 <body>
 
   <div class="top-header">
-    <div class="header-title">Dhawan Mart</div>
-    <button class="share-btn" onclick="shareApp()">🔗 Share</button>
+    <div class="brand-logo">DM</div>
+    <div class="brand-title">Dhawan Mart</div>
   </div>
 
   <div id="app-content"></div>
@@ -73,102 +72,125 @@
     let cart = [];
     let user = JSON.parse(localStorage.getItem('dhawan_user')) || null;
 
-    const baseItems = [
-      { name: "Lays Classic Salted", cat: "Chips", price: 20, img: "https://images.unsplash.com/photo-1566478989037-eec170784d0b?w=300" },
-      { name: "Lays American Cream & Onion", cat: "Chips", price: 20, img: "https://images.unsplash.com/photo-1528751014936-863e6e7a319c?w=300" },
-      { name: "Kurkure Masala Munch", cat: "Chips", price: 20, img: "https://images.unsplash.com/photo-1621447504864-d8686e12698c?w=300" },
-      { name: "Uncle Chips Spicy Treat", cat: "Chips", price: 10, img: "https://images.unsplash.com/photo-1566478989037-eec170784d0b?w=300" },
-      { name: "Bingo Mad Angles Cheese", cat: "Chips", price: 10, img: "https://images.unsplash.com/photo-1528751014936-863e6e7a319c?w=300" },
-      { name: "Aloo Bhujia Haldiram", cat: "Snacks", price: 45, img: "https://images.unsplash.com/photo-1601050690597-df0568f70950?w=300" },
-      { name: "Classmate Long Notebook", cat: "Notebooks", price: 65, img: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=300" },
-      { name: "Classmate Spiral Notebook", cat: "Notebooks", price: 90, img: "https://images.unsplash.com/photo-1589829085413-56de8ae18c73?w=300" },
-      { name: "Blue Gel Pen Set (5 Pcs)", cat: "Stationery", price: 50, img: "https://images.unsplash.com/photo-1585336261026-875a60a1c96b?w=300" },
-      { name: "Cadbury Dairy Milk Silk", cat: "Chocolates", price: 80, img: "https://images.unsplash.com/photo-1511381939415-e44015466834?w=300" },
-      { name: "KitKat 4 Finger Chocolate", cat: "Chocolates", price: 30, img: "https://images.unsplash.com/photo-1511381939415-e44015466834?w=300" },
-      { name: "Coca Cola Bottle 750ml", cat: "Drinks", price: 40, img: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=300" },
-      { name: "Sprite Soft Drink 750ml", cat: "Drinks", price: 40, img: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=300" },
-      { name: "Parle-G Biscuit Big Pack", cat: "Bakery", price: 25, img: "https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=300" },
-      { name: "Maggi 2-Minute Noodles Pack", cat: "Daily Needs", price: 56, img: "https://images.unsplash.com/photo-1612927601601-6638404737ce?w=300" }
-      { name: "Kurkure Masala Munch (45g Pack)", cat: "Snacks", price: 10, img: "https://images.unsplash.com/photo-1566478989037-eec170784d0b?w=300" },
-      { name: "Kurkure Masala Munch Large Pack", cat: "Snacks", price: 20, img: "https://images.unsplash.com/photo-1566478989037-eec170784d0b?w=300" },
-      { name: "Lay's India's Magic Masala (30g Pack)", cat: "Snacks", price: 10, img: "https://images.unsplash.com/photo-1566478989037-eec170784d0b?w=300" },
-      { name: "Lay's Cream & Onion Potato Chips", cat: "Snacks", price: 20, img: "https://images.unsplash.com/photo-1566478989037-eec170784d0b?w=300" },
-      { name: "Bingo! Tedhe Medhe Masala Tadka", cat: "Snacks", price: 10, img: "https://images.unsplash.com/photo-1566478989037-eec170784d0b?w=300" },
-      { name: "Haldiram's Aloo Bhujia (150g Pack)", cat: "Snacks", price: 55, img: "https://images.unsplash.com/photo-1599490659213-e2b9527bd087?w=300" },
-      { name: "Haldiram's Moong Dal Pack", cat: "Snacks", price: 10, img: "https://images.unsplash.com/photo-1599490659213-e2b9527bd087?w=300" },
- { name: "Maggi 2-Minute Masala Noodles (70g Pack)", cat: "Instant Food", price: 14, img: "https://images.unsplash.com/photo-1612927601601-6638404737ce?w=300" },
-  { name: "Maggi 2-Minute Masala Noodles (4-in-1 Family Pack)", cat: "Instant Food", price: 56, img: "https://images.unsplash.com/photo-1612927601601-6638404737ce?w=300" },
-  { name: "Sunfeast Yippee! Magic Masala Noodles", cat: "Instant Food", price: 14, img: "https://images.unsplash.com/photo-1612927601601-6638404737ce?w=300" },
-  { name: "Bambino Macaroni Pasta 200g Pack", cat: "Instant Food", price: 28, img: "https://images.unsplash.com/photo-1621996346565-e3d5d6281288?w=300" },
-  { name: "Maggi Nutri-Licious Masala Oats Noodles", cat: "Instant Food", price: 25, img: "https://images.unsplash.com/photo-1612927601601-6638404737ce?w=300" },
-{ name: "Parle-G Glucose Biscuit (Small Pack)", cat: "Biscuits", price: 5, img: "https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=300" },
-  { name: "Parle-G Glucose Biscuit (Family Pack)", cat: "Biscuits", price: 10, img: "https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=300" },
-  { name: "Britannia Good Day Cashew Biscuits", cat: "Biscuits", price: 10, img: "https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=300" },
-  { name: "Britannia Bourbon Chocolate Biscuits", cat: "Biscuits", price: 20, img: "https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=300" },
-  { name: "Cadbury Dairy Milk Silk Chocolate (55g)", cat: "Chocolates", price: 80, img: "https://images.unsplash.com/photo-1606312619070-d48b4c652a52?w=300" },
-  { name: "Nestle KitKat 4 Finger Chocolate", cat: "Chocolates", price: 30, img: "https://images.unsplash.com/photo-1606312619070-d48b4c652a52?w=300" },
-  { name: "Parachute 100% Pure Coconut Hair Oil (75ml Bottle)", cat: "Personal Care", price: 38, img: "https://images.unsplash.com/photo-1608248597262-83804825d194?w=300" },
-  { name: "Dabur Amla Hair Oil (45ml Bottle)", cat: "Personal Care", price: 20, img: "https://images.unsplash.com/photo-1608248597262-83804825d194?w=300" },
-  { name: "Bajaj Almond Drops Hair Oil (50ml Bottle)", cat: "Personal Care", price: 35, img: "https://images.unsplash.com/photo-1608248597262-83804825d194?w=300" },
-  { name: "Dettol Original Bathing Soap 75g", cat: "Personal Care", price: 36, img: "https://images.unsplash.com/photo-1600857544200-b2f666a9a2ec?w=300" },
-  { name: "Lux Cozzzi Bath Soap 100g", cat: "Personal Care", price: 35, img: "https://images.unsplash.com/photo-1600857544200-b2f666a9a2ec?w=300" },
-  { name: "Colgate Strong Teeth Toothpaste 50g", cat: "Personal Care", price: 23, img: "https://images.unsplash.com/photo-1559598467-f8b76c8155d0?w=300" }
-  { name: "Kurkure Masala Munch 45g Pack", cat: "Snacks", price: 10, img: "https://images.unsplash.com/photo-1566478989037-eec170784d0b?w=300" },
-  { name: "Kurkure Masala Munch Family Pack 90g", cat: "Snacks", price: 20, img: "https://images.unsplash.com/photo-1566478989037-eec170784d0b?w=300" },
-  { name: "Kurkure Green Chutney Style 45g", cat: "Snacks", price: 10, img: "https://images.unsplash.com/photo-1566478989037-eec170784d0b?w=300" },
-  { name: "Lay's India's Magic Masala Chips 30g", cat: "Snacks", price: 10, img: "https://images.unsplash.com/photo-1566478989037-eec170784d0b?w=300" },
-  { name: "Lay's Cream & Onion Chips 50g", cat: "Snacks", price: 20, img: "https://images.unsplash.com/photo-1566478989037-eec170784d0b?w=300" },
-  { name: "Lay's Classic Salted Potato Chips 50g", cat: "Snacks", price: 20, img: "https://images.unsplash.com/photo-1566478989037-eec170784d0b?w=300" },
-  { name: "Bingo! Tedhe Medhe Masala Tadka", cat: "Snacks", price: 10, img: "https://images.unsplash.com/photo-1566478989037-eec170784d0b?w=300" },
-  { name: "Bingo! Mad Angles Tomato Madness", cat: "Snacks", price: 10, img: "https://images.unsplash.com/photo-1566478989037-eec170784d0b?w=300" },
-  { name: "Haldiram's Aloo Bhujia 150g Pack", cat: "Snacks", price: 55, img: "https://images.unsplash.com/photo-1599490659213-e2b9527bd087?w=300" },
-  { name: "Haldiram's Bhujia Sev 200g Pack", cat: "Snacks", price: 60, img: "https://images.unsplash.com/photo-1599490659213-e2b9527bd087?w=300" },
-  { name: "Haldiram's Moong Dal 40g Pouch", cat: "Snacks", price: 10, img: "https://images.unsplash.com/photo-1599490659213-e2b9527bd087?w=300" },
-  { name: "Haldiram's Khatta Meetha Mix 150g", cat: "Snacks", price: 50, img: "https://images.unsplash.com/photo-1599490659213-e2b9527bd087?w=300" },
-  { name: "Uncle Chips Spicy Treat 50g", cat: "Snacks", price: 20, img: "https://images.unsplash.com/photo-1566478989037-eec170784d0b?w=300" },
-  { name: "Maggi 2-Minute Masala Noodles 70g", cat: "Instant Food", price: 14, img: "https://images.unsplash.com/photo-1612927601601-6638404737ce?w=300" },
-  { name: "Maggi Masala Noodles 4-in-1 Family Pack", cat: "Instant Food", price: 56, img: "https://images.unsplash.com/photo-1612927601601-6638404737ce?w=300" },
-  { name: "Sunfeast Yippee! Magic Masala Noodles 70g", cat: "Instant Food", price: 14, img: "https://images.unsplash.com/photo-1612927601601-6638404737ce?w=300" },
-  { name: "Bambino Macaroni Pasta 200g Pack", cat: "Instant Food", price: 28, img: "https://images.unsplash.com/photo-1621996346565-e3d5d6281288?w=300" },
-  { name: "Bambino Roasted Vermicelli (Sevaiya) 150g", cat: "Instant Food", price: 25, img: "https://images.unsplash.com/photo-1621996346565-e3d5d6281288?w=300" },
-  { name: "Knorr Tomato Instant Soup Sachet", cat: "Instant Food", price: 15, img: "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=300" },
-  { name: "Knorr Sweet Corn Vegetable Soup", cat: "Instant Food", price: 15, img: "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=300" },
-  { name: "Ching's Secret Schezwan Noodles 60g", cat: "Instant Food", price: 15, img: "https://images.unsplash.com/photo-1612927601601-6638404737ce?w=300" },
-  { name: "Parachute 100% Pure Coconut Oil 75ml", cat: "Personal Care", price: 38, img: "https://images.unsplash.com/photo-1608248597262-83804825d194?w=300" },
-  { name: "Parachute Coconut Hair Oil 175ml", cat: "Personal Care", price: 90, img: "https://images.unsplash.com/photo-1608248597262-83804825d194?w=300" },
-  { name: "Dabur Amla Hair Oil 45ml Bottle", cat: "Personal Care", price: 20, img: "https://images.unsplash.com/photo-1608248597262-83804825d194?w=300" },
-  { name: "Bajaj Almond Drops Hair Oil 50ml", cat: "Personal Care", price: 35, img: "https://images.unsplash.com/photo-1608248597262-83804825d194?w=300" },
-  { name: "Navratna Cool Herbal Hair Oil 50ml", cat: "Personal Care", price: 30, img: "https://images.unsplash.com/photo-1608248597262-83804825d194?w=300" },
-  { name: "Dettol Original Bathing Soap 75g", cat: "Personal Care", price: 36, img: "https://images.unsplash.com/photo-1600857544200-b2f666a9a2ec?w=300" },
-  { name: "Lux Cozzzi Bath Soap 100g", cat: "Personal Care", price: 35, img: "https://images.unsplash.com/photo-1600857544200-b2f666a9a2ec?w=300" },
-  { name: "Lifebuoy Total 10 Soap Bar 100g", cat: "Personal Care", price: 32, img: "https://images.unsplash.com/photo-1600857544200-b2f666a9a2ec?w=300" },
-  { name: "Colgate Strong Teeth Toothpaste 50g", cat: "Personal Care", price: 23, img: "https://images.unsplash.com/photo-1559598467-f8b76c8155d0?w=300" },
-  { name: "Pepsodent Cavity Protection Toothpaste 100g", cat: "Personal Care", price: 60, img: "https://images.unsplash.com/photo-1559598467-f8b76c8155d0?w=300" },
-  { name: "Clinic Plus Strong & Long Shampoo 80ml", cat: "Personal Care", price: 48, img: "https://images.unsplash.com/photo-1535585209827-a15fcdbc4c2d?w=300" },
-  { name: "Parle-G Glucose Biscuits Small", cat: "Biscuits & Sweets", price: 5, img: "https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=300" },
-  { name: "Parle-G Glucose Biscuits Medium", cat: "Biscuits & Sweets", price: 10, img: "https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=300" },
-  { name: "Britannia Good Day Butter Biscuits", cat: "Biscuits & Sweets", price: 10, img: "https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=300" },
-  { name: "Britannia Bourbon Chocolate Biscuits", cat: "Biscuits & Sweets", price: 20, img: "https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=300" },
-  { name: "Britannia Marie Gold Biscuit Pack", cat: "Biscuits & Sweets", price: 15, img: "https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=300" },
-  { name: "Oreo Original Vanilla Cream Biscuits", cat: "Biscuits & Sweets", price: 10, img: "https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=300" },
-  
-    
-    ];
+    // 100+ REAL INDIVIDUAL PRODUCTS LIST
+    const products = [
+      // CHIPS & SNACKS (20 Items)
+      { id: 1, name: "Lays Classic Salted", category: "Chips", price: 20, desc: "Crispy salted potato chips.", img: "https://images.unsplash.com/photo-1566478989037-eec170784d0b?w=300" },
+      { id: 2, name: "Lays American Cream & Onion", category: "Chips", price: 20, desc: "Flavored potato chips with sour cream and onion.", img: "https://images.unsplash.com/photo-1528751014936-863e6e7a319c?w=300" },
+      { id: 3, name: "Kurkure Masala Munch", category: "Chips", price: 20, desc: "Spicy crunchy crunchy corn puffs.", img: "https://images.unsplash.com/photo-1621447504864-d8686e12698c?w=300" },
+      { id: 4, name: "Uncle Chips Spicy Treat", category: "Chips", price: 10, desc: "Classic spicy potato chips.", img: "https://images.unsplash.com/photo-1566478989037-eec170784d0b?w=300" },
+      { id: 5, name: "Bingo Mad Angles Cheese", category: "Chips", price: 10, desc: "Triangle cheesy nachos chips.", img: "https://images.unsplash.com/photo-1528751014936-863e6e7a319c?w=300" },
+      { id: 6, name: "Lays India's Magic Masala", category: "Chips", price: 20, desc: "Spicy Indian masala flavor chips.", img: "https://images.unsplash.com/photo-1566478989037-eec170784d0b?w=300" },
+      { id: 7, name: "Kurkure Solid Masti", category: "Chips", price: 10, desc: "Twisted masala sticks.", img: "https://images.unsplash.com/photo-1621447504864-d8686e12698c?w=300" },
+      { id: 8, name: "Bingo Tedhe Medhe", category: "Chips", price: 10, desc: "Spicy crunchy sticks.", img: "https://images.unsplash.com/photo-1528751014936-863e6e7a319c?w=300" },
+      { id: 9, name: "Haldiram Aloo Bhujia 200g", category: "Snacks", price: 55, desc: "Classic spicy potato namkeen.", img: "https://images.unsplash.com/photo-1601050690597-df0568f70950?w=300" },
+      { id: 10, name: "Haldiram Moong Dal 150g", category: "Snacks", price: 45, desc: "Salty fried moong dal.", img: "https://images.unsplash.com/photo-1601050690597-df0568f70950?w=300" },
+      { id: 11, name: "Haldiram Bhujia Sev", category: "Snacks", price: 50, desc: "Crispy besan bhujia.", img: "https://images.unsplash.com/photo-1601050690597-df0568f70950?w=300" },
+      { id: 12, name: "Haldiram Navratna Mix", category: "Snacks", price: 60, desc: "Mixed spicy fried namkeen.", img: "https://images.unsplash.com/photo-1601050690597-df0568f70950?w=300" },
+      { id: 13, name: "Haldiram Khatta Meetha", category: "Snacks", price: 55, desc: "Sweet and sour mixture.", img: "https://images.unsplash.com/photo-1601050690597-df0568f70950?w=300" },
+      { id: 14, name: "Act II Butter Popcorn", category: "Snacks", price: 20, desc: "Instant microwave butter popcorn.", img: "https://images.unsplash.com/photo-1578849278619-e73505e9610f?w=300" },
+      { id: 15, name: "Act II Masala Popcorn", category: "Snacks", price: 20, desc: "Spicy Indian popcorn.", img: "https://images.unsplash.com/photo-1578849278619-e73505e9610f?w=300" },
+      { id: 16, name: "Doritos Cheese Nachos", category: "Chips", price: 30, desc: "Nacho cheese tortilla chips.", img: "https://images.unsplash.com/photo-1528751014936-863e6e7a319c?w=300" },
+      { id: 17, name: "Pringles Original 107g", category: "Chips", price: 115, desc: "Potato crisps in a can.", img: "https://images.unsplash.com/photo-1566478989037-eec170784d0b?w=300" },
+      { id: 18, name: "Pringles Sour Cream", category: "Chips", price: 115, desc: "Sour cream flavored crisps.", img: "https://images.unsplash.com/photo-1528751014936-863e6e7a319c?w=300" },
+      { id: 19, name: "Cornitos Nachos Sweet Chili", category: "Chips", price: 50, desc: "Crispy corn nachos.", img: "https://images.unsplash.com/photo-1528751014936-863e6e7a319c?w=300" },
+      { id: 20, name: "Roasted Makhana Salted", category: "Snacks", price: 80, desc: "Healthy foxnuts snack.", img: "https://images.unsplash.com/photo-1601050690597-df0568f70950?w=300" },
 
-    const products = [];
-    let pIdCounter = 1;
-    for (let i = 1; i <= 8; i++) {
-      baseItems.forEach(item => {
-        products.push({
-          id: pIdCounter++,
-          name: i === 1 ? item.name : `${item.name} Vol.${i}`,
-          category: item.cat,
-          price: item.price + ((i - 1) * 5),
-          desc: "High quality premium product available at Dhawan Mart with fast delivery.",
-          img: item.img
-        });
-      });
-    }
+      // BISCUITS & BAKERY (15 Items)
+      { id: 21, name: "Parle-G Gold Biscuit", category: "Bakery", price: 25, desc: "Glucose biscuit.", img: "https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=300" },
+      { id: 22, name: "Britannia Good Day Butter", category: "Bakery", price: 30, desc: "Rich butter cookies.", img: "https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=300" },
+      { id: 23, name: "Britannia Good Day Cashew", category: "Bakery", price: 30, desc: "Cashew nut cookies.", img: "https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=300" },
+      { id: 24, name: "Oreo Original Chocolate", category: "Bakery", price: 30, desc: "Sandwich cookies with cream.", img: "https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=300" },
+      { id: 25, name: "Dark Fantasy Choco Fills", category: "Bakery", price: 40, desc: "Molten chocolate cookies.", img: "https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=300" },
+      { id: 26, name: "Britannia Bourbon", category: "Bakery", price: 25, desc: "Chocolate cream biscuit.", img: "https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=300" },
+      { id: 27, name: "Britannia Marie Gold", category: "Bakery", price: 35, desc: "Tea time tea biscuits.", img: "https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=300" },
+      { id: 28, name: "Monaco Salted Crackers", category: "Bakery", price: 10, desc: "Light salty biscuit.", img: "https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=300" },
+      { id: 29, name: "Krackjack Sweet & Salted", category: "Bakery", price: 10, desc: "Dual flavor crackers.", img: "https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=300" },
+      { id: 30, name: "Britannia Little Hearts", category: "Bakery", price: 20, desc: "Heart shaped sweet biscuits.", img: "https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=300" },
+      { id: 31, name: "Hide & Seek Choco Chips", category: "Bakery", price: 30, desc: "Chocolate chip cookies.", img: "https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=300" },
+      { id: 32, name: "Britannia NutriChoice Digestive", category: "Bakery", price: 45, desc: "High fiber oats biscuit.", img: "https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=300" },
+      { id: 33, name: "Unibic Choco Chip Cookies", category: "Bakery", price: 50, desc: "Premium chocolate cookies.", img: "https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=300" },
+      { id: 34, name: "Britannia Cake Chocolate 150g", category: "Bakery", price: 40, desc: "Soft slice chocolate cake.", img: "https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=300" },
+      { id: 35, name: "Britannia Cake Pineapple", category: "Bakery", price: 40, desc: "Fresh fruit slice cake.", img: "https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=300" },
+
+      // CHOCOLATES (15 Items)
+      { id: 36, name: "Dairy Milk Silk Chocolate", category: "Chocolates", price: 80, desc: "Smooth milk chocolate.", img: "https://images.unsplash.com/photo-1511381939415-e44015466834?w=300" },
+      { id: 37, name: "Dairy Milk Fruit & Nut", category: "Chocolates", price: 90, desc: "Raisins and almonds bar.", img: "https://images.unsplash.com/photo-1511381939415-e44015466834?w=300" },
+      { id: 38, name: "KitKat 4 Finger Chocolate", category: "Chocolates", price: 30, desc: "Crisp wafer fingers.", img: "https://images.unsplash.com/photo-1511381939415-e44015466834?w=300" },
+      { id: 39, name: "Nestle Munch Chocolate", category: "Chocolates", price: 10, desc: "Crunchy wafer bar.", img: "https://images.unsplash.com/photo-1511381939415-e44015466834?w=300" },
+      { id: 40, name: "Cadbury 5 Star Bar", category: "Chocolates", price: 20, desc: "Caramel nougat chocolate.", img: "https://images.unsplash.com/photo-1511381939415-e44015466834?w=300" },
+      { id: 41, name: "Snickers Peanut Bar 45g", category: "Chocolates", price: 50, desc: "Peanuts, caramel and nougat.", img: "https://images.unsplash.com/photo-1511381939415-e44015466834?w=300" },
+      { id: 42, name: "Ferrero Rocher (4 Pcs)", category: "Chocolates", price: 150, desc: "Hazelnut chocolate pralines.", img: "https://images.unsplash.com/photo-1511381939415-e44015466834?w=300" },
+      { id: 43, name: "Milkybar White Chocolate", category: "Chocolates", price: 20, desc: "Creamy white chocolate bar.", img: "https://images.unsplash.com/photo-1511381939415-e44015466834?w=300" },
+      { id: 44, name: "Cadbury Gems Ball", category: "Chocolates", price: 25, desc: "Colorful chocolate buttons.", img: "https://images.unsplash.com/photo-1511381939415-e44015466834?w=300" },
+      { id: 45, name: "Cadbury Fuse Peanut", category: "Chocolates", price: 35, desc: "Peanut and chocolate bar.", img: "https://images.unsplash.com/photo-1511381939415-e44015466834?w=300" },
+      { id: 46, name: "Amul Dark Chocolate 150g", category: "Chocolates", price: 110, desc: "55% rich cocoa dark chocolate.", img: "https://images.unsplash.com/photo-1511381939415-e44015466834?w=300" },
+      { id: 47, name: "Cadbury Perk Double", category: "Chocolates", price: 10, desc: "Crispy wafer chocolate.", img: "https://images.unsplash.com/photo-1511381939415-e44015466834?w=300" },
+      { id: 48, name: "Kinder Joy Boy/Girl", category: "Chocolates", price: 45, desc: "Crispy cocoa balls with toy.", img: "https://images.unsplash.com/photo-1511381939415-e44015466834?w=300" },
+      { id: 49, name: "Mars Chocolate Bar 51g", category: "Chocolates", price: 60, desc: "Soft nougat and caramel chocolate.", img: "https://images.unsplash.com/photo-1511381939415-e44015466834?w=300" },
+      { id: 50, name: "Bounty Coconut Chocolate", category: "Chocolates", price: 60, desc: "Moist coconut filled bar.", img: "https://images.unsplash.com/photo-1511381939415-e44015466834?w=300" },
+
+      // DRINKS & COLD BEVERAGES (15 Items)
+      { id: 51, name: "Coca Cola Bottle 750ml", category: "Drinks", price: 40, desc: "Refreshing carbonated drink.", img: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=300" },
+      { id: 52, name: "Sprite Bottle 750ml", category: "Drinks", price: 40, desc: "Lemon lime carbonated drink.", img: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=300" },
+      { id: 53, name: "Thums Up Bottle 750ml", category: "Drinks", price: 40, desc: "Strong spicy cola drink.", img: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=300" },
+      { id: 54, name: "Fanta Orange Drink 750ml", category: "Drinks", price: 40, desc: "Orange flavored soft drink.", img: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=300" },
+      { id: 55, name: "Limca Lemon Drink 750ml", category: "Drinks", price: 40, desc: "Refreshing lemon drink.", img: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=300" },
+      { id: 56, name: "Maaza Mango Juice 1.2L", category: "Drinks", price: 65, desc: "Real Alphonso mango drink.", img: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=300" },
+      { id: 57, name: "Slice Mango Drink 600ml", category: "Drinks", price: 38, desc: "Thick mango juice.", img: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=300" },
+      { id: 58, name: "Red Bull Energy Drink 250ml", category: "Drinks", price: 125, desc: "Vitalizes body and mind.", img: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=300" },
+      { id: 59, name: "Monster Energy Drink 500ml", category: "Drinks", price: 110, desc: "High energy energy drink.", img: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=300" },
+      { id: 60, name: "Real Mixed Fruit Juice 1L", category: "Drinks", price: 110, desc: "100% natural fruit blend.", img: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=300" },
+      { id: 61, name: "Frooti Mango Box 200ml", category: "Drinks", price: 15, desc: "Tasty tetrapack mango juice.", img: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=300" },
+      { id: 62, name: "Appy Fizz Apple Drink 250ml", category: "Drinks", price: 20, desc: "Sparkling apple juice.", img: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=300" },
+      { id: 63, name: "Amul Kool Chocolate Bottle", category: "Drinks", price: 35, desc: "Cold chocolate flavored milk.", img: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=300" },
+      { id: 64, name: "Amul Kool Badam Milk", category: "Drinks", price: 35, desc: "Chilled almond milk beverage.", img: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=300" },
+      { id: 65, name: "Bisleri Mineral Water 1L", category: "Drinks", price: 20, desc: "Purified drinking water.", img: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=300" },
+
+      // NOTEBOOKS & STATIONERY (20 Items)
+      { id: 66, name: "Classmate Long Notebook 172 Pgs", category: "Notebooks", price: 65, desc: "Single line ruled notebook.", img: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=300" },
+      { id: 67, name: "Classmate Spiral Notebook 200 Pgs", category: "Notebooks", price: 110, desc: "Spiral bound notebook.", img: "https://images.unsplash.com/photo-1589829085413-56de8ae18c73?w=300" },
+      { id: 68, name: "Classmate Register A4 300 Pgs", category: "Notebooks", price: 160, desc: "Hardcover thick register.", img: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=300" },
+      { id: 69, name: "Classmate Practical Copy", category: "Notebooks", price: 70, desc: "One side plain practical book.", img: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=300" },
+      { id: 70, name: "Classmate Drawing Book Big", category: "Notebooks", price: 50, desc: "White paper drawing sheet book.", img: "https://images.unsplash.com/photo-1589829085413-56de8ae18c73?w=300" },
+      { id: 71, name: "Cello Butterflow Blue Pen Set", category: "Stationery", price: 50, desc: "Pack of 5 smooth ball pens.", img: "https://images.unsplash.com/photo-1585336261026-875a60a1c96b?w=300" },
+      { id: 72, name: "Reynolds 045 Fine Carbide Pen", category: "Stationery", price: 10, desc: "Classic ballpoint pen.", img: "https://images.unsplash.com/photo-1585336261026-875a60a1c96b?w=300" },
+      { id: 73, name: "Pentonic Gel Pen Blue Box", category: "Stationery", price: 100, desc: "Pack of 10 dark gel pens.", img: "https://images.unsplash.com/photo-1585336261026-875a60a1c96b?w=300" },
+      { id: 74, name: "Trimax Gel Pen Blue", category: "Stationery", price: 60, desc: "Refillable liquid ink pen.", img: "https://images.unsplash.com/photo-1585336261026-875a60a1c96b?w=300" },
+      { id: 75, name: "Apsara Extra Dark Pencil Pack", category: "Stationery", price: 60, desc: "Pack of 10 pencils with eraser.", img: "https://images.unsplash.com/photo-1585336261026-875a60a1c96b?w=300" },
+      { id: 76, name: "Nataraj 621 Pencil Pack", category: "Stationery", price: 50, desc: "Red black wood pencils.", img: "https://images.unsplash.com/photo-1585336261026-875a60a1c96b?w=300" },
+      { id: 77, name: "Faber Castell Highlighter Set", category: "Stationery", price: 120, desc: "4 vibrant neon colors.", img: "https://images.unsplash.com/photo-1585336261026-875a60a1c96b?w=300" },
+      { id: 78, name: "Camel Oil Pastels (25 Shades)", category: "Stationery", price: 90, desc: "Smooth coloring crayons.", img: "https://images.unsplash.com/photo-1585336261026-875a60a1c96b?w=300" },
+      { id: 79, name: "Doms Sketch Pen Box", category: "Stationery", price: 50, desc: "12 watercolor markers.", img: "https://images.unsplash.com/photo-1585336261026-875a60a1c96b?w=300" },
+      { id: 80, name: "Apsara Non Dust Eraser (20 Pcs)", category: "Stationery", price: 100, desc: "Clean erasing erasers.", img: "https://images.unsplash.com/photo-1585336261026-875a60a1c96b?w=300" },
+      { id: 81, name: "Fevicol MR Squeeze Bottle 100g", category: "Stationery", price: 45, desc: "Adhesive white glue.", img: "https://images.unsplash.com/photo-1585336261026-875a60a1c96b?w=300" },
+      { id: 82, name: "Fevistik Glue Stick 15g", category: "Stationery", price: 30, desc: "Non messy glue stick.", img: "https://images.unsplash.com/photo-1585336261026-875a60a1c96b?w=300" },
+      { id: 83, name: "Camlin Geometry Box", category: "Stationery", price: 110, desc: "Complete compass set.", img: "https://images.unsplash.com/photo-1585336261026-875a60a1c96b?w=300" },
+      { id: 84, name: "Kangaro Mini Stapler No.10", category: "Stationery", price: 60, desc: "Stapler with staple pins.", img: "https://images.unsplash.com/photo-1585336261026-875a60a1c96b?w=300" },
+      { id: 85, name: "Sticky Notes Yellow Pad", category: "Stationery", price: 40, desc: "Self adhesive sticky memo.", img: "https://images.unsplash.com/photo-1589829085413-56de8ae18c73?w=300" },
+
+      // DAILY NEEDS & INSTANT FOOD (20 Items)
+      { id: 86, name: "Maggi 2-Min Noodles 280g", category: "Daily Needs", price: 56, desc: "Masala instant noodles.", img: "https://images.unsplash.com/photo-1612927601601-6638404737ce?w=300" },
+      { id: 87, name: "Yippee Magic Masala Noodles", category: "Daily Needs", price: 48, desc: "Non sticky long noodles.", img: "https://images.unsplash.com/photo-1612927601601-6638404737ce?w=300" },
+      { id: 88, name: "Knorr Cup-a-Soup Tomato", category: "Daily Needs", price: 35, desc: "Instant hot soup mix.", img: "https://images.unsplash.com/photo-1612927601601-6638404737ce?w=300" },
+      { id: 89, name: "Nescafe Classic Coffee 50g", category: "Daily Needs", price: 175, desc: "Pure instant coffee powder.", img: "https://images.unsplash.com/photo-1612927601601-6638404737ce?w=300" },
+      { id: 90, name: "Taj Mahal Tea 250g", category: "Daily Needs", price: 180, desc: "Premium black tea leaves.", img: "https://images.unsplash.com/photo-1612927601601-6638404737ce?w=300" },
+      { id: 91, name: "Tata Tea Gold 250g", category: "Daily Needs", price: 160, desc: "Rich aroma CTC tea.", img: "https://images.unsplash.com/photo-1612927601601-6638404737ce?w=300" },
+      { id: 92, name: "Amul Butter 100g Box", category: "Daily Needs", price: 56, desc: "Salted cooking butter.", img: "https://images.unsplash.com/photo-1612927601601-6638404737ce?w=300" },
+      { id: 93, name: "Amul Cheese Slices 200g", category: "Daily Needs", price: 140, desc: "Processed cheese slices.", img: "https://images.unsplash.com/photo-1612927601601-6638404737ce?w=300" },
+      { id: 94, name: "Dettol Original Soap 125g", category: "Daily Needs", price: 45, desc: "Germ protection bath soap.", img: "https://images.unsplash.com/photo-1612927601601-6638404737ce?w=300" },
+      { id: 95, name: "Dove Cream Beauty Bar Soap", category: "Daily Needs", price: 60, desc: "Moisturizing bath soap.", img: "https://images.unsplash.com/photo-1612927601601-6638404737ce?w=300" },
+      { id: 96, name: "Colgate Strong Teeth 100g", category: "Daily Needs", price: 65, desc: "Calcium toothpaste.", img: "https://images.unsplash.com/photo-1612927601601-6638404737ce?w=300" },
+      { id: 97, name: "Sensodyne Fresh Mint 75g", category: "Daily Needs", price: 120, desc: "Sensitivity toothpaste.", img: "https://images.unsplash.com/photo-1612927601601-6638404737ce?w=300" },
+      { id: 98, name: "Head & Shoulders Shampoo 180ml", category: "Daily Needs", price: 180, desc: "Anti dandruff shampoo.", img: "https://images.unsplash.com/photo-1612927601601-6638404737ce?w=300" },
+      { id: 99, name: "Clinic Plus Shampoo 175ml", category: "Daily Needs", price: 110, desc: "Strong and long hair shampoo.", img: "https://images.unsplash.com/photo-1612927601601-6638404737ce?w=300" },
+      { id: 100, name: "Nivea Soft Cream 100ml", category: "Daily Needs", price: 190, desc: "Light moisturizing cream.", img: "https://images.unsplash.com/photo-1612927601601-6638404737ce?w=300" },
+      { id: 101, name: "Dabur Honey 250g Jar", category: "Daily Needs", price: 120, desc: "100% pure natural honey.", img: "https://images.unsplash.com/photo-1612927601601-6638404737ce?w=300" },
+      { id: 102, name: "Kissan Tomato Ketchup 950g", category: "Daily Needs", price: 135, desc: "Fresh tomato ketchup pouch.", img: "https://images.unsplash.com/photo-1612927601601-6638404737ce?w=300" },
+      { id: 103, name: "Nutella Hazelnut Spread 350g", category: "Daily Needs", price: 380, desc: "Cocoa hazelnut spread.", img: "https://images.unsplash.com/photo-1612927601601-6638404737ce?w=300" },
+      { id: 104, name: "Quaker Oats 1kg Pack", category: "Daily Needs", price: 195, desc: "100% whole grain oats.", img: "https://images.unsplash.com/photo-1612927601601-6638404737ce?w=300" },
+      { id: 105, name: "Kellogg's Corn Flakes 475g", category: "Daily Needs", price: 185, desc: "Healthy breakfast cereal.", img: "https://images.unsplash.com/photo-1612927601601-6638404737ce?w=300" }
+    ];
 
     function shareApp() {
       const shareData = {
@@ -287,7 +309,7 @@
 
         app.innerHTML = `
           <div class="search-container">
-            <input type="text" class="search-input" placeholder="Search 100+ products..." value="${searchQuery}" oninput="searchQuery=this.value; renderApp();" />
+            <input type="text" class="search-input" placeholder="Search 105+ products..." value="${searchQuery}" oninput="searchQuery=this.value; renderApp();" />
           </div>
           <div class="categories">
             ${categories.map(c => `<button class="chip ${selectedCategory === c ? 'active' : ''}" onclick="selectedCategory='${c}'; renderApp();">${c}</button>`).join('')}
@@ -354,6 +376,7 @@
             <div class="form-group"><label>Mobile Number</label><input type="tel" id="p-mobile" value="${user.mobile}" /></div>
             <div class="form-group"><label>Delivery Address</label><input type="text" id="p-address" value="${user.address || ''}" placeholder="Enter full address" /></div>
             <button class="btn-action" onclick="updateProfile()">UPDATE DETAILS</button>
+            <button class="btn-action" style="background:#2874f0; margin-top:10px;" onclick="shareApp()">🔗 SHARE APP WITH FRIENDS</button>
             <button class="btn-action" style="background:#d32f2f; margin-top:10px;" onclick="localStorage.clear(); user=null; renderApp();">LOGOUT</button>
           </div>
         `;
