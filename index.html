@@ -49,21 +49,23 @@
             left: 0;
             width: 100%;
             z-index: 3000;
+            overflow-y: auto;
         }
 
         .login-card {
             background: white;
             width: 100%;
             max-width: 400px;
-            padding: 30px;
+            padding: 25px;
             border-radius: 12px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.2);
             text-align: center;
+            margin: auto;
         }
 
         .login-card h2 {
             color: var(--fk-blue);
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             font-size: 24px;
             font-weight: 700;
         }
@@ -71,12 +73,12 @@
         .login-card p {
             color: var(--text-muted);
             font-size: 13px;
-            margin-bottom: 24px;
+            margin-bottom: 20px;
         }
 
         .input-group {
             text-align: left;
-            margin-bottom: 16px;
+            margin-bottom: 14px;
         }
 
         .input-group label {
@@ -87,17 +89,22 @@
             color: var(--dark);
         }
 
-        .input-group input {
+        .input-group input, .input-group textarea {
             width: 100%;
-            padding: 12px 14px;
+            padding: 10px 12px;
             border: 1px solid var(--gray-border);
             border-radius: 6px;
-            font-size: 14px;
+            font-size: 13px;
             outline: none;
             transition: border 0.2s;
         }
 
-        .input-group input:focus {
+        .input-group textarea {
+            resize: vertical;
+            min-height: 60px;
+        }
+
+        .input-group input:focus, .input-group textarea:focus {
             border-color: var(--fk-blue);
         }
 
@@ -106,12 +113,12 @@
             background: var(--fk-blue);
             color: white;
             border: none;
-            padding: 14px;
+            padding: 12px;
             border-radius: 6px;
             font-size: 15px;
             font-weight: 700;
             cursor: pointer;
-            margin-top: 10px;
+            margin-top: 5px;
         }
 
         /* --- Main App Container --- */
@@ -238,7 +245,7 @@
             border: 1px solid var(--fk-blue);
         }
 
-        /* Full Width Flipkart Search Bar */
+        /* Search Bar */
         .search-container {
             padding: 0 10px 8px 10px;
         }
@@ -261,10 +268,6 @@
             width: 100%;
             font-size: 13px;
             color: #212121;
-        }
-
-        .search-bar input::placeholder {
-            color: #878787;
         }
 
         /* --- Sidebar Drawer --- */
@@ -338,16 +341,8 @@
             box-shadow: var(--shadow);
         }
 
-        .banner-text h2 {
-            font-size: 16px;
-            color: #E65100;
-            margin-bottom: 2px;
-        }
-
-        .banner-text p {
-            font-size: 11px;
-            color: #4E342E;
-        }
+        .banner-text h2 { font-size: 16px; color: #E65100; margin-bottom: 2px; }
+        .banner-text p { font-size: 11px; color: #4E342E; }
 
         .banner-btn {
             background: #E65100;
@@ -493,7 +488,7 @@
             cursor: pointer;
         }
 
-        /* --- Bottom Navigation Bar --- */
+        /* --- Bottom Nav --- */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -537,7 +532,7 @@
             padding: 2px 5px;
         }
 
-        /* --- Modals --- */
+        /* Modals */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -599,10 +594,7 @@
             border-left: 4px solid var(--fk-blue);
         }
 
-        .profile-card {
-            text-align: center;
-            padding: 10px 0;
-        }
+        .profile-card { text-align: center; padding: 10px 0; }
         .profile-avatar {
             width: 60px;
             height: 60px;
@@ -631,11 +623,11 @@
 </head>
 <body>
 
-    <!-- 1. LOGIN SECTION -->
+    <!-- 1. LOGIN & ADDRESS SECTION -->
     <div id="loginSection">
         <div class="login-card">
             <h2>Dhawan Mart</h2>
-            <p>Login to start express packaged grocery delivery</p>
+            <p>Enter details for express delivery</p>
             <form id="loginForm" onsubmit="handleLogin(event)">
                 <div class="input-group">
                     <label>Mobile Number</label>
@@ -645,11 +637,12 @@
                     <label>Email Address</label>
                     <input type="email" id="loginEmail" placeholder="name@example.com" required>
                 </div>
+                <!-- ADDED: Delivery Address Input -->
                 <div class="input-group">
-                    <label>Password</label>
-                    <input type="password" id="loginPassword" placeholder="Enter secure password" minlength="6" required>
+                    <label>Delivery Address</label>
+                    <textarea id="loginAddress" placeholder="House/Flat No., Landmark, Area, City, Pincode" required></textarea>
                 </div>
-                <button type="submit" class="login-btn">Login to Dhawan Mart</button>
+                <button type="submit" class="login-btn">Start Shopping</button>
             </form>
         </div>
     </div>
@@ -676,7 +669,6 @@
 
     <!-- 3. MAIN STORE APP -->
     <div id="mainApp">
-        <!-- FLIPKART LITE STYLE HEADER -->
         <header class="header">
             <div class="top-row">
                 <div class="left-group">
@@ -698,12 +690,11 @@
                         <span class="badge" id="topCartBadge" style="display:none;">0</span>
                     </button>
                     <button class="login-top-btn" onclick="openProfileModal()">
-                        <i class="fa-solid fa-user"></i> <span id="headerUserText">Login</span>
+                        <i class="fa-solid fa-user"></i> <span id="headerUserText">Profile</span>
                     </button>
                 </div>
             </div>
 
-            <!-- Full Width Search Bar -->
             <div class="search-container">
                 <div class="search-bar">
                     <i class="fa-solid fa-magnifying-glass"></i>
@@ -787,6 +778,10 @@
                     <label>Email Address</label>
                     <span id="profEmail">--</span>
                 </div>
+                <div class="profile-field">
+                    <label>Saved Address</label>
+                    <span id="profAddress">--</span>
+                </div>
                 <button class="checkout-btn" style="background: var(--red);" onclick="logoutUser()">Logout Account</button>
             </div>
         </div>
@@ -810,34 +805,19 @@
             { name: "Tata Tea Gold Packet", weight: "500 g", price: 310, oldPrice: 350, cat: "Tea & Coffee", img: "https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=300&q=80" },
             { name: "Brooke Bond Red Label Tea Packet", weight: "1 kg", price: 580, oldPrice: 640, cat: "Tea & Coffee", img: "https://images.unsplash.com/photo-1597481499750-3e6b22637e12?auto=format&fit=crop&w=300&q=80" },
             { name: "Nescafe Classic Coffee Jar", weight: "200 g", price: 540, oldPrice: 599, cat: "Tea & Coffee", img: "https://images.unsplash.com/photo-1447933601403-0c6688de566e?auto=format&fit=crop&w=300&q=80" },
-            { name: "Taj Mahal Tea Packet", weight: "500 g", price: 360, oldPrice: 400, cat: "Tea & Coffee", img: "https://images.unsplash.com/photo-1544787219-7f47ccb76574?auto=format&fit=crop&w=300&q=80" },
             { name: "Aashirvaad Shudh Chakki Atta Packet", weight: "10 kg", price: 420, oldPrice: 460, cat: "Atta & Rice", img: "https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=300&q=80" },
-            { name: "Fortune Chakki Fresh Atta Packet", weight: "5 kg", price: 230, oldPrice: 260, cat: "Atta & Rice", img: "https://images.unsplash.com/photo-1586201375761-83865001e31c?auto=format&fit=crop&w=300&q=80" },
             { name: "India Gate Basmati Rice Packet", weight: "5 kg", price: 550, oldPrice: 650, cat: "Atta & Rice", img: "https://images.unsplash.com/photo-1586201375761-83865001e31c?auto=format&fit=crop&w=300&q=80" },
-            { name: "Daawat Rozana Basmati Rice Packet", weight: "5 kg", price: 410, oldPrice: 480, cat: "Atta & Rice", img: "https://images.unsplash.com/photo-1586201375761-83865001e31c?auto=format&fit=crop&w=300&q=80" },
             { name: "Amul Taaza Toned Milk Packet", weight: "1 Litre", price: 68, oldPrice: 72, cat: "Dairy & Oils", img: "https://images.unsplash.com/photo-1563636619-e9143da7973b?auto=format&fit=crop&w=300&q=80" },
-            { name: "Mother Dairy Cow Milk Packet", weight: "1 Litre", price: 70, oldPrice: 74, cat: "Dairy & Oils", img: "https://images.unsplash.com/photo-1550583724-b2692b85b150?auto=format&fit=crop&w=300&q=80" },
             { name: "Fortune Sunite Sunflower Oil Jar", weight: "1 Litre", price: 145, oldPrice: 170, cat: "Dairy & Oils", img: "https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?auto=format&fit=crop&w=300&q=80" },
-            { name: "Dhara Pure Mustard Oil Tin", weight: "1 Litre", price: 155, oldPrice: 180, cat: "Dairy & Oils", img: "https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?auto=format&fit=crop&w=300&q=80" },
-            { name: "Amul Butter Carton", weight: "500 g", price: 275, oldPrice: 290, cat: "Dairy & Oils", img: "https://images.unsplash.com/photo-1589985270826-4b7bb135bc9d?auto=format&fit=crop&w=300&q=80" },
             { name: "Parle-G Glucose Biscuit Packet", weight: "800 g", price: 80, oldPrice: 95, cat: "Snacks & Munchies", img: "https://images.unsplash.com/photo-1558961363-fa8fdf82db35?auto=format&fit=crop&w=300&q=80" },
-            { name: "Britannia Good Day Butter Cookies", weight: "600 g", price: 110, oldPrice: 130, cat: "Snacks & Munchies", img: "https://images.unsplash.com/photo-1558961363-fa8fdf82db35?auto=format&fit=crop&w=300&q=80" },
-            { name: "Haldiram Nagpur Bhujia Packet", weight: "400 g", price: 140, oldPrice: 160, cat: "Snacks & Munchies", img: "https://images.unsplash.com/photo-1599488691303-6a5c1766326d?auto=format&fit=crop&w=300&q=80" },
-            { name: "Kurkure Masala Munch Packet", weight: "150 g", price: 30, oldPrice: 35, cat: "Snacks & Munchies", img: "https://images.unsplash.com/photo-1599488691303-6a5c1766326d?auto=format&fit=crop&w=300&q=80" },
-            { name: "Lays Classic Salted Chips Packet", weight: "115 g", price: 50, oldPrice: 60, cat: "Snacks & Munchies", img: "https://images.unsplash.com/photo-1566478989037-eec170784d0b?auto=format&fit=crop&w=300&q=80" },
-            { name: "Tata Salt Vacuum Evaporated Packet", weight: "1 kg", price: 28, oldPrice: 30, cat: "Masala & Dals", img: "https://images.unsplash.com/photo-1518117715867-8ed49b5516f1?auto=format&fit=crop&w=300&q=80" },
-            { name: "MDH Kashmiri Mirch Powder Packet", weight: "500 g", price: 390, oldPrice: 430, cat: "Masala & Dals", img: "https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=300&q=80" },
-            { name: "Everest Chicken Masala Packet", weight: "100 g", price: 75, oldPrice: 85, cat: "Masala & Dals", img: "https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=300&q=80" },
-            { name: "Catch Table Salt Refined Packet", weight: "1 kg", price: 26, oldPrice: 29, cat: "Masala & Dals", img: "https://images.unsplash.com/photo-1518117715867-8ed49b5516f1?auto=format&fit=crop&w=300&q=80" },
-            { name: "Tata Sampann Toor Dal Packet", weight: "1 kg", price: 155, oldPrice: 175, cat: "Masala & Dals", img: "https://images.unsplash.com/photo-1585998053676-e9185a676b7e?auto=format&fit=crop&w=300&q=80" },
-            { name: "Tata Sampann Moong Dal Packet", weight: "1 kg", price: 140, oldPrice: 160, cat: "Masala & Dals", img: "https://images.unsplash.com/photo-1585998053676-e9185a676b7e?auto=format&fit=crop&w=300&q=80" }
+            { name: "Tata Salt Vacuum Evaporated Packet", weight: "1 kg", price: 28, oldPrice: 30, cat: "Masala & Dals", img: "https://images.unsplash.com/photo-1518117715867-8ed49b5516f1?auto=format&fit=crop&w=300&q=80" }
         ];
 
         let products = [];
         let idCounter = 1;
         
         baseProductTemplates.forEach(item => {
-            for (let i = 1; i <= 22; i++) {
+            for (let i = 1; i <= 10; i++) {
                 let modifiedPrice = item.price + (i * 3);
                 products.push({
                     id: String(idCounter++),
@@ -872,8 +852,9 @@
             event.preventDefault();
             const mobile = document.getElementById('loginMobile').value;
             const email = document.getElementById('loginEmail').value;
+            const address = document.getElementById('loginAddress').value;
 
-            currentUser = { mobile, email };
+            currentUser = { mobile, email, address };
             localStorage.setItem('dhawan_user', JSON.stringify(currentUser));
             checkAuth();
         }
@@ -977,16 +958,22 @@
             if (currentUser) {
                 document.getElementById('profMobile').innerText = currentUser.mobile || 'N/A';
                 document.getElementById('profEmail').innerText = currentUser.email || 'N/A';
+                document.getElementById('profAddress').innerText = currentUser.address || 'N/A';
             }
             document.getElementById('profileModal').style.display = 'flex';
         }
 
-        function closeProfileModal() {
-            document.getElementById('profileModal').style.display = 'none';
-        }
+        function closeProfileModal() { document.getElementById('profileModal').style.display = 'none'; }
 
         function placeOrderSimulation() {
-            let orderSummary = `🛒 *NEW DHAWAN MART ORDER!* \n\n`;
+            if (Object.keys(cart).length === 0) {
+                alert("Your cart is empty!");
+                return;
+            }
+
+            let userAddress = currentUser && currentUser.address ? currentUser.address : "Not Provided";
+
+            let orderSummary = `🛒 *NEW DHAWAN MART ORDER!*\n\n`;
             orderSummary += `📱 *Customer Mobile:* ${currentUser ? currentUser.mobile : 'N/A'}\n`;
             orderSummary += `📧 *Email:* ${currentUser ? currentUser.email : 'N/A'}\n\n`;
             orderSummary += `📦 *Items Ordered:*\n`;
@@ -1000,7 +987,7 @@
             }
 
             orderSummary += `\n💰 *Total Amount:* ₹${subtotal}\n`;
-            orderSummary += `📍 *Delivery Location:* Lalsot, Dausa`;
+            orderSummary += `📍 *Delivery Address:* ${userAddress}`;
 
             const telegramUrl = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
             fetch(telegramUrl, {
