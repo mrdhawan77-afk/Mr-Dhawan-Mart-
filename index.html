@@ -489,12 +489,78 @@
             background: white;
             cursor: pointer;
         }
+/* Navigation Menu Styling */
+#menu {
+  list-style: none;
+  background: #1e293b;
+  padding: 15px;
+  border-radius: 12px;
+  width: 200px;
+  display: none; /* Pehle hide rahega */
+  position: absolute;
+  top: 60px;
+  left: 20px;
+  z-index: 1000;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+}
+
+#menu.active {
+  display: block; /* Toggle hone par show hoga */
+}
+
+#menu li {
+  margin: 10px 0;
+}
+
+#menu li a {
+  color: #fff;
+  text-decoration: none;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+#menu li a:hover {
+  color: #3b82f6;
+}
+
+
     </style>
-</head>
 <body>
 
-    <!-- Header -->
-    <header class="header">
+  <!-- Header Section -->
+  <header class="header">
+  <div class="top-row">
+
+    <!-- 1. Toggle Button -->
+    <button id="menuToggleBtn" style="background:none; border:none; color:#fff; font-size:20px; cursor:pointer;">
+      <i class="fa-solid fa-bars"></i>
+    </button>
+
+    <!-- 2. Navigation Menu List -->
+    <ul id="menu">
+      <li><a href="#"><i class="fa-solid fa-house"></i> Home</a></li>
+      <li><a href="#"><i class="fa-regular fa-product"></i> category </a></li>
+      <li><a href="#"><i class="fa-solid fa-cart"></i> cart</a></li>
+      <li><a href="#"><i class="fa-solid fa-user"></i> profile</a></li>
+      
+    </ul>
+
+    <!-- 3. Aapka Pehle se majood Logo/Brand Code -->
+    <div class="brand">
+      <div class="brand-logo"><i class="fa-solid fa-leaf"></i></div>
+      <div class="brand-text">
+        <h1>Dhawan Store</h1>
+        <p><i class="fa-solid fa-bolt" style="color: #FFD54F;"></i> 4 to 6 hours Delivery - block - lalsot</p>
+      </div>
+    </div>
+
+  </div>
+</header>
+
+
+
         <div class="top-row">
             <div class="brand">
                 <div class="brand-logo"><i class="fa-solid fa-leaf"></i></div>
@@ -744,11 +810,39 @@
                     body: JSON.stringify({ contents: [{ parts: [{ text: `Provide grocery ingredient list for: ${query}` }] }] })
                 });
                 const data = await res.json();
-                box.innerText = data.candidates[0].content.parts[0].text;
+                box.innerText = data.candidates[0].content.parts[0].text;f
             } catch(e) {
                 box.innerText = `💡 Recipe Tip for ${query}: Use Dhawan Assam Gold Tea with fresh milk and ginger for perfect Chai!`;
             }
         }
+
+        // Check User Login Status for Menu
+function checkLoginStatus() {
+  const isLoggedIn = localStorage.getItem('isLoggedIn'); 
+  const toggleBtn = document.getElementById('menuToggleBtn');
+
+  if (toggleBtn) {
+    if (isLoggedIn === 'true') {
+      toggleBtn.style.display = 'block';
+    } else {
+      toggleBtn.style.display = 'none';
+    }
+  }
+}
+
+// Menu Toggle Action
+const toggleBtn = document.getElementById('menuToggleBtn');
+const navMenu = document.getElementById('menu');
+
+if (toggleBtn && navMenu) {
+  toggleBtn.addEventListener('click', () => {
+    navMenu.classList.toggle('active');
+  });
+}
+
+// Page load hone par status check karein
+checkLoginStatus();
+
     </script>
 </body>
 </html>
