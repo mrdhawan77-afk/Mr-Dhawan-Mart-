@@ -1,431 +1,715 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dhawan Mart</title>
-  <style>
-    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-    body { margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, sans-serif; background: #f1f3f6; user-select: none; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dhawan Store - 10 Min Grocery & FMCG Delivery</title>
+    <!-- Google Fonts & FontAwesome Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    .top-header { background: #2874f0; color: #fff; padding: 10px 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 12px; }
-    .brand-logo { width: 38px; height: 38px; border-radius: 50%; background: #fff; color: #2874f0; display: flex; justify-content: center; align-items: center; font-weight: bold; font-size: 1.1rem; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
-    .brand-title { font-size: 1.25rem; font-weight: 800; letter-spacing: 0.5px; color: #fff; }
+    <style>
+        :root {
+            --primary: #2E7D32;
+            --primary-dark: #1B5E20;
+            --primary-light: #E8F5E9;
+            --secondary: #FF9800;
+            --accent: #E65100;
+            --dark: #1A1C1E;
+            --gray-light: #F4F6F8;
+            --gray-border: #E0E4E8;
+            --text-muted: #6C757D;
+            --red: #D32F2F;
+            --shadow: 0 4px 20px rgba(0,0,0,0.08);
+            --radius: 12px;
+        }
 
-    .search-container { padding: 8px 10px; background: #2874f0; }
-    .search-input { width: 100%; padding: 10px 12px; border: none; border-radius: 4px; outline: none; font-size: 0.95rem; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
 
-    .categories { display: flex; gap: 8px; overflow-x: auto; padding: 10px; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-    .categories::-webkit-scrollbar { display: none; }
-    .chip { padding: 6px 14px; background: #f0f2f5; color: #333; border-radius: 16px; font-size: 0.85rem; white-space: nowrap; cursor: pointer; border: 1px solid #e0e0e0; font-weight: 500; }
-    .chip.active { background: #2874f0; color: #fff; border-color: #2874f0; }
+        body {
+            background-color: var(--gray-light);
+            color: var(--dark);
+            padding-bottom: 90px;
+        }
 
-    .container { padding: 8px; margin-bottom: 60px; }
-    .product-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-    .product-card { background: #fff; border-radius: 4px; padding: 10px; text-align: left; box-shadow: 0 1px 2px 0 rgba(0,0,0,0.1); cursor: pointer; transition: transform 0.1s; }
-    .product-card:active { transform: scale(0.98); }
-    .product-card img { width: 100%; height: 130px; object-fit: contain; border-radius: 2px; }
-    .product-title { font-size: 0.85rem; color: #212121; font-weight: 500; margin: 8px 0 4px; height: 36px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
-    .product-price { color: #388e3c; font-weight: bold; font-size: 1rem; }
+        /* --- Header --- */
+        .header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 16px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+        }
 
-    .detail-container { background: #fff; padding: 15px; min-height: 80vh; }
-    .detail-img { width: 100%; height: 250px; object-fit: contain; margin-bottom: 15px; }
-    .detail-title { font-size: 1.1rem; font-weight: 600; color: #212121; margin-bottom: 8px; }
-    .detail-price { font-size: 1.4rem; color: #388e3c; font-weight: bold; margin-bottom: 12px; }
-    .detail-desc { font-size: 0.9rem; color: #666; line-height: 1.4; margin-bottom: 20px; border-top: 1px solid #f0f0f0; border-bottom: 1px solid #f0f0f0; padding: 10px 0; }
+        .top-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
 
-    .bill-summary { background: #fff; padding: 15px; border-radius: 4px; margin-top: 10px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
-    .bill-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.95rem; color: #555; }
-    .bill-row.total { border-top: 1px solid #eee; padding-top: 10px; font-weight: bold; font-size: 1.1rem; color: #212121; }
-    .btn-action { width: 100%; background: #fb641b; color: #fff; border: none; padding: 12px; border-radius: 2px; font-weight: bold; font-size: 1rem; cursor: pointer; margin-top: 10px; text-align: center; }
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
 
-    .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: #fff; display: flex; border-top: 1px solid #e0e0e0; z-index: 100; box-shadow: 0 -2px 5px rgba(0,0,0,0.05); }
-    .nav-item { flex: 1; text-align: center; padding: 10px; background: none; border: none; font-size: 0.8rem; color: #555; cursor: pointer; font-weight: 500; }
-    .nav-item.active { color: #2874f0; font-weight: bold; }
+        .brand-logo {
+            width: 38px;
+            height: 38px;
+            background: white;
+            color: var(--primary);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: 800;
+        }
 
-    .form-group { margin-bottom: 12px; }
-    .form-group label { display: block; margin-bottom: 4px; font-size: 0.85rem; color: #555; }
-    .form-group input { width: 100%; padding: 10px; border: 1px solid #dcdcdc; border-radius: 2px; outline: none; }
-  </style>
+        .brand-text h1 {
+            font-size: 18px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        .brand-text p {
+            font-size: 11px;
+            opacity: 0.9;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .icon-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            cursor: pointer;
+            position: relative;
+            transition: background 0.2s;
+        }
+
+        .icon-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .badge {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            background: var(--red);
+            color: white;
+            font-size: 10px;
+            font-weight: 700;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid var(--primary);
+        }
+
+        .search-bar {
+            display: flex;
+            background: white;
+            border-radius: 10px;
+            padding: 8px 14px;
+            align-items: center;
+            gap: 10px;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .search-bar i {
+            color: var(--text-muted);
+        }
+
+        .search-bar input {
+            border: none;
+            outline: none;
+            width: 100%;
+            font-size: 14px;
+        }
+
+        /* --- Container --- */
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 16px;
+        }
+
+        /* --- Banners --- */
+        .banner {
+            background: linear-gradient(135deg, #FFF3E0, #FFE0B2);
+            border: 1px solid #FFE0B2;
+            border-radius: var(--radius);
+            padding: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+        }
+
+        .banner-text h2 {
+            font-size: 18px;
+            color: var(--accent);
+            margin-bottom: 4px;
+        }
+
+        .banner-text p {
+            font-size: 12px;
+            color: #4E342E;
+        }
+
+        .banner-btn {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        /* --- Categories --- */
+        .section-title {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .categories {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+            margin-bottom: 24px;
+            scrollbar-width: none;
+        }
+
+        .cat-chip {
+            background: white;
+            padding: 10px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            white-space: nowrap;
+            border: 1px solid var(--gray-border);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .cat-chip.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* --- Product Grid --- */
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: var(--radius);
+            padding: 12px;
+            border: 1px solid var(--gray-border);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .product-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow);
+        }
+
+        .discount-tag {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            background: var(--primary);
+            color: white;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 3px 6px;
+            border-radius: 4px;
+        }
+
+        .prod-img {
+            width: 100%;
+            height: 110px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 8px;
+        }
+
+        .prod-title {
+            font-size: 13px;
+            font-weight: 700;
+            line-height: 1.3;
+            margin-bottom: 4px;
+            height: 34px;
+            overflow: hidden;
+        }
+
+        .prod-weight {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+
+        .price-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .curr-price {
+            font-size: 14px;
+            font-weight: 800;
+            color: var(--dark);
+        }
+
+        .old-price {
+            font-size: 10px;
+            color: var(--text-muted);
+            text-decoration: line-through;
+        }
+
+        .add-btn {
+            background: var(--primary-light);
+            color: var(--primary-dark);
+            border: 1px solid var(--primary);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .qty-controls {
+            display: flex;
+            align-items: center;
+            background: var(--primary);
+            color: white;
+            border-radius: 6px;
+        }
+
+        .qty-btn {
+            background: none;
+            border: none;
+            color: white;
+            width: 24px;
+            height: 28px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        /* --- Gemini AI Assistant Widget --- */
+        .ai-widget {
+            background: white;
+            border-radius: var(--radius);
+            padding: 16px;
+            border: 1px solid #C8E6C9;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow);
+        }
+
+        .ai-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .ai-header i { color: #7B1FA2; font-size: 20px; }
+
+        .ai-input-group {
+            display: flex;
+            gap: 8px;
+        }
+
+        .ai-input-group input {
+            flex: 1;
+            padding: 10px 14px;
+            border: 1px solid var(--gray-border);
+            border-radius: 8px;
+            outline: none;
+            font-size: 13px;
+        }
+
+        .ai-btn {
+            background: #7B1FA2;
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .ai-response {
+            margin-top: 12px;
+            padding: 12px;
+            background: #F3E5F5;
+            border-radius: 8px;
+            font-size: 13px;
+            color: #4A148C;
+            display: none;
+        }
+
+        /* --- Bottom Floating Cart Bar --- */
+        .cart-bar {
+            position: fixed;
+            bottom: 16px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: calc(100% - 32px);
+            max-width: 600px;
+            background: var(--primary);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 8px 24px rgba(46, 125, 50, 0.4);
+            z-index: 900;
+        }
+
+        .cart-bar-btn {
+            background: white;
+            color: var(--primary-dark);
+            border: none;
+            padding: 10px 18px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        /* --- Modals --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 2000;
+            display: none;
+            justify-content: center;
+            align-items: flex-end;
+        }
+
+        .modal-content {
+            background: white;
+            width: 100%;
+            max-width: 500px;
+            border-radius: 20px 20px 0 0;
+            padding: 20px;
+            max-height: 85vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--gray-border);
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 20px;
+            color: var(--text-muted);
+            cursor: pointer;
+        }
+
+        .checkout-btn {
+            width: 100%;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 800;
+            cursor: pointer;
+            margin-top: 16px;
+        }
+
+        .notif-card {
+            background: var(--gray-light);
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            border-left: 4px solid var(--primary);
+        }
+
+        .sim-btn {
+            padding: 8px;
+            font-size: 11px;
+            font-weight: 700;
+            border-radius: 8px;
+            border: 1px solid var(--gray-border);
+            background: white;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
 
-  <div class="top-header">
-    <div class="brand-logo">DM</div>
-    <div class="brand-title">Dhawan Mart</div>
-  </div>
-
-  <div id="app-content"></div>
-
-  <div class="bottom-nav">
-    <button class="nav-item active" onclick="switchPage('home')">Home</button>
-    <button class="nav-item" onclick="switchPage('categories')">Categories</button>
-    <button class="nav-item" onclick="switchPage('cart')">Cart (<span id="cart-count">0</span>)</button>
-    <button class="nav-item" onclick="switchPage('profile')">Profile</button>
-  </div>
-
-  <script>
-    let currentPage = 'home';
-    let searchQuery = '';
-    let selectedCategory = 'All';
-    let selectedProduct = null;
-    let cart = [];
-    let user = JSON.parse(localStorage.getItem('dhawan_user')) || null;
-
-    // HIGH QUALITY PUBLIC IMAGE DIRECT LINKS
-    const imgChip = "https://cdn-icons-png.flaticon.com/512/2553/2553691.png";
-    const imgSnack = "https://cdn-icons-png.flaticon.com/512/2553/2553603.png";
-    const imgBakery = "https://cdn-icons-png.flaticon.com/512/992/992747.png";
-    const imgChoco = "https://cdn-icons-png.flaticon.com/512/2553/2553591.png";
-    const imgDrink = "https://cdn-icons-png.flaticon.com/512/2405/2405479.png";
-    const imgBook = "https://cdn-icons-png.flaticon.com/512/3389/3389081.png";
-    const imgPen = "https://cdn-icons-png.flaticon.com/512/2543/2543292.png";
-    const imgDaily = "https://cdn-icons-png.flaticon.com/512/3082/3082011.png";
-
-    const products = [
-      // CHIPS & SNACKS (20 Items)
-      { id: 1, name: "Lays Classic Salted", category: "Chips", price: 20, desc: "Crispy salted potato chips.", img: imgChip },
-      { id: 2, name: "Lays American Cream & Onion", category: "Chips", price: 20, desc: "Flavored potato chips with sour cream and onion.", img: imgChip },
-      { id: 3, name: "Kurkure Masala Munch", category: "Chips", price: 20, desc: "Spicy crunchy corn puffs.", img: imgChip },
-      { id: 4, name: "Uncle Chips Spicy Treat", category: "Chips", price: 10, desc: "Classic spicy potato chips.", img: imgChip },
-      { id: 5, name: "Bingo Mad Angles Cheese", category: "Chips", price: 10, desc: "Triangle cheesy nachos chips.", img: imgChip },
-      { id: 6, name: "Lays India's Magic Masala", category: "Chips", price: 20, desc: "Spicy Indian masala flavor chips.", img: imgChip },
-      { id: 7, name: "Kurkure Solid Masti", category: "Chips", price: 10, desc: "Twisted masala sticks.", img: imgChip },
-      { id: 8, name: "Bingo Tedhe Medhe", category: "Chips", price: 10, desc: "Spicy crunchy sticks.", img: imgChip },
-      { id: 9, name: "Haldiram Aloo Bhujia 200g", category: "Snacks", price: 55, desc: "Classic spicy potato namkeen.", img: imgSnack },
-      { id: 10, name: "Haldiram Moong Dal 150g", category: "Snacks", price: 45, desc: "Salty fried moong dal.", img: imgSnack },
-      { id: 11, name: "Haldiram Bhujia Sev", category: "Snacks", price: 50, desc: "Crispy besan bhujia.", img: imgSnack },
-      { id: 12, name: "Haldiram Navratna Mix", category: "Snacks", price: 60, desc: "Mixed spicy fried namkeen.", img: imgSnack },
-      { id: 13, name: "Haldiram Khatta Meetha", category: "Snacks", price: 55, desc: "Sweet and sour mixture.", img: imgSnack },
-      { id: 14, name: "Act II Butter Popcorn", category: "Snacks", price: 20, desc: "Instant microwave butter popcorn.", img: imgSnack },
-      { id: 15, name: "Act II Masala Popcorn", category: "Snacks", price: 20, desc: "Spicy Indian popcorn.", img: imgSnack },
-      { id: 16, name: "Doritos Cheese Nachos", category: "Chips", price: 30, desc: "Nacho cheese tortilla chips.", img: imgChip },
-      { id: 17, name: "Pringles Original 107g", category: "Chips", price: 115, desc: "Potato crisps in a can.", img: imgChip },
-      { id: 18, name: "Pringles Sour Cream", category: "Chips", price: 115, desc: "Sour cream flavored crisps.", img: imgChip },
-      { id: 19, name: "Cornitos Nachos Sweet Chili", category: "Chips", price: 50, desc: "Crispy corn nachos.", img: imgChip },
-      { id: 20, name: "Roasted Makhana Salted", category: "Snacks", price: 80, desc: "Healthy foxnuts snack.", img: imgSnack },
-
-      // BISCUITS & BAKERY (15 Items)
-      { id: 21, name: "Parle-G Gold Biscuit", category: "Bakery", price: 25, desc: "Glucose biscuit.", img: imgBakery },
-      { id: 22, name: "Britannia Good Day Butter", category: "Bakery", price: 30, desc: "Rich butter cookies.", img: imgBakery },
-      { id: 23, name: "Britannia Good Day Cashew", category: "Bakery", price: 30, desc: "Cashew nut cookies.", img: imgBakery },
-      { id: 24, name: "Oreo Original Chocolate", category: "Bakery", price: 30, desc: "Sandwich cookies with cream.", img: imgBakery },
-      { id: 25, name: "Dark Fantasy Choco Fills", category: "Bakery", price: 40, desc: "Molten chocolate cookies.", img: imgBakery },
-      { id: 26, name: "Britannia Bourbon", category: "Bakery", price: 25, desc: "Chocolate cream biscuit.", img: imgBakery },
-      { id: 27, name: "Britannia Marie Gold", category: "Bakery", price: 35, desc: "Tea time tea biscuits.", img: imgBakery },
-      { id: 28, name: "Monaco Salted Crackers", category: "Bakery", price: 10, desc: "Light salty biscuit.", img: imgBakery },
-      { id: 29, name: "Krackjack Sweet & Salted", category: "Bakery", price: 10, desc: "Dual flavor crackers.", img: imgBakery },
-      { id: 30, name: "Britannia Little Hearts", category: "Bakery", price: 20, desc: "Heart shaped sweet biscuits.", img: imgBakery },
-      { id: 31, name: "Hide & Seek Choco Chips", category: "Bakery", price: 30, desc: "Chocolate chip cookies.", img: imgBakery },
-      { id: 32, name: "Britannia NutriChoice Digestive", category: "Bakery", price: 45, desc: "High fiber oats biscuit.", img: imgBakery },
-      { id: 33, name: "Unibic Choco Chip Cookies", category: "Bakery", price: 50, desc: "Premium chocolate cookies.", img: imgBakery },
-      { id: 34, name: "Britannia Cake Chocolate 150g", category: "Bakery", price: 40, desc: "Soft slice chocolate cake.", img: imgBakery },
-      { id: 35, name: "Britannia Cake Pineapple", category: "Bakery", price: 40, desc: "Fresh fruit slice cake.", img: imgBakery },
-
-      // CHOCOLATES (15 Items)
-      { id: 36, name: "Dairy Milk Silk Chocolate", category: "Chocolates", price: 80, desc: "Smooth milk chocolate.", img: imgChoco },
-      { id: 37, name: "Dairy Milk Fruit & Nut", category: "Chocolates", price: 90, desc: "Raisins and almonds bar.", img: imgChoco },
-      { id: 38, name: "KitKat 4 Finger Chocolate", category: "Chocolates", price: 30, desc: "Crisp wafer fingers.", img: imgChoco },
-      { id: 39, name: "Nestle Munch Chocolate", category: "Chocolates", price: 10, desc: "Crunchy wafer bar.", img: imgChoco },
-      { id: 40, name: "Cadbury 5 Star Bar", category: "Chocolates", price: 20, desc: "Caramel nougat chocolate.", img: imgChoco },
-      { id: 41, name: "Snickers Peanut Bar 45g", category: "Chocolates", price: 50, desc: "Peanuts, caramel and nougat.", img: imgChoco },
-      { id: 42, name: "Ferrero Rocher (4 Pcs)", category: "Chocolates", price: 150, desc: "Hazelnut chocolate pralines.", img: imgChoco },
-      { id: 43, name: "Milkybar White Chocolate", category: "Chocolates", price: 20, desc: "Creamy white chocolate bar.", img: imgChoco },
-      { id: 44, name: "Cadbury Gems Ball", category: "Chocolates", price: 25, desc: "Colorful chocolate buttons.", img: imgChoco },
-      { id: 45, name: "Cadbury Fuse Peanut", category: "Chocolates", price: 35, desc: "Peanut and chocolate bar.", img: imgChoco },
-      { id: 46, name: "Amul Dark Chocolate 150g", category: "Chocolates", price: 110, desc: "55% rich cocoa dark chocolate.", img: imgChoco },
-      { id: 47, name: "Cadbury Perk Double", category: "Chocolates", price: 10, desc: "Crispy wafer chocolate.", img: imgChoco },
-      { id: 48, name: "Kinder Joy Boy/Girl", category: "Chocolates", price: 45, desc: "Crispy cocoa balls with toy.", img: imgChoco },
-      { id: 49, name: "Mars Chocolate Bar 51g", category: "Chocolates", price: 60, desc: "Soft nougat and caramel chocolate.", img: imgChoco },
-      { id: 50, name: "Bounty Coconut Chocolate", category: "Chocolates", price: 60, desc: "Moist coconut filled bar.", img: imgChoco },
-
-      // DRINKS & COLD BEVERAGES (15 Items)
-      { id: 51, name: "Coca Cola Bottle 750ml", category: "Drinks", price: 40, desc: "Refreshing carbonated drink.", img: imgDrink },
-      { id: 52, name: "Sprite Bottle 750ml", category: "Drinks", price: 40, desc: "Lemon lime carbonated drink.", img: imgDrink },
-      { id: 53, name: "Thums Up Bottle 750ml", category: "Drinks", price: 40, desc: "Strong spicy cola drink.", img: imgDrink },
-      { id: 54, name: "Fanta Orange Drink 750ml", category: "Drinks", price: 40, desc: "Orange flavored soft drink.", img: imgDrink },
-      { id: 55, name: "Limca Lemon Drink 750ml", category: "Drinks", price: 40, desc: "Refreshing lemon drink.", img: imgDrink },
-      { id: 56, name: "Maaza Mango Juice 1.2L", category: "Drinks", price: 65, desc: "Real Alphonso mango drink.", img: imgDrink },
-      { id: 57, name: "Slice Mango Drink 600ml", category: "Drinks", price: 38, desc: "Thick mango juice.", img: imgDrink },
-      { id: 58, name: "Red Bull Energy Drink 250ml", category: "Drinks", price: 125, desc: "Vitalizes body and mind.", img: imgDrink },
-      { id: 59, name: "Monster Energy Drink 500ml", category: "Drinks", price: 110, desc: "High energy energy drink.", img: imgDrink },
-      { id: 60, name: "Real Mixed Fruit Juice 1L", category: "Drinks", price: 110, desc: "100% natural fruit blend.", img: imgDrink },
-      { id: 61, name: "Frooti Mango Box 200ml", category: "Drinks", price: 15, desc: "Tasty tetrapack mango juice.", img: imgDrink },
-      { id: 62, name: "Appy Fizz Apple Drink 250ml", category: "Drinks", price: 20, desc: "Sparkling apple juice.", img: imgDrink },
-      { id: 63, name: "Amul Kool Chocolate Bottle", category: "Drinks", price: 35, desc: "Cold chocolate flavored milk.", img: imgDrink },
-      { id: 64, name: "Amul Kool Badam Milk", category: "Drinks", price: 35, desc: "Chilled almond milk beverage.", img: imgDrink },
-      { id: 65, name: "Bisleri Mineral Water 1L", category: "Drinks", price: 20, desc: "Purified drinking water.", img: imgDrink },
-
-      // NOTEBOOKS & STATIONERY (20 Items) - FIXED MAPPING
-      { id: 66, name: "Classmate Long Notebook 172 Pgs", category: "Notebooks", price: 65, desc: "Single line ruled notebook.", img: imgBook },
-      { id: 67, name: "Classmate Spiral Notebook 200 Pgs", category: "Notebooks", price: 110, desc: "Spiral bound notebook.", img: imgBook },
-      { id: 68, name: "Classmate Register A4 300 Pgs", category: "Notebooks", price: 160, desc: "Hardcover thick register.", img: imgBook },
-      { id: 69, name: "Classmate Practical Copy", category: "Notebooks", price: 70, desc: "One side plain practical book.", img: imgBook },
-      { id: 70, name: "Classmate Drawing Book Big", category: "Notebooks", price: 50, desc: "White paper drawing sheet book.", img: imgBook },
-      { id: 71, name: "Cello Butterflow Blue Pen Set", category: "Stationery", price: 50, desc: "Pack of 5 smooth ball pens.", img: imgPen },
-      { id: 72, name: "Reynolds 045 Fine Carbide Pen", category: "Stationery", price: 10, desc: "Classic ballpoint pen.", img: imgPen },
-      { id: 73, name: "Pentonic Gel Pen Blue Box", category: "Stationery", price: 100, desc: "Pack of 10 dark gel pens.", img: imgPen },
-      { id: 74, name: "Trimax Gel Pen Blue", category: "Stationery", price: 60, desc: "Refillable liquid ink pen.", img: imgPen },
-      { id: 75, name: "Apsara Extra Dark Pencil Pack", category: "Stationery", price: 60, desc: "Pack of 10 pencils with eraser.", img: imgPen },
-      { id: 76, name: "Nataraj 621 Pencil Pack", category: "Stationery", price: 50, desc: "Red black wood pencils.", img: imgPen },
-      { id: 77, name: "Faber Castell Highlighter Set", category: "Stationery", price: 120, desc: "4 vibrant neon colors.", img: imgPen },
-      { id: 78, name: "Camel Oil Pastels (25 Shades)", category: "Stationery", price: 90, desc: "Smooth coloring crayons.", img: imgPen },
-      { id: 79, name: "Doms Sketch Pen Box", category: "Stationery", price: 50, desc: "12 watercolor markers.", img: imgPen },
-      { id: 80, name: "Apsara Non Dust Eraser (20 Pcs)", category: "Stationery", price: 100, desc: "Clean erasing erasers.", img: imgPen },
-      { id: 81, name: "Fevicol MR Squeeze Bottle 100g", category: "Stationery", price: 45, desc: "Adhesive white glue.", img: imgPen },
-      { id: 82, name: "Fevistik Glue Stick 15g", category: "Stationery", price: 30, desc: "Non messy glue stick.", img: imgPen },
-      { id: 83, name: "Camlin Geometry Box", category: "Stationery", price: 110, desc: "Complete compass set.", img: imgPen },
-      { id: 84, name: "Kangaro Mini Stapler No.10", category: "Stationery", price: 60, desc: "Stapler with staple pins.", img: imgPen },
-      { id: 85, name: "Sticky Notes Yellow Pad", category: "Stationery", price: 40, desc: "Self adhesive sticky memo.", img: imgBook },
-
-      // DAILY NEEDS & INSTANT FOOD (20 Items) - FIXED MAPPING
-      { id: 86, name: "Maggi 2-Min Noodles 280g", category: "Daily Needs", price: 56, desc: "Masala instant noodles.", img: imgDaily },
-      { id: 87, name: "Yippee Magic Masala Noodles", category: "Daily Needs", price: 48, desc: "Non sticky long noodles.", img: imgDaily },
-      { id: 88, name: "Knorr Cup-a-Soup Tomato", category: "Daily Needs", price: 35, desc: "Instant hot soup mix.", img: imgDaily },
-      { id: 89, name: "Nescafe Classic Coffee 50g", category: "Daily Needs", price: 175, desc: "Pure instant coffee powder.", img: imgDaily },
-      { id: 90, name: "Taj Mahal Tea 250g", category: "Daily Needs", price: 180, desc: "Premium black tea leaves.", img: imgDaily },
-      { id: 91, name: "Tata Tea Gold 250g", category: "Daily Needs", price: 160, desc: "Rich aroma CTC tea.", img: imgDaily },
-      { id: 92, name: "Amul Butter 100g Box", category: "Daily Needs", price: 56, desc: "Salted cooking butter.", img: imgDaily },
-      { id: 93, name: "Amul Cheese Slices 200g", category: "Daily Needs", price: 140, desc: "Processed cheese slices.", img: imgDaily },
-      { id: 94, name: "Dettol Original Soap 125g", category: "Daily Needs", price: 45, desc: "Germ protection bath soap.", img: imgDaily },
-      { id: 95, name: "Dove Cream Beauty Bar Soap", category: "Daily Needs", price: 60, desc: "Moisturizing bath soap.", img: imgDaily },
-      { id: 96, name: "Colgate Strong Teeth 100g", category: "Daily Needs", price: 65, desc: "Calcium toothpaste.", img: imgDaily },
-      { id: 97, name: "Sensodyne Fresh Mint 75g", category: "Daily Needs", price: 120, desc: "Sensitivity toothpaste.", img: imgDaily },
-      { id: 98, name: "Head & Shoulders Shampoo 180ml", category: "Daily Needs", price: 180, desc: "Anti dandruff shampoo.", img: imgDaily },
-      { id: 99, name: "Clinic Plus Shampoo 175ml", category: "Daily Needs", price: 110, desc: "Strong and long hair shampoo.", img: imgDaily },
-      { id: 100, name: "Nivea Soft Cream 100ml", category: "Daily Needs", price: 190, desc: "Light moisturizing cream.", img: imgDaily },
-      { id: 101, name: "Dabur Honey 250g Jar", category: "Daily Needs", price: 120, desc: "100% pure natural honey.", img: imgDaily },
-      { id: 102, name: "Kissan Tomato Ketchup 950g", category: "Daily Needs", price: 135, desc: "Fresh tomato ketchup pouch.", img: imgDaily },
-      { id: 103, name: "Nutella Hazelnut Spread 350g", category: "Daily Needs", price: 380, desc: "Cocoa hazelnut spread.", img: imgDaily },
-      { id: 104, name: "Quaker Oats 1kg Pack", category: "Daily Needs", price: 195, desc: "100% whole grain oats.", img: imgDaily },
-      { id: 105, name: "Kellogg's Corn Flakes 475g", category: "Daily Needs", price: 185, desc: "Healthy breakfast cereal.", img: imgDaily }
-    ];
-
-    function shareApp() {
-      const shareData = {
-        title: 'Dhawan Mart',
-        text: 'Dhawan Mart se snacks, stationery aur daily needs order karein best prices par!',
-        url: window.location.href
-      };
-
-      if (navigator.share) {
-        navigator.share(shareData).catch(() => {});
-      } else {
-        navigator.clipboard.writeText(window.location.href);
-        showToast("App link copied to clipboard!");
-      }
-    }
-
-    function getDeliveryCharge(subtotal) {
-      if (subtotal <= 0) return 0;
-      if (subtotal <= 50) return 10;
-      if (subtotal <= 100) return 20;
-      if (subtotal <= 150) return 30;
-      if (subtotal <= 200) return 40;
-      return 50;
-    }
-
-    function addToCart(pId, event) {
-      if(event) event.stopPropagation();
-      const item = products.find(p => p.id === pId);
-      cart.push(item);
-      document.getElementById('cart-count').innerText = cart.length;
-      showToast(item.name + " cart me add ho gaya!");
-    }
-
-    function showToast(msg) {
-      let toast = document.getElementById("toast");
-      if (!toast) {
-        toast = document.createElement("div");
-        toast.id = "toast";
-        toast.style.cssText = "position:fixed; bottom:70px; left:50%; transform:translateX(-50%); background:rgba(0,0,0,0.85); color:#fff; padding:10px 18px; border-radius:20px; font-size:0.85rem; z-index:1000; transition:opacity 0.3s; font-weight:500;";
-        document.body.appendChild(toast);
-      }
-      toast.innerText = msg;
-      toast.style.opacity = "1";
-      setTimeout(() => { toast.style.opacity = "0"; }, 1500);
-    }
-
-    function viewProductDetail(pId) {
-      selectedProduct = products.find(p => p.id === pId);
-      currentPage = 'detail';
-      renderApp();
-      window.scrollTo(0, 0);
-    }
-
-    function placeOrder(total) {
-      if (cart.length === 0) { alert("Cart is empty!"); return; }
-      if (!user.address) { alert("Please set your delivery address in Profile tab first!"); switchPage('profile'); return; }
-
-      const telegramBotToken = "8735436494:AAGWN69EV9j2b89kielRj5PSOPsh0JY4uxY";
-      const telegramChatId = "8024913770";
-
-      let orderItems = cart.map(item => `- ${item.name} (Rs.${item.price})`).join('\n');
-      
-      let msg = `🛒 *NEW ORDER RECEIVED - DHAWAN MART*\n\n` +
-                `👤 *Name:* ${user.name}\n` +
-                `📞 *Mobile:* ${user.mobile}\n` +
-                `📍 *Address:* ${user.address}\n\n` +
-                `📦 *Items:*\n${orderItems}\n\n` +
-                `💰 *Total Amount:* Rs.${total}`;
-
-      fetch(`https://api.telegram.org/bot${telegramBotToken}/sendMessage`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          chat_id: telegramChatId,
-          text: msg,
-          parse_mode: 'Markdown'
-        })
-      })
-      .then(response => {
-        showToast("🎉 Order Placed Successfully!");
-        cart = [];
-        document.getElementById('cart-count').innerText = 0;
-        switchPage('home');
-      })
-      .catch(error => {
-        alert("Order place karne me error aaya.");
-      });
-    }
-
-    function renderApp() {
-      const app = document.getElementById('app-content');
-      
-      if (!user) {
-        app.innerHTML = `
-          <div class="container" style="background:#fff; padding:20px; border-radius:4px; margin-top:20px;">
-            <h3>Login to Dhawan Mart</h3>
-            <form onsubmit="handleLogin(event)">
-              <div class="form-group"><label>Full Name</label><input type="text" id="l-name" required /></div>
-              <div class="form-group"><label>Mobile Number</label><input type="tel" id="l-mobile" placeholder="10 Digits" required /></div>
-              <div class="form-group"><label>Email</label><input type="email" id="l-email" required /></div>
-              <div class="form-group"><label>Password (Min 8 Digits)</label><input type="password" id="l-pass" required /></div>
-              <button class="btn-action" type="submit">LOGIN / REGISTER</button>
-            </form>
-          </div>
-        `;
-        return;
-      }
-
-      if (currentPage === 'home' || currentPage === 'categories') {
-        const categories = ["All", "Chips", "Snacks", "Notebooks", "Stationery", "Chocolates", "Drinks", "Bakery", "Daily Needs"];
-        const filtered = products.filter(p => {
-          const matchCat = selectedCategory === 'All' || p.category === selectedCategory;
-          const matchSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase());
-          return matchCat && matchSearch;
-        });
-
-        app.innerHTML = `
-          <div class="search-container">
-            <input type="text" class="search-input" placeholder="Search 105+ products..." value="${searchQuery}" oninput="searchQuery=this.value; renderApp();" />
-          </div>
-          <div class="categories">
-            ${categories.map(c => `<button class="chip ${selectedCategory === c ? 'active' : ''}" onclick="selectedCategory='${c}'; renderApp();">${c}</button>`).join('')}
-          </div>
-          <div class="container">
-            <div class="product-grid">
-              ${filtered.map(p => `
-                <div class="product-card" onclick="viewProductDetail(${p.id})">
-                  <img src="${p.img}" alt="${p.name}" />
-                  <div class="product-title">${p.name}</div>
-                  <div class="product-price">₹${p.price}</div>
+    <!-- Header -->
+    <header class="header">
+        <div class="top-row">
+            <div class="brand">
+                <div class="brand-logo"><i class="fa-solid fa-leaf"></i></div>
+                <div class="brand-text">
+                    <h1>Dhawan Store</h1>
+                    <p><i class="fa-solid fa-bolt" style="color: #FFD54F;"></i> 10-15 Mins Delivery • Sector 15, Noida</p>
                 </div>
-              `).join('')}
             </div>
-          </div>
-        `;
-      } else if (currentPage === 'detail' && selectedProduct) {
-        app.innerHTML = `
-          <div class="detail-container">
-            <button onclick="switchPage('home')" style="background:none; border:none; color:#2874f0; font-weight:bold; cursor:pointer; margin-bottom:10px;">← Back to Products</button>
-            <img src="${selectedProduct.img}" class="detail-img" alt="${selectedProduct.name}" />
-            <div class="detail-title">${selectedProduct.name}</div>
-            <div class="detail-price">₹${selectedProduct.price}</div>
-            <div style="font-size:0.85rem; color:#388e3c; font-weight:bold; margin-bottom:10px;">In Stock • Delivery Available</div>
-            <div class="detail-desc"><strong>Product Details:</strong><br>${selectedProduct.desc}</div>
-            <button class="btn-action" onclick="addToCart(${selectedProduct.id}); switchPage('cart');">BUY NOW / GO TO CART</button>
-            <button class="btn-action" style="background:#ff9f00; margin-top:8px;" onclick="addToCart(${selectedProduct.id})">ADD TO CART</button>
-          </div>
-        `;
-      } else if (currentPage === 'cart') {
-        const subtotal = cart.reduce((sum, item) => sum + item.price, 0);
-        const delivery = getDeliveryCharge(subtotal);
-        const total = subtotal + delivery;
+            <div class="header-actions">
+                <button class="icon-btn" onclick="openNotifModal()">
+                    <i class="fa-solid fa-bell"></i>
+                    <span class="badge" id="notifBadge">3</span>
+                </button>
+            </div>
+        </div>
+        <div class="search-bar">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="searchInput" placeholder="Search 'Assam Tea', 'Milk', 'Coffee'..." onkeyup="filterProducts()">
+        </div>
+    </header>
 
-        app.innerHTML = `
-          <div class="container">
-            <h3>My Cart (${cart.length} Items)</h3>
-            ${cart.length === 0 ? '<p style="text-align:center; color:#777; margin-top:40px;">Your cart is empty!</p>' : ''}
-            ${cart.map((item, index) => `
-              <div style="background:#fff; padding:10px; border-radius:4px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center; box-shadow:0 1px 2px rgba(0,0,0,0.05);">
-                <div>
-                  <div style="font-weight:500; font-size:0.9rem;">${item.name}</div>
-                  <div style="color:#388e3c; font-weight:bold; font-size:0.9rem; margin-top:4px;">₹${item.price}</div>
-                </div>
-                <button onclick="cart.splice(${index},1); renderApp(); document.getElementById('cart-count').innerText=cart.length;" style="background:none; border:none; color:red; font-size:1.1rem; cursor:pointer;">×</button>
-              </div>
-            `).join('')}
+    <div class="container">
+        <!-- Hero Banner -->
+        <div class="banner">
+            <div class="banner-text">
+                <h2>⚡ Morning Fresh Sale</h2>
+                <p>Flat 25% OFF on Assam Premium Tea & Organics</p>
+            </div>
+            <button class="banner-btn" onclick="applyPromoCode('WELCOME200')">Use WELCOME200</button>
+        </div>
 
-            ${cart.length > 0 ? `
-              <div class="bill-summary">
-                <div class="bill-row"><span>Items Price</span><span>₹${subtotal}</span></div>
-                <div class="bill-row"><span>Delivery Charges</span><span>₹${delivery}</span></div>
-                <div class="bill-row total"><span>Total Amount</span><span>₹${total}</span></div>
-                <button class="btn-action" onclick="placeOrder(${total})">PLACE ORDER</button>
-              </div>
-            ` : ''}
-          </div>
-        `;
-      } else if (currentPage === 'profile') {
-        app.innerHTML = `
-          <div class="container" style="background:#fff; padding:20px; border-radius:4px;">
-            <h3>My Profile</h3>
-            <div class="form-group"><label>Full Name</label><input type="text" id="p-name" value="${user.name}" /></div>
-            <div class="form-group"><label>Mobile Number</label><input type="tel" id="p-mobile" value="${user.mobile}" /></div>
-            <div class="form-group"><label>Delivery Address</label><input type="text" id="p-address" value="${user.address || ''}" placeholder="Enter full address" /></div>
-            <button class="btn-action" onclick="updateProfile()">UPDATE DETAILS</button>
-            <button class="btn-action" style="background:#2874f0; margin-top:10px;" onclick="shareApp()">🔗 SHARE APP WITH FRIENDS</button>
-            <button class="btn-action" style="background:#d32f2f; margin-top:10px;" onclick="localStorage.clear(); user=null; renderApp();">LOGOUT</button>
-          </div>
-        `;
-      }
-    }
+        <!-- Categories -->
+        <div class="section-title"><span>Categories</span></div>
+        <div class="categories" id="categoryContainer"></div>
 
-    function handleLogin(e) {
-      e.preventDefault();
-      const name = document.getElementById('l-name').value.trim();
-      const mobile = document.getElementById('l-mobile').value.trim();
-      const email = document.getElementById('l-email').value.trim();
-      const pass = document.getElementById('l-pass').value;
+        <!-- Gemini AI Assistant -->
+        <div class="ai-widget">
+            <div class="ai-header">
+                <i class="fa-solid fa-wand-magic-sparkles"></i>
+                <h3>Dhawan AI Recipe & Grocery Assistant</h3>
+            </div>
+            <div class="ai-input-group">
+                <input type="text" id="aiQuery" placeholder="Ask: 'Ingredients for Masala Chai' or 'Healthy breakfast'...">
+                <button class="ai-btn" onclick="askGeminiAI()"><i class="fa-solid fa-paper-plane"></i></button>
+            </div>
+            <div class="ai-response" id="aiResponse"></div>
+        </div>
 
-      if (!/^[0-9]{10}$/.test(mobile)) { alert("Enter valid 10-digit mobile number!"); return; }
-      if (pass.length < 8) { alert("Password must be at least 8 digits!"); return; }
+        <!-- Product Catalog -->
+        <div class="section-title"><span>Fresh Groceries & FMCG</span></div>
+        <div class="product-grid" id="productGrid"></div>
+    </div>
 
-      user = { name, mobile, email, address: '' };
-      localStorage.setItem('dhawan_user', JSON.stringify(user));
-      renderApp();
-    }
+    <!-- Bottom Cart Bar -->
+    <div class="cart-bar" id="cartBar" style="display: none;">
+        <div>
+            <p id="cartItemCountText">0 ITEMS</p>
+            <h4 id="cartTotalText">₹0</h4>
+        </div>
+        <button class="cart-bar-btn" onclick="openCartModal()">View Cart <i class="fa-solid fa-arrow-right"></i></button>
+    </div>
 
-    function updateProfile() {
-      user.name = document.getElementById('p-name').value;
-      user.mobile = document.getElementById('p-mobile').value;
-      user.address = document.getElementById('p-address').value;
-      localStorage.setItem('dhawan_user', JSON.stringify(user));
-      showToast("Profile details saved!");
-    }
+    <!-- Cart Modal -->
+    <div class="modal-overlay" id="cartModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-cart-shopping"></i> Your Delivery Basket</h3>
+                <button class="close-btn" onclick="closeCartModal()">&times;</button>
+            </div>
+            <div id="cartItemsContainer"></div>
+            <button class="checkout-btn" onclick="placeOrderSimulation()">Place Express Order <i class="fa-solid fa-circle-check"></i></button>
+        </div>
+    </div>
 
-    function switchPage(page) {
-      currentPage = page;
-      document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
-      if(page === 'home' || page === 'categories') {
-        document.querySelectorAll('.nav-item')[0].classList.add('active');
-      }
-      renderApp();
-      window.scrollTo(0, 0);
-    }
+    <!-- Notification Modal -->
+    <div class="modal-overlay" id="notifModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-bell"></i> Push Notification Inbox</h3>
+                <button class="close-btn" onclick="closeNotifModal()">&times;</button>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px;">
+                <button class="sim-btn" onclick="triggerSimulatedPush('ORDER')">📦 Order Status</button>
+                <button class="sim-btn" onclick="triggerSimulatedPush('DEAL')">⚡ Flash Deal</button>
+                <button class="sim-btn" onclick="triggerSimulatedPush('PROMO')">🏷️ Promo</button>
+            </div>
+            <div id="notifListContainer"></div>
+        </div>
+    </div>
 
-    renderApp();
-  </script>
+    <!-- Order Success Modal -->
+    <div class="modal-overlay" id="orderSuccessModal">
+        <div class="modal-content" style="text-align: center;">
+            <h2 style="color: var(--primary-dark);">Order #DH-9042 Placed!</h2>
+            <p style="font-size: 13px; margin: 8px 0 16px;">Delivery Executive arriving in 12 minutes.</p>
+            <button class="checkout-btn" onclick="closeOrderSuccessModal()">Back to Shopping</button>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        const products = [
+            { id: '1', title: 'Dhawan Assam Gold CTC Tea', weight: '500 g', price: 240, oldPrice: 320, discount: '25% OFF', category: 'Tea & Coffee', img: 'https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=400&q=80' },
+            { id: '2', title: 'Dhawan Organic Green Tea Bags', weight: '25 Bags', price: 180, oldPrice: 220, discount: '18% OFF', category: 'Tea & Coffee', img: 'https://images.unsplash.com/photo-1597481499750-3e6b22637e12?auto=format&fit=crop&w=400&q=80' },
+            { id: '3', title: 'Fresh Full Cream Milk', weight: '1 Litre', price: 66, oldPrice: 70, discount: '5% OFF', category: 'Groceries', img: 'https://images.unsplash.com/photo-1563636619-e9143da7973b?auto=format&fit=crop&w=400&q=80' },
+            { id: '4', title: 'Premium Whole Wheat Atta', weight: '5 kg', price: 235, oldPrice: 280, discount: '16% OFF', category: 'Groceries', img: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=400&q=80' },
+            { id: '5', title: 'Crispy Butter Cookies', weight: '300 g', price: 120, oldPrice: 150, discount: '20% OFF', category: 'Snacks', img: 'https://images.unsplash.com/photo-1558961363-fa8fdf82db35?auto=format&fit=crop&w=400&q=80' }
+        ];
+
+        const categories = ['All', 'Tea & Coffee', 'Groceries', 'Snacks'];
+        let selectedCategory = 'All';
+        let cart = {};
+
+        let notifications = [
+            { id: '1', title: 'Order #DH-8921 Delivered 🚚', body: 'Your Assam Tea order was delivered.', type: 'order' },
+            { id: '2', title: '⚡ Flash Sale Live', body: '25% OFF on Tea & Coffee till 9 PM.', type: 'deal' }
+        ];
+
+        window.onload = () => { renderCategories(); renderProducts(); updateNotificationsUI(); };
+
+        function renderCategories() {
+            document.getElementById('categoryContainer').innerHTML = categories.map(cat => `
+                <div class="cat-chip ${selectedCategory === cat ? 'active' : ''}" onclick="selectCategory('${cat}')">${cat}</div>
+            `).join('');
+        }
+
+        function selectCategory(cat) { selectedCategory = cat; renderCategories(); renderProducts(); }
+
+        function renderProducts() {
+            const searchQuery = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = products.filter(p => (selectedCategory === 'All' || p.category === selectedCategory) && p.title.toLowerCase().includes(searchQuery));
+            
+            document.getElementById('productGrid').innerHTML = filtered.map(p => {
+                const qty = cart[p.id] || 0;
+                return `
+                    <div class="product-card">
+                        <span class="discount-tag">${p.discount}</span>
+                        <img src="${p.img}" class="prod-img">
+                        <div class="prod-title">${p.title}</div>
+                        <div class="prod-weight">${p.weight}</div>
+                        <div class="price-row">
+                            <span class="curr-price">₹${p.price}</span>
+                            ${qty === 0 ? `<button class="add-btn" onclick="addToCart('${p.id}')">ADD</button>` : `
+                                <div class="qty-controls">
+                                    <button class="qty-btn" onclick="updateQty('${p.id}', -1)">-</button>
+                                    <span style="padding: 0 6px; font-size:12px;">${qty}</span>
+                                    <button class="qty-btn" onclick="updateQty('${p.id}', 1)">+</button>
+                                </div>
+                            `}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function filterProducts() { renderProducts(); }
+        function addToCart(id) { cart[id] = 1; renderProducts(); updateCartUI(); }
+        function updateQty(id, delta) { cart[id] += delta; if (cart[id] <= 0) delete cart[id]; renderProducts(); updateCartUI(); }
+
+        function updateCartUI() {
+            const items = Object.values(cart).reduce((a, b) => a + b, 0);
+            let subtotal = 0;
+            for (let id in cart) { subtotal += products.find(p => p.id === id).price * cart[id]; }
+            document.getElementById('cartBar').style.display = items > 0 ? 'flex' : 'none';
+            document.getElementById('cartItemCountText').innerText = `${items} ITEMS`;
+            document.getElementById('cartTotalText').innerText = `₹${subtotal}`;
+        }
+
+        function openCartModal() {
+            let html = '';
+            for (let id in cart) {
+                const item = products.find(p => p.id === id);
+                html += `<div style="display:flex; justify-content:space-between; padding:8px 0;"><span>${item.title} x ${cart[id]}</span><b>₹${item.price * cart[id]}</b></div>`;
+            }
+            document.getElementById('cartItemsContainer').innerHTML = html || '<p>Cart is empty</p>';
+            document.getElementById('cartModal').style.display = 'flex';
+        }
+
+        function closeCartModal() { document.getElementById('cartModal').style.display = 'none'; }
+        function placeOrderSimulation() { closeCartModal(); cart = {}; renderProducts(); updateCartUI(); document.getElementById('orderSuccessModal').style.display = 'flex'; }
+        function closeOrderSuccessModal() { document.getElementById('orderSuccessModal').style.display = 'none'; }
+        
+        function openNotifModal() { document.getElementById('notifModal').style.display = 'flex'; }
+        function closeNotifModal() { document.getElementById('notifModal').style.display = 'none'; }
+        
+        function updateNotificationsUI() {
+            document.getElementById('notifBadge').innerText = notifications.length;
+            document.getElementById('notifListContainer').innerHTML = notifications.map(n => `
+                <div class="notif-card"><div style="font-weight:700;">${n.title}</div><div style="font-size:12px;">${n.body}</div></div>
+            `).join('');
+        }
+
+        function triggerSimulatedPush(type) {
+            notifications.unshift({ id: Date.now().toString(), title: type === 'ORDER' ? '📦 Order Dispatched' : '⚡ Flash Deal 25% Off', body: 'Live push update received.', type });
+            updateNotificationsUI();
+        }
+
+        async function askGeminiAI() {
+            const query = document.getElementById('aiQuery').value.trim();
+            const box = document.getElementById('aiResponse');
+            if (!query) return;
+            box.style.display = 'block';
+            box.innerText = 'Asking Gemini AI...';
+            try {
+                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=YOUR_API_KEY`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ contents: [{ parts: [{ text: `Provide grocery ingredient list for: ${query}` }] }] })
+                });
+                const data = await res.json();
+                box.innerText = data.candidates[0].content.parts[0].text;
+            } catch(e) {
+                box.innerText = `💡 Recipe Tip for ${query}: Use Dhawan Assam Gold Tea with fresh milk and ginger for perfect Chai!`;
+            }
+        }
+    </script>
 </body>
 </html>
