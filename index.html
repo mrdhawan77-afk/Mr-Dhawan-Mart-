@@ -167,12 +167,20 @@
             color: white;
         }
 
-        .brand-logo-img {
+        /* Custom Circular DM Logo Styling */
+        .brand-logo-circle {
             width: 36px;
             height: 36px;
             border-radius: 50%;
+            background: white;
+            color: var(--fk-blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 15px;
+            border: 2px solid rgba(255,255,255,0.8);
             object-fit: cover;
-            border: 1px solid rgba(255,255,255,0.4);
         }
 
         .brand-text-container {
@@ -204,7 +212,7 @@
         .header-actions {
             display: flex;
             align-items: center;
-            gap: 16px;
+            gap: 14px;
         }
 
         .icon-btn-top {
@@ -322,6 +330,12 @@
             background: var(--gray-light);
         }
 
+        .share-highlight {
+            background: #e8f0fe;
+            color: var(--fk-blue);
+            font-weight: 700;
+        }
+
         /* --- Container --- */
         .container {
             max-width: 1000px;
@@ -352,6 +366,7 @@
             border-radius: 4px;
             font-weight: 700;
             font-size: 11px;
+            cursor: pointer;
         }
 
         /* --- Categories --- */
@@ -595,13 +610,46 @@
         }
 
         .profile-card { text-align: center; padding: 10px 0; }
-        .profile-avatar {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
+        
+        .profile-avatar-container {
+            position: relative;
+            width: 70px;
+            height: 70px;
             margin: 0 auto 12px;
-            border: 2px solid var(--fk-blue);
+            cursor: pointer;
         }
+
+        .profile-avatar {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            border: 2px solid var(--fk-blue);
+            object-fit: cover;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: var(--fk-blue);
+            font-size: 20px;
+        }
+
+        .edit-badge-icon {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background: var(--fk-blue);
+            color: white;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid white;
+        }
+
         .profile-field {
             background: var(--gray-light);
             padding: 10px;
@@ -637,7 +685,6 @@
                     <label>Email Address</label>
                     <input type="email" id="loginEmail" placeholder="name@example.com" required>
                 </div>
-                <!-- ADDED: Delivery Address Input -->
                 <div class="input-group">
                     <label>Delivery Address</label>
                     <textarea id="loginAddress" placeholder="House/Flat No., Landmark, Area, City, Pincode" required></textarea>
@@ -647,21 +694,24 @@
         </div>
     </div>
 
-    <!-- 2. SIDEBAR DRAWER -->
+    <!-- 2. SIDEBAR DRAWER WITH SHARE OPTION -->
     <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()">
         <div class="sidebar" onclick="event.stopPropagation()">
             <div class="sidebar-header">
-                <img src="IMG-20260803-WA1342.jpg" class="brand-logo-img" onerror="this.onerror=null;this.src='https://placehold.co/40x40/2874f0/ffffff?text=DM';">
+                <div class="brand-logo-circle" id="sidebarLogoImg">DM</div>
                 <div>
                     <div style="font-weight: 700; font-size: 15px;">Dhawan Mart</div>
                     <div style="font-size: 11px; opacity: 0.8;" id="sidebarUserPhone">Guest User</div>
                 </div>
             </div>
             <div class="sidebar-menu">
+                <a class="menu-item share-highlight" onclick="closeSidebar(); shareApp();">
+                    <i class="fa-solid fa-share-nodes" style="color:var(--fk-blue);"></i> <b>Share App with Friends</b>
+                </a>
                 <a class="menu-item" onclick="closeSidebar(); selectCategory('All');"><i class="fa-solid fa-border-all"></i> All Categories</a>
                 <a class="menu-item" onclick="closeSidebar(); openNotifModal();"><i class="fa-solid fa-bell"></i> Notifications</a>
                 <a class="menu-item" onclick="closeSidebar(); openCartModal();"><i class="fa-solid fa-cart-shopping"></i> My Cart</a>
-                <a class="menu-item" onclick="closeSidebar(); openProfileModal();"><i class="fa-solid fa-user"></i> My Account</a>
+                <a class="menu-item" onclick="closeSidebar(); openProfileModal();"><i class="fa-solid fa-user"></i> My Account & Profile</a>
                 <a class="menu-item" onclick="closeSidebar(); logoutUser();" style="color: var(--red);"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
             </div>
         </div>
@@ -676,7 +726,7 @@
                         <i class="fa-solid fa-bars"></i>
                     </button>
                     <a href="#" class="brand">
-                        <img src="IMG-20260803-WA1342.jpg" alt="Dhawan Mart Logo" class="brand-logo-img" onerror="this.onerror=null;this.src='https://placehold.co/40x40/2874f0/ffffff?text=DM';">
+                        <div class="brand-logo-circle" id="headerLogoImg">DM</div>
                         <div class="brand-text-container">
                             <span class="brand-title">Dhawan <i style="font-weight:400;">Mart</i></span>
                             <span class="brand-sub">Explore <span class="plus-text">Plus ✦</span></span>
@@ -685,6 +735,10 @@
                 </div>
 
                 <div class="header-actions">
+                    <!-- Top Header Share Icon -->
+                    <button class="icon-btn-top" onclick="shareApp()" title="Share Store Link">
+                        <i class="fa-solid fa-share-nodes"></i>
+                    </button>
                     <button class="icon-btn-top" onclick="openCartModal()">
                         <i class="fa-solid fa-cart-shopping"></i>
                         <span class="badge" id="topCartBadge" style="display:none;">0</span>
@@ -709,7 +763,7 @@
                     <h2>⚡ Dhawan Mart Mega Sale</h2>
                     <p>Flat 25% OFF on Branded Tea, Atta & Oil Packets</p>
                 </div>
-                <button class="banner-btn">PACKED25</button>
+                <button class="banner-btn" onclick="shareApp()">SHARE</button>
             </div>
 
             <div class="section-title">Top Categories</div>
@@ -769,7 +823,14 @@
                 <button class="close-btn" onclick="closeProfileModal()">&times;</button>
             </div>
             <div class="profile-card">
-                <img src="IMG-20260803-WA1342.jpg" class="profile-avatar" onerror="this.onerror=null;this.src='https://placehold.co/60x60/2874f0/ffffff?text=DM';">
+                <!-- Profile Image with Edit Option -->
+                <div class="profile-avatar-container" onclick="triggerImageUpload()" title="Change Profile Image">
+                    <div id="profileAvatarBox" class="profile-avatar">DM</div>
+                    <div class="edit-badge-icon"><i class="fa-solid fa-camera"></i></div>
+                </div>
+                <input type="file" id="profileImageInput" accept="image/*" style="display:none;" onchange="handleImageUpload(event)">
+                <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 12px;">Tap profile picture to change image</p>
+
                 <div class="profile-field">
                     <label>Mobile Number</label>
                     <span id="profMobile">--</span>
@@ -782,6 +843,7 @@
                     <label>Saved Address</label>
                     <span id="profAddress">--</span>
                 </div>
+                <button class="checkout-btn" style="background: var(--fk-blue); margin-bottom: 8px;" onclick="shareApp()"><i class="fa-solid fa-share-nodes"></i> Share Dhawan Mart</button>
                 <button class="checkout-btn" style="background: var(--red);" onclick="logoutUser()">Logout Account</button>
             </div>
         </div>
@@ -800,6 +862,7 @@
         const TELEGRAM_CHAT_ID = "8024913770";
 
         let currentUser = JSON.parse(localStorage.getItem('dhawan_user')) || null;
+        let customProfilePic = localStorage.getItem('dhawan_profile_pic') || null;
 
         const baseProductTemplates = [
             { name: "Tata Tea Gold Packet", weight: "500 g", price: 310, oldPrice: 350, cat: "Tea & Coffee", img: "https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=300&q=80" },
@@ -846,7 +909,59 @@
             renderCategories();
             renderProducts();
             updateNotificationsUI();
+            updateAppLogoUI();
         };
+
+        // --- APP SHARE FUNCTIONALITY ---
+        function shareApp() {
+            const shareData = {
+                title: 'Dhawan Mart - Online Grocery Store',
+                text: '🛒 Order fresh groceries & daily essentials online from Dhawan Mart with home delivery!',
+                url: window.location.href
+            };
+
+            if (navigator.share) {
+                navigator.share(shareData).catch((err) => console.log('Share canceled:', err));
+            } else {
+                navigator.clipboard.writeText(window.location.href);
+                alert("Store link copied to clipboard! Share it with your friends.");
+            }
+        }
+
+        // --- PROFILE IMAGE EDITING ---
+        function triggerImageUpload() {
+            document.getElementById('profileImageInput').click();
+        }
+
+        function handleImageUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    customProfilePic = e.target.result;
+                    localStorage.setItem('dhawan_profile_pic', customProfilePic);
+                    updateAppLogoUI();
+                    alert("Profile picture updated successfully!");
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function updateAppLogoUI() {
+            const headerLogo = document.getElementById('headerLogoImg');
+            const sidebarLogo = document.getElementById('sidebarLogoImg');
+            const profileAvatar = document.getElementById('profileAvatarBox');
+
+            if (customProfilePic) {
+                if (headerLogo) headerLogo.innerHTML = `<img src="${customProfilePic}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">`;
+                if (sidebarLogo) sidebarLogo.innerHTML = `<img src="${customProfilePic}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">`;
+                if (profileAvatar) profileAvatar.innerHTML = `<img src="${customProfilePic}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">`;
+            } else {
+                if (headerLogo) headerLogo.innerText = "DM";
+                if (sidebarLogo) sidebarLogo.innerText = "DM";
+                if (profileAvatar) profileAvatar.innerText = "DM";
+            }
+        }
 
         function handleLogin(event) {
             event.preventDefault();
@@ -960,6 +1075,7 @@
                 document.getElementById('profEmail').innerText = currentUser.email || 'N/A';
                 document.getElementById('profAddress').innerText = currentUser.address || 'N/A';
             }
+            updateAppLogoUI();
             document.getElementById('profileModal').style.display = 'flex';
         }
 
@@ -1029,5 +1145,6 @@
     </script>
 </body>
 </html>
+
 
 
