@@ -1,169 +1,169 @@
-<!DOCTYPE html>
-<html lang="en">
+        <!DOCTYPE html>
+<html lang="hi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dhawan Mart - Unique Products Catalog</title>
+    <title>Dhawan Mart - Premium Store</title>
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --accent: #10b981;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+            --shadow-md: 0 10px 25px -5px rgba(0,0,0,0.08);
         }
-        body {
-            background-color: #f4f6f9;
-            color: #333;
-            padding-bottom: 70px;
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-main); padding-bottom: 40px; }
+
+        header { 
+            background: rgba(15, 23, 42, 0.95); 
+            backdrop-filter: blur(8px);
+            color: #fff; 
+            padding: 16px 24px; 
+            position: sticky; 
+            top: 0; 
+            z-index: 100; 
+            border-bottom: 1px solid rgba(255,255,255,0.1);
         }
-        header {
-            background-color: #1e293b;
-            color: #fff;
-            padding: 15px 20px;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        .header-container { display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto; }
+        .logo { font-size: 24px; font-weight: 800; background: linear-gradient(135deg, #38bdf8, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        
+        .search-container { max-width: 1200px; margin: 20px auto 10px; padding: 0 20px; }
+        .search-box { 
+            width: 100%; 
+            padding: 14px 24px; 
+            background: #ffffff;
+            border: 2px solid #e2e8f0; 
+            border-radius: 50px; 
+            font-size: 15px; 
+            outline: none; 
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-sm);
         }
-        .header-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            max-width: 1200px;
-            margin: 0 auto;
+        .search-box:focus { 
+            border-color: var(--primary); 
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15); 
         }
-        .logo {
-            font-size: 22px;
-            font-weight: bold;
-            color: #38bdf8;
+
+        .product-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); 
+            gap: 16px; 
+            max-width: 1200px; 
+            margin: 0 auto; 
+            padding: 10px 20px; 
         }
-        .search-container {
-            max-width: 1200px;
-            margin: 15px auto;
-            padding: 0 15px;
+
+        .product-card { 
+            background: var(--card-bg); 
+            border-radius: 16px; 
+            padding: 12px; 
+            text-align: left; 
+            box-shadow: var(--shadow-sm); 
+            border: 1px solid #f1f5f9;
+            cursor: pointer; 
+            transition: all 0.3s ease; 
+            display: flex; 
+            flex-direction: column; 
         }
-        .search-box {
-            width: 100%;
-            padding: 12px 20px;
-            border: 2px solid #cbd5e1;
-            border-radius: 25px;
-            font-size: 16px;
-            outline: none;
-            transition: 0.3s;
+        .product-card:hover { 
+            transform: translateY(-4px); 
+            box-shadow: var(--shadow-md); 
+            border-color: #cbd5e1;
         }
-        .search-box:focus {
-            border-color: #0284c7;
+        .product-image { 
+            width: 100%; 
+            height: 130px; 
+            object-fit: cover; 
+            border-radius: 12px; 
+            margin-bottom: 10px; 
+            background-color: #f8fafc; 
         }
-        .product-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-            gap: 15px;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 10px 15px;
+        .product-category-tag {
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--primary);
+            text-transform: uppercase;
+            margin-bottom: 4px;
         }
-        .product-card {
-            background: #fff;
-            border-radius: 12px;
-            padding: 12px;
-            text-align: center;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-        .product-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-        .product-image {
-            width: 100%;
-            height: 120px;
-            object-fit: cover;
-            border-radius: 8px;
-            margin-bottom: 10px;
-            background-color: #f1f5f9;
-        }
-        .product-title {
-            font-size: 14px;
-            font-weight: 600;
-            color: #1e293b;
-            margin-bottom: 8px;
+        .product-title { 
+            font-size: 14px; 
+            font-weight: 600; 
+            color: var(--text-main);
+            margin-bottom: 8px; 
+            height: 36px; 
             line-height: 1.3;
-            height: 36px;
-            overflow: hidden;
+            overflow: hidden; 
             display: -webkit-box;
             -webkit-line-clamp: 2;
-            line-clamp: 2;
             -webkit-box-orient: vertical;
         }
-        .product-price {
-            font-size: 16px;
-            font-weight: bold;
-            color: #16a34a;
+        .price-row { display: flex; justify-content: space-between; align-items: center; margin-top: auto; }
+        .product-price { font-size: 16px; font-weight: 700; color: var(--accent); }
+        .view-btn { 
+            background: #eff6ff; 
+            color: var(--primary); 
+            font-size: 11px; 
+            font-weight: 600; 
+            padding: 5px 10px; 
+            border-radius: 20px; 
         }
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.6);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
+
+        .modal { 
+            display: none; 
+            position: fixed; 
+            top: 0; left: 0; 
+            width: 100%; height: 100%; 
+            background: rgba(15, 23, 42, 0.6); 
+            backdrop-filter: blur(4px);
+            z-index: 1000; 
+            justify-content: center; 
+            align-items: center; 
+            padding: 20px; 
         }
-        .modal-content {
-            background: #fff;
-            border-radius: 15px;
-            max-width: 400px;
-            width: 100%;
-            padding: 20px;
-            text-align: center;
-            position: relative;
+
+        .modal-content { 
+            background: #fff; 
+            border-radius: 24px; 
+            max-width: 400px; 
+            width: 100%; 
+            padding: 24px; 
+            text-align: center; 
+            position: relative; 
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
         }
-        .close-btn {
-            position: absolute;
-            top: 10px;
-            right: 15px;
-            font-size: 24px;
-            cursor: pointer;
-            color: #64748b;
+        .close-btn { 
+            position: absolute; 
+            top: 16px; right: 18px; 
+            font-size: 22px; 
+            cursor: pointer; 
+            color: var(--text-muted); 
+            width: 32px; height: 32px;
+            border-radius: 50%;
+            background: #f1f5f9;
+            display: flex; align-items: center; justify-content: center;
         }
-        .modal-img {
-            width: 180px;
-            height: 180px;
-            object-fit: cover;
-            border-radius: 10px;
-            margin-bottom: 15px;
+        .modal-img { width: 180px; height: 180px; object-fit: cover; border-radius: 16px; margin-bottom: 14px; }
+        .modal-pkg { background: #f1f5f9; color: var(--text-muted); font-size: 12px; font-weight: 600; padding: 4px 12px; border-radius: 20px; display: inline-block; margin-bottom: 10px; }
+        .order-btn { 
+            background: linear-gradient(135deg, var(--primary), var(--primary-hover)); 
+            color: #fff; 
+            border: none; 
+            padding: 14px 28px; 
+            border-radius: 50px; 
+            cursor: pointer; 
+            width: 100%; 
+            font-size: 15px; 
+            font-weight: 700; 
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
         }
-        .modal-title { font-size: 18px; font-weight: bold; margin-bottom: 8px; }
-        .modal-packaging {
-            display: inline-block;
-            background: #e2e8f0;
-            color: #475569;
-            padding: 4px 12px;
-            border-radius: 12px;
-            font-size: 12px;
-            margin-bottom: 10px;
-            font-weight: 600;
-        }
-        .modal-price { font-size: 22px; color: #16a34a; font-weight: bold; margin-bottom: 15px; }
-        .add-cart-btn {
-            background: #0284c7;
-            color: #fff;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 25px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            width: 100%;
-        }
+
+        .no-results { text-align: center; color: var(--text-muted); margin-top: 40px; font-size: 15px; display: none; }
     </style>
 </head>
 <body>
@@ -175,33 +175,25 @@
     </header>
 
     <div class="search-container">
-        <input type="text" id="searchInput" class="search-box" placeholder="Search unique products..." onkeyup="filterProducts()">
+        <input type="text" id="searchInput" class="search-box" placeholder="Search by name or category (e.g., Grocery, Electronics)...">
     </div>
 
     <div class="product-grid" id="productGrid"></div>
+    <div id="noResults" class="no-results">Koi product nahi mila!</div>
 
     <div class="modal" id="productModal">
         <div class="modal-content">
-            <span class="close-btn" onclick="closeModal()">&times;</span>
-            <img id="mImg" class="modal-img" src="" alt="">
-            <div id="mTitle" class="modal-title"></div>
-            <div id="mPkg" class="modal-packaging"></div>
-            <div id="mPrice" class="modal-price"></div>
-            <button class="add-cart-btn" onclick="alert('Added to cart!')">Add to Cart</button>
+            <span class="close-btn" id="closeModalBtn">&times;</span>
+            <img id="mImg" class="modal-img" src="" alt="Product">
+            <div id="mTitle" style="font-size: 18px; font-weight: 700; margin-bottom: 6px;"></div>
+            <div id="mPkg" class="modal-pkg"></div>
+            <div id="mPrice" style="font-size: 22px; color: var(--accent); font-weight: 800; margin-bottom: 20px;"></div>
+            <button class="order-btn" id="orderBtn">Send Order via Telegram</button>
         </div>
     </div>
 
     <script>
-        // HD Clean Image Categories
-        const imgList = {
-            snack: "https://images.unsplash.com/photo-1566478989037-eec170784d0b?w=400&q=80",
-            personal: "https://images.unsplash.com/photo-1556228720-195a672e8a03?w=400&q=80",
-            grocery: "https://images.unsplash.com/photo-1542838132-92c53300491e?w=400&q=80",
-            stationery: "https://images.unsplash.com/photo-1585336261026-8f5786372960?w=400&q=80",
-            tech: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=400&q=80"
-        };
-
-
+        // Fix 1: Added explicit 'category' to every product
         const productsList = [
             { id: 1, name: "Matchbox Pack", pkg: "Box", price: 5, img: "https://i.pinimg.com/originals/66/36/88/6636889e7781ab791d5151332ee374d8.jpg" },
             { id: 2, name: "dairymilk Chocolates", pkg: "box", price: 10, img: "https://m.media-amazon.com/images/I/61qvMq1Pd0L.jpg"},
@@ -234,7 +226,6 @@
             { id: 28, name: "Britannia Bourbon Biscuits", pkg: "Wrapper", price: 50, img: "https://m.media-amazon.com/images/I/81c0jxRWx3L._AC_UL480_FMwebp_QL65_.jpg" },
             { id: 29, name: "Hide & Seek Chocolate Biscuits 200g", pkg: "Wrapper", price: 50, img: "https://m.media-amazon.com/images/I/71cw2JLKmvL._AC_UL480_FMwebp_QL65_.jpg" },
             { id: 30, name: "bikaneri Bhujia Sev 150g", pkg: "Packet", price: 216, img: "https://m.media-amazon.com/images/I/812T+cwA7vL._AC_UL480_FMwebp_QL65_.jpg"},
-            { id: 31, name: "Dabur Honey 50g", pkg: "Glass Jar", price: 50, img: "https://m.media-amazon.com/images/I/51dEWLlpyRL._AC_UL480_FMwebp_QL65_.jpg" },
             { id: 32, name: "Britannia Good Day Butter", pkg: "Wrapper", price: 60, img: "https://m.media-amazon.com/images/I/7134WCTHMoL._AC_UL480_FMwebp_QL65_.jpg" },
             { id: 33, name: "Harpic Toilet Cleaner 1 ltr", pkg: "bottel", price: 220, img: "https://images.meesho.com/images/products/973482610/odu6k_512.avif?width=360" },
             { id: 34, name: "Fevicol MR Squeeze Bottle ", pkg: "Bottle", price: 42, img: "https://images.meesho.com/images/products/458496801/qbj4v_512.avif?width=360" },
@@ -291,44 +282,100 @@
             { id: 89, name: "Boat Rockerz Bluetooth Neckband", pkg: "Box Pack", price: 999, img: "https://th.bing.com/th/id/OIP.xH7Pu5KFA_3uxwCofBJKEAAAAA?w=216&h=199&c=7&r=0&o=7&dpr=1.5&pid=1.7&rm=3"},
             { id: 90, name: "Philips Dry Iron Box 1000W", pkg: "Box Pack", price: 999, img: "data:image/webp;base64,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" }
         ];
+
+
+             
+        let selectedProduct = null;
+
         function renderProducts(items) {
             const grid = document.getElementById('productGrid');
-            grid.innerHTML = '';
+            const noResults = document.getElementById('noResults');
+            grid.innerHTML = ''; 
+
+            if (!items || items.length === 0) {
+                noResults.style.display = 'block';
+                return;
+            }
+            noResults.style.display = 'none';
+
             items.forEach(product => {
                 const card = document.createElement('div');
                 card.className = 'product-card';
-                card.onclick = () => openModal(product);
-                card.innerHTML = `
-                    <img src="${product.img}" alt="${product.name}" class="product-image" loading="lazy">
-                    <div class="product-title">${product.name}</div>
-                    <div class="product-price">₹${product.price}</div>
-                `;
+
+                const img = document.createElement('img');
+                img.src = product.img;
+                img.className = 'product-image';
+                
+                const catTag = document.createElement('div');
+                catTag.className = 'product-category-tag';
+                catTag.textContent = product.category || 'General';
+
+                const title = document.createElement('div');
+                title.className = 'product-title';
+                title.textContent = product.name;
+
+                const priceRow = document.createElement('div');
+                priceRow.className = 'price-row';
+
+                const price = document.createElement('div');
+                price.className = 'product-price';
+                price.textContent = `₹${product.price}`;
+
+                const viewBtn = document.createElement('span');
+                viewBtn.className = 'view-btn';
+                viewBtn.textContent = 'View';
+
+                priceRow.appendChild(price);
+                priceRow.appendChild(viewBtn);
+
+                card.appendChild(img);
+                card.appendChild(catTag);
+                card.appendChild(title);
+                card.appendChild(priceRow);
+
+                card.addEventListener('click', () => openModal(product));
                 grid.appendChild(card);
             });
         }
 
         function openModal(product) {
+            selectedProduct = product;
             document.getElementById('mImg').src = product.img;
-            document.getElementById('mTitle').innerText = product.name;
-            document.getElementById('mPkg').innerText = 'Packaging: ' + product.pkg;
-            document.getElementById('mPrice').innerText = '₹' + product.price;
+            document.getElementById('mTitle').textContent = product.name;
+            document.getElementById('mPkg').textContent = 'Packaging: ' + product.pkg + ' | Category: ' + (product.category || 'General');
+            document.getElementById('mPrice').textContent = '₹' + product.price;
             document.getElementById('productModal').style.display = 'flex';
         }
 
-        function closeModal() {
-            document.getElementById('productModal').style.display = 'none';
-        }
+        // Fix 2: Clean modal closing logic
+        const modal = document.getElementById('productModal');
+        document.getElementById('closeModalBtn').addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
 
-        function filterProducts() {
-            const query = document.getElementById('searchInput').value.toLowerCase();
-            const filtered = productsList.filter(p => p.name.toLowerCase().includes(query));
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+
+        // Fix 3: Multi-field search (searches by Name AND Category)
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase().trim();
+            const filtered = productsList.filter(p => 
+                p.name.toLowerCase().includes(query) || 
+                (p.category && p.category.toLowerCase().includes(query))
+            );
             renderProducts(filtered);
-        }
+        });
 
+        document.getElementById('orderBtn').addEventListener('click', () => {
+            if (!selectedProduct) return;
+            alert(`Sending Order for ${selectedProduct.name} to Telegram!`);
+        });
+
+        // Initial Load
         renderProducts(productsList);
     </script>
 </body>
 </html>
-
-        
-            // 100% Unique Array - Zero Duplication
