@@ -181,7 +181,7 @@
             <div class="form-group"><label>Mobile Number</label><input type="tel" id="dpPhone" placeholder="Enter phone number"></div>
             <div class="form-group"><label>Village / City Name</label><input type="text" id="dpVillage" placeholder="Enter village or city name"></div>
             <div class="form-group"><label>Full Address</label><textarea id="dpAddress" rows="2" placeholder="Enter address"></textarea></div>
-            <button class="btn-submit" onclick="submitDeliveryPartner()">Submit Application via WhatsApp</button>
+            <button class="btn-submit" onclick="submitDeliveryPartner()">Submit</button>
         </div>
     </div>
 
@@ -195,9 +195,9 @@
 
     <script>
         // CONFIGURATION (Apna Telegram Bot Token aur Chat ID yahan daalein)
-        const BOT_TOKEN = "YOUR_TELEGRAM_BOT_TOKEN";
-        const CHAT_ID = "YOUR_TELEGRAM_CHAT_ID";
-        const ADMIN_WHATSAPP = "919876543210"; // Aapka WhatsApp Number
+        const BOT_TOKEN = "8735436494:AAGWN69EV9j2b89kielRj5PSOPsh0JY4uxY";
+        const CHAT_ID = "8024913770";
+        const ADMIN_WHATSAPP = "918690631139"; // Aapka WhatsApp Number
 
         const productsList = [
             {  name: "Matchbox Pack", pkg: "Box", price: 5, img: "https://i.pinimg.com/originals/66/36/88/6636889e7781ab791d5151332ee374d8.jpg" },
@@ -298,8 +298,8 @@
                 card.className = 'product-card';
                 card.innerHTML = `
                     <img src="${product.img}" class="product-image">
-                    <div class="product-title">${product.name}</div>
-                    <div class="product-price">₹${product.price}</div>
+                    <div class="product-title">{product.name}</div>
+                    <div class="product-price">₹{product.price}</div>
                     <div class="status-tag">Available</div>
                 `;
                 card.onclick = () => openProductModal(product);
