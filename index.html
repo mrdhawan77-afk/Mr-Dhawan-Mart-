@@ -1,245 +1,376 @@
-
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dhawanmart</title>
+    <title>Dhawan Mart - 2 days Grocery Delivery</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.min.js"></script>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
-        body { background-color: #f8f9fa; color: #333; padding-bottom: 75px; }
+        :root {
+            --dhawanmart-blue: #F7C427;
+            --dhawanmart-blue-light: #FFF9E6;
+            --dhawanmart-green: #0C831F;
+            --dhawanmart-green-light: #E7F6E9;
+            --dark-text: #1C1C1C;
+            --muted-text: #666666;
+            --border-color: #E2E8F0;
+            --bg-light: #F4F6F8;
+            --card-bg: #FFFFFF;
+        }
 
-        /* HEADER */
-        header { background-color: #f8cb1c; color: #222; padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        .header-left { display: flex; align-items: center; gap: 10px; }
-        .app-logo-circle { width: 38px; height: 38px; border-radius: 50%; background-color: #000; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #f8cb1c; font-size: 1.1rem; }
-        .app-title { font-size: 1.2rem; font-weight: 900; letter-spacing: 0.5px; }
-        .login-btn-header { background: #000; color: #f8cb1c; border: none; padding: 6px 14px; border-radius: 20px; font-weight: bold; font-size: 0.85rem; cursor: pointer; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
 
-        /* SEARCH BAR */
-        .search-container { padding: 10px 16px; background: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-        .search-bar { width: 100%; padding: 10px 15px; border: 1px solid #ddd; border-radius: 20px; outline: none; font-size: 0.9rem; background: #f4f6f8; }
+        body {
+            background-color: #0F172A;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: var(--dark-text);
+        }
 
-        /* PAGES */
-        .page { display: none; padding: 16px; max-width: 800px; margin: 0 auto; }
-        .page.active { display: block; }
+        .mobile-container {
+            width: 100%;
+            max-width: 440px;
+            height: 100vh;
+            max-height: 920px;
+            background-color: var(--bg-light);
+            position: relative;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border-radius: 20px;
+        }
 
-        /* PRODUCT GRID & CARDS */
-        .product-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 15px; }
-        .product-card { background: white; border-radius: 10px; padding: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.06); display: flex; flex-direction: column; justify-content: space-between; border: 1px solid #eee; }
-        .product-card img { width: 100%; height: 110px; object-fit: contain; border-radius: 5px; margin-bottom: 8px; background: #fff; cursor: pointer; }
-        .product-title { font-size: 0.88rem; font-weight: 600; color: #222; margin-bottom: 4px; height: 2.4em; overflow: hidden; cursor: pointer; }
-        .product-price { font-size: 1rem; color: #000; font-weight: bold; margin-bottom: 8px; }
-        .btn-add { background: #0c831f; color: white; border: none; padding: 8px; border-radius: 6px; cursor: pointer; font-weight: 700; width: 100%; text-align: center; font-size: 0.85rem; }
+        @media (max-width: 480px) {
+            .mobile-container {
+                max-height: 100vh;
+                border-radius: 0;
+            }
+        }
 
-        /* CATEGORY */
-        .category-list { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 10px; }
-        .category-btn { background: #f0f0f0; border: none; padding: 6px 14px; border-radius: 20px; cursor: pointer; white-space: nowrap; font-weight: 600; font-size: 0.85rem; color: #555; }
-        .category-btn.active { background: #0c831f; color: white; }
+        /* Top Header */
+        .top-header {
+            background-color: var(--dhawanmart-blue);
+            padding: 14px 16px 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
-        /* CART & CHECKOUT */
-        .cart-item { background: white; padding: 12px; border-radius: 8px; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 1px 3px rgba(0,0,0,0.08); border: 1px solid #eee; }
-        .payment-box { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 3px 10px rgba(0,0,0,0.1); text-align: center; margin-top: 15px; }
-        .qr-img { width: 180px; height: 180px; margin: 15px auto; border: 2px solid #0c831f; padding: 5px; border-radius: 8px; display: block; }
-        .input-field { width: 100%; padding: 10px; margin: 8px 0; border: 1px solid #ccc; border-radius: 6px; font-size: 0.9rem; outline: none; }
+        .delivery-badge {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
 
-        /* PROFILE SECTION */
-        .profile-card-header { background: white; padding: 20px; border-radius: 10px; text-align: center; margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .profile-avatar-img { width: 85px; height: 85px; border-radius: 50%; object-fit: cover; border: 3px solid #0c831f; margin-bottom: 10px; }
-        .profile-option-list { list-style: none; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .profile-option-item { padding: 14px 16px; border-bottom: 1px solid #eee; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-weight: 500; font-size: 0.9rem; }
+        .bolt-icon {
+            background-color: var(--dark-text);
+            color: var(--dhawanmart-blue);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: pulse 1.5s infinite alternate;
+        }
 
-        /* BOTTOM NAV */
-        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: white; display: flex; justify-content: space-around; align-items: center; padding: 8px 0; border-top: 1px solid #ddd; z-index: 1000; }
-        .nav-btn { background: none; border: none; color: #777; font-size: 0.75rem; cursor: pointer; display: flex; flex-direction: column; align-items: center; flex: 1; }
-        .nav-btn span { font-size: 1.2rem; margin-bottom: 2px; }
-        .nav-btn.active { color: #0c831f; font-weight: bold; }
+        @keyframes pulse {
+            0% { transform: scale(0.95); }
+            100% { transform: scale(1.1); }
+        }
 
-        /* MODAL POPUPS */
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); z-index: 2000; align-items: center; justify-content: center; padding: 15px; }
-        .modal-card { background: white; width: 100%; max-width: 400px; border-radius: 12px; padding: 20px; position: relative; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
-        .modal-close-btn { position: absolute; top: 10px; right: 15px; font-size: 1.5rem; font-weight: bold; cursor: pointer; color: #888; }
-        .modal-img { width: 100%; height: 180px; object-fit: contain; margin-bottom: 15px; background: #f9f9f9; border-radius: 8px; }
+        .delivery-title {
+            font-size: 16px;
+            font-weight: 800;
+            color: var(--dark-text);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .delivery-address {
+            font-size: 12px;
+            color: #333;
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 230px;
+        }
+
+        .profile-btn {
+            background-color: #FFF;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        /* Search Bar */
+        .search-container {
+            background-color: var(--dhawanmart-blue);
+            padding: 0 16px 12px;
+        }
+
+        .search-box {
+            background-color: #FFF;
+            border-radius: 12px;
+            padding: 10px 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+            border: 1px solid #E2E8F0;
+        }
+
+        .search-input {
+            border: none;
+            outline: none;
+            width: 100%;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--dark-text);
+        }
+
+        /* Main Scroll Area */
+        .main-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+            padding-bottom: 100px;
+        }
+
+        .banner-card {
+            background: linear-gradient(135deg, #1E293B 0%, #0F172A 100%);
+            color: #FFF;
+            border-radius: 16px;
+            padding: 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .banner-badge {
+            background-color: var(--dhawanmart-blue);
+            color: var(--dark-text);
+            font-size: 10px;
+            font-weight: 800;
+            padding: 4px 8px;
+            border-radius: 6px;
+            display: inline-block;
+            margin-bottom: 8px;
+        }
+
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-bottom: 24px;
+        }
+
+        .category-item {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 10px 4px;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .category-item.active {
+            border-color: var(--dhawanmart-blue);
+            background-color: var(--dhawanmart-blue-light);
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .product-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .product-img-box {
+            background-color: #F8FAFC;
+            border-radius: 10px;
+            height: 90px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            color: #94A3B8;
+            margin-bottom: 8px;
+        }
+
+        .add-btn {
+            background-color: var(--dhawanmart-green-light);
+            border: 1px solid var(--dhawanmart-green);
+            color: var(--dhawanmart-green);
+            font-weight: 800;
+            padding: 6px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .counter-btn {
+            background-color: var(--dhawanmart-green);
+            color: #FFF;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 70px;
+            padding: 4px 6px;
+            font-weight: 800;
+        }
+
+        .floating-cart {
+            position: absolute;
+            bottom: 16px;
+            left: 16px;
+            right: 16px;
+            background-color: var(--dhawanmart-green);
+            color: #FFF;
+            border-radius: 14px;
+            padding: 12px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 10px 25px rgba(12, 131, 31, 0.4);
+            cursor: pointer;
+            transform: translateY(120%);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .floating-cart.visible {
+            transform: translateY(0);
+        }
+
+        .modal-screen {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: var(--bg-light);
+            z-index: 200;
+            display: flex;
+            flex-direction: column;
+            transform: translateX(100%);
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .modal-screen.active {
+            transform: translateX(0);
+        }
     </style>
 </head>
 <body>
 
-    <header>
-        <div class="header-left">
-            <div class="app-logo-circle">
-                <img src="data:image/webp;base64,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" 
-                alt="logo" 
-                style="width: 38px;
-                height: 38px;
-                border-radius: 50%; 
-                object-fit: cover;">
-            </div>
+<div class="mobile-container">
+    <div class="top-header">
+        <div class="delivery-badge">
+            <div class="bolt-icon"><i data-lucide="zap" style="width: 20px;"></i></div>
             <div>
-                <div class="app-title">Dhawanmart</div>
-                <div style="font-size:0.7rem; color:#4dffdb; font-weight:600;">⚡ Lightning Delivery in 3 days</div>
+                <div class="delivery-title">Delivery in 2 days <i data-lucide="chevron-down" style="width: 16px;"></i></div>
+                <div class="delivery-address">Home - lalsot, dausa, Rajasthan  </div>
             </div>
         </div>
-        <button class="login-btn-header" onclick="openLoginModal()" id="headerLoginBtn">Login</button>
-    </header>
-
-    <div id="searchContainer" class="search-container">
-        <input type="text" id="searchInput" class="search-bar" placeholder="Search 'Amul butter', 'T-shirt'..." onkeyup="filterSearch()">
+        <div class="profile-btn" onclick="openProfileScreen()"><i data-lucide="user"></i></div>
     </div>
 
-    <!-- HOME PAGE -->
-    <div id="homePage" class="page active">
-        <h2>Bestsellers & Groceries</h2>
-        <div id="homeProductGrid" class="product-grid"></div>
-    </div>
-
-    <!-- CATEGORY PAGE -->
-    <div id="categoryPage" class="page">
-        <h2>Explore Categories</h2>
-        <div class="category-list">
-            <button class="category-btn active" onclick="selectCategory('All', this)">All</button>
-            <button class="category-btn" onclick="selectCategory('Grocery', this)">Grocery</button>
-            <button class="category-btn" onclick="selectCategory('Electronics', this)">Electronics</button>
-            <button class="category-btn" onclick="selectCategory('Fashion', this)">Fashion</button>
-            <button class="category-btn" onclick="selectCategory('Personal Care', this)">Personal Care</button>
-        </div>
-        <div id="categoryProductGrid" class="product-grid"></div>
-    </div>
-
-    <!-- CART PAGE -->
-    <div id="cartPage" class="page">
-        <h2>My Cart</h2>
-        <div id="cartContainer" style="margin-top:15px;"></div>
-        <div id="paymentSection" style="display:none;"></div>
-    </div>
-
-    <!-- PROFILE PAGE -->
-    <div id="profilePage" class="page">
-        <div class="profile-card-header">
-            <img id="profileImage" class="profile-avatar-img" src="https://api.dicebear.com/7.x/bottts/svg?seed=Dhawan" alt="User Profile">
-            <h3 id="displayUserName">enter name</h3>
-            <p id="displayUserPhone" style="color: #666; font-size: 0.85rem; margin-top: 4px;">+91 xxxxxxxxxx</p>
-            <button style="margin-top: 10px; background: #e9ecef; border: none; padding: 5px 12px; border-radius: 15px; font-size: 0.8rem; cursor: pointer; font-weight: 600;" onclick="openEditProfileModal()">✏️ Edit Profile</button>
-        </div>
-
-        <ul class="profile-option-list">
-            <li class="profile-option-item" onclick="handleProfileOption('1')">1. Edit Profile Details <span>&gt;</span></li>
-            <li class="profile-option-item" onclick="handleProfileOption('2')">2. Become Delivery Partner <span>&gt;</span></li>
-            <li class="profile-option-item" onclick="handleProfileOption('3')">3. My Orders <span>&gt;</span></li>
-            <li class="profile-option-item" onclick="handleProfileOption('4')">4. Saved Items (Wishlist) <span>&gt;</span></li>
-            <li class="profile-option-item" onclick="handleProfileOption('5')">5. Delivery Address <span>&gt;</span></li>
-            <li class="profile-option-item" onclick="handleProfileOption('6')">6. Customer Support (Telegram) <span>&gt;</span></li>
-            <li class="profile-option-item" onclick="handleProfileOption('7')" style="color:#e74c3c;">7. Logout <span>&gt;</span></li>
-        </ul>
-    </div>
-
-    <!-- PRODUCT DETAILS MODAL -->
-    <div id="productModal" class="modal-overlay">
-        <div class="modal-card">
-            <span class="modal-close-btn" onclick="closeModal('productModal')">&times;</span>
-            <img id="modalImg" class="modal-img" src="" alt="Product Detail">
-            <h3 id="modalTitle" style="color:#222; margin-bottom:6px;"></h3>
-            <div id="modalCategory" style="color:#777; font-size:0.85rem; margin-bottom:8px;"></div>
-            <div id="modalPrice" style="color:#0c831f; font-size:1.2rem; font-weight:bold; margin-bottom:12px;"></div>
-            <p id="modalDesc" style="color:#555; font-size:0.88rem; margin-bottom:18px; line-height:1.4;"></p>
-            <button id="modalAddCartBtn" class="btn-add" style="padding:10px;">Add to Cart</button>
+    <div class="search-container">
+        <div class="search-box">
+            <i data-lucide="search" style="color: #666;"></i>
+            <input type="text" class="search-input" id="searchInput" placeholder="Search 'milk', 'chips', 'bread'..." oninput="filterProducts()">
         </div>
     </div>
 
-    <!-- CUSTOMER LOGIN MODAL -->
-    <div id="loginModal" class="modal-overlay">
-        <div class="modal-card">
-            <span class="modal-close-btn" onclick="closeModal('loginModal')">&times;</span>
-            <h3 style="margin-bottom:10px;">Customer Login / Signup</h3>
-            <p style="color:#666; font-size:0.85rem; margin-bottom:15px;">Enter your phone number to continue</p>
-            <input type="tel" id="loginPhoneInput" class="input-field" placeholder="Mobile Number (+91 xxxxxxxxxx)">
-            <button class="btn-add" style="padding:10px; margin-top:5px;" onclick="submitLogin()">Continue</button>
+    <div class="main-content">
+        <div class="banner-card">
+            <div>
+                <span class="banner-badge">UP TO 40% OFF</span>
+                <div style="font-size: 18px; font-weight: 800;">Fresh Essentials</div>
+                <div style="font-size: 12px; color: #CBD5E1;">Delivered in 2 days </div>
+            </div>
+            <i data-lucide="shopping-bag" style="width: 40px; height: 40px;"></i>
+        </div>
+
+        <div class="category-grid" id="categoryGrid"></div>
+        <div class="product-grid" id="productGrid"></div>
+    </div>
+
+    <div class="floating-cart" id="floatingCart" onclick="openCartScreen()">
+        <div>
+            <div id="cartCountText" style="font-size: 11px; font-weight: 700;">1 ITEM</div>
+            <div id="cartPriceText" style="font-size: 17px; font-weight: 800;">₹66.00</div>
+        </div>
+        <div style="background: #FFF; color: var(--dhawanmart-green); padding: 8px 14px; border-radius: 8px; font-weight: 800; font-size: 13px;">View Cart →</div>
+    </div>
+
+    <!-- Cart Modal -->
+    <div class="modal-screen" id="cartModal">
+        <div style="background: var(--dhawanmart-yellow); padding: 16px; font-weight: 800; display: flex; gap: 12px; align-items: center;">
+            <i data-lucide="arrow-left" onclick="closeCartScreen()" style="cursor: pointer;"></i> Checkout & Bill
+        </div>
+        <div style="padding: 16px; flex: 1; overflow-y: auto;">
+            <div style="background: #FFF; border-radius: 12px; padding: 16px; margin-bottom: 12px;">
+                <div style="font-weight: 800; margin-bottom: 8px;">Order Summary</div>
+                <div id="cartItemsList"></div>
+            </div>
+            <div style="background: #FFF; border-radius: 12px; padding: 16px;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 6px;"><span>Item Total</span><span id="billSubtotal">₹0</span></div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 6px;"><span>Handling Fee</span><span>₹5.00</span></div>
+                <div style="display: flex; justify-content: space-between; font-weight: 800; font-size: 16px; border-top: 1px solid #E2E8F0; padding-top: 8px;"><span>Grand Total</span><span id="billGrandTotal">₹0</span></div>
+            </div>
+        </div>
+        <div style="background: #FFF; padding: 16px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #E2E8F0;">
+            <div style="font-size: 18px; font-weight: 800;" id="checkoutTotalText">₹0</div>
+            <button style="background: var(--dhawanmart-green); color: #FFF; border: none; padding: 12px 24px; border-radius: 12px; font-weight: 800; cursor: pointer;" onclick="placeOrder()">Place Order 🚀</button>
         </div>
     </div>
 
-    <!-- EDIT PROFILE MODAL -->
-    <div id="editProfileModal" class="modal-overlay">
-        <div class="modal-card">
-            <span class="modal-close-btn" onclick="closeModal('editProfileModal')">&times;</span>
-            <h3 style="margin-bottom:10px;">✏️ Edit Profile</h3>
-            <p style="color:#666; font-size:0.85rem; margin-bottom:15px;">Update your personal info and avatar</p>
-            <input type="text" id="editNameInput" class="input-field" placeholder="Full Name">
-            <input type="tel" id="editPhoneInput" class="input-field" placeholder="Mobile Number">
-            <input type="text" id="editImageInput" class="input-field" placeholder="Profile Image URL (Optional)">
-            <button class="btn-add" style="padding:10px; margin-top:5px;" onclick="saveProfileChanges()">Save</button>
+    <!-- Profile & Telegram Config Modal -->
+    <div class="modal-screen" id="profileModal">
+        <div style="background: var(--dhawanmart-yellow); padding: 16px; font-weight: 800; display: flex; gap: 12px; align-items: center;">
+            <i data-lucide="arrow-left" onclick="closeProfileScreen()" style="cursor: pointer;"></i> Telegram Settings
         </div>
-    </div>
-
-    <!-- DELIVERY ADDRESS MODAL -->
-    <div id="addressModal" class="modal-overlay">
-        <div class="modal-card">
-            <span class="modal-close-btn" onclick="closeModal('addressModal')">&times;</span>
-            <h3 style="margin-bottom:10px;">📍 Delivery Address</h3>
-            <p style="color:#666; font-size:0.85rem; margin-bottom:15px;">Set your default delivery location</p>
-            <textarea id="addressInput" class="input-field" rows="3" placeholder="House No, Street, Landmark, City..."></textarea>
-            <button class="btn-add" style="padding:10px; margin-top:5px;" onclick="saveAddressModal()">Save Address</button>
-        </div>
-    </div>
-
-    <!-- WISHLIST MODAL -->
-    <div id="wishlistModal" class="modal-overlay">
-        <div class="modal-card">
-            <span class="modal-close-btn" onclick="closeModal('wishlistModal')">&times;</span>
-            <h3 style="margin-bottom:10px;">📌 Saved Items (Wishlist)</h3>
-            <p style="color:#666; font-size:0.9rem; margin:15px 0;">🚚</p>
-            <button class="btn-add" style="padding:8px;" onclick="closeModal('wishlistModal')">Close</button>
-        </div>
-    </div>
-
-    <!-- DELIVERY PARTNER FORM MODAL -->
-    <div id="deliveryModal" class="modal-overlay">
-       <div class="modal-card">
-            <span class="modal-close-btn" onclick="closeModal('deliveryModal')">&times;</span>
-            <h3 style="margin-bottom:10px;">🛵 Become a Delivery Partner</h3>
-            <p style="color:#666; font-size:0.85rem; margin-bottom:15px;">Earn up to ₹,8000 </p>
-            <input type="text" id="partnerName" class="input-field" placeholder="Full Name">
-            <input type="tel" id="partnerPhone" class="input-field" placeholder="Mobile Number">
-            <input type="text" id="partnerVehicle" class="input-field" placeholder="Vehicle Type (Bike / Scooter / Cycle)">
-            <button class="btn-add" style="padding:10px; margin-top:5px; background:#f8cb1c; color:#000;" onclick="submitDeliveryPartner()">Submit Application</button>
-        </div>
-    </div>
-
-    <!-- CUSTOM LOGOUT MODAL -->
-    <div id="logoutModal" class="modal-overlay">
-        <div class="modal-card">
-            <h3 style="margin-bottom:10px;">Confirm Logout</h3>
-            <p style="color:#666; font-size:0.9rem; margin-bottom:20px;">Kya aap sach mein logout karna chahte hain?</p>
-            <div style="display:flex; gap:10px;">
-                <button class="btn-add" style="background:#e74c3c; color:white;" onclick="executeLogout()">Haan, Logout</button>
-                <button class="btn-add" style="background:#777; color:white;" onclick="closeModal('logoutModal')">Nahi</button>
+        <div style="padding: 16px;">
+            <div style="background: #FFF; padding: 16px; border-radius: 12px;">
+                <div style="font-weight: 800; margin-bottom: 8px;">Telegram Bot Configuration</div>
+                <label style="font-size: 12px; font-weight: 700;">Bot Token:</label>
+                <input type="text" id="botTokenInput" value="8735436494:AAGWN69EV9j2b89kielRj5PSOPsh0JY4uxY" style="width: 100%; padding: 8px; border-radius: 8px; border: 1px solid #E2E8F0; margin-bottom: 10px;">
+                <label style="font-size: 12px; font-weight: 700;">Chat ID:</label>
+                <input type="text" id="chatIdInput" value="-8024913770" style="width: 100%; padding: 8px; border-radius: 8px; border: 1px solid #E2E8F0; margin-bottom: 12px;">
+                <button style="background: var(--dhawanmart-green); color: #FFF; border: none; padding: 10px; border-radius: 8px; font-weight: 800; width: 100%;" onclick="alert('Saved!')">Save Configuration</button>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- BOTTOM NAV -->
-    <nav class="bottom-nav">
-        <button class="nav-btn active" onclick="switchPage('homePage', this)">
-            <span>🏠</span> Home
-        </button>
-        <button class="nav-btn" onclick="switchPage('categoryPage', this)">
-            <span>📁</span> Category
-        </button>
-        <button class="nav-btn" onclick="switchPage('cartPage', this)">
-            <span>🛒</span> Cart (<span id="cartCount">0</span>)
-        </button>
-        <button class="nav-btn" onclick="switchPage('profilePage', this)">
-            <span>👤</span> Profile
-        </button>
-    </nav>
-
-    <script>
-        var TELEGRAM_BOT_TOKEN = "8735436494:AAGWN69EV9j2b89kielRj5pSOPsh0JY4uxY";
-        var TELEGRAM_CHAT_ID = "8024913770";
-        var TELEGRAM_BOT_USERNAME = "@dhawan_mart_bot";
-        var ADMIN_UPI_ID = "8764578505@ybl";
-
-        var fallbackImg = "data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%22200%22%20height%3D%22200%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Crect%20width%3D%22100%25%22%20height%3D%22100%25%22%20fill%3D%22%23f0f0f0%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2250%25%22%20font-size%3D%2218%22%20text-anchor%3D%22middle%22%20fill%3D%22%23666%22%3EDhawanmart%3C%2Ftext%3E%3C%2Fsvg%3E";
-
-        var products = [
+<script>
+    const productsList = [
             { id: 1, name: "Matchbox Pack", pkg: "Box", price: 5, img: "https://i.pinimg.com/originals/66/36/88/6636889e7781ab791d5151332ee374d8.jpg" },
             { id: 2, name: "dairymilk Chocolates", pkg: "box", price: 10, img: "https://m.media-amazon.com/images/I/61qvMq1Pd0L.jpg"},
             { id: 3, name: "coconut oil", pkg: "Single Strip", price: 10, img: "https://tse3.mm.bing.net/th/id/OIP.RlICOJThFdFr9Z-PBf81kwHaHa?r=0&rs=1&pid=ImgDetMain&o=7&rm=3"  },
@@ -326,385 +457,84 @@
             { id: 88, name: "Ambrane 10000mAh Power Bank", pkg: "Box Pack", price: 899, img:"data:image/webp;base64,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" },
             { id: 89, name: "Boat Rockerz Bluetooth Neckband", pkg: "Box Pack", price: 999, img: "https://th.bing.com/th/id/OIP.xH7Pu5KFA_3uxwCofBJKEAAAAA?w=216&h=199&c=7&r=0&o=7&dpr=1.5&pid=1.7&rm=3"},
             { id: 90, name: "Philips Dry Iron Box 1000W", pkg: "Box Pack", price: 999, img: "data:image/webp;base64,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" }
-        
-        
         ];
+        
+        let cart = {};
 
-        var cart = [];
-        var savedAddress = "";
+    function renderProducts() {
+        const grid = document.getElementById('productGrid');
+        const query = document.getElementById('searchInput').value.toLowerCase();
+        grid.innerHTML = products.filter(p => p.name.toLowerCase().includes(query)).map(p => {
+            const qty = cart[p.id] || 0;
+            return `
+                <div class="product-card">
+                    <div class="product-img-box">${p.name.substring(0, 2).toUpperCase()}</div>
+                    <div style="font-size: 11px; color: #666;">${p.weight}</div>
+                    <div style="font-size: 13px; font-weight: 700; margin-bottom: 8px;">${p.name}</div>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div style="font-size: 15px; font-weight: 800;">₹${p.price}</div>
+                        ${qty === 0 ? `<button class="add-btn" onclick="addToCart('${p.id}')">ADD</button>` : `
+                            <div class="counter-btn">
+                                <span onclick="decrementCart('${p.id}')">-</span>
+                                <span>${qty}</span>
+                                <span onclick="addToCart('${p.id}')">+</span>
+                            </div>
+                        `}
+                    </div>
+                </div>
+            `;
+        }).join('');
+        lucide.createIcons();
+    }
 
-        // SWITCH PAGE
-        function switchPage(pageId, btnElement) {
-            var pages = document.querySelectorAll('.page');
-            for(var i = 0; i < pages.length; i++) pages[i].classList.remove('active');
+    function addToCart(id) { cart[id] = (cart[id] || 0) + 1; updateUI(); }
+    function decrementCart(id) { if (cart[id]) { cart[id]--; if (cart[id] <= 0) delete cart[id]; } updateUI(); }
+    function filterProducts() { renderProducts(); }
 
-            var navBtns = document.querySelectorAll('.nav-btn');
-            for(var j = 0; j < navBtns.length; j++) navBtns[j].classList.remove('active');
+    function updateUI() {
+        renderProducts();
+        let totalCount = 0, totalPrice = 0;
+        Object.keys(cart).forEach(id => {
+            const p = products.find(prod => prod.id === id);
+            totalCount += cart[id];
+            totalPrice += p.price * cart[id];
+        });
 
-            document.getElementById(pageId).classList.add('active');
-            
-            if(btnElement) {
-                btnElement.classList.add('active');
-            } else {
-                if(pageId === 'homePage') navBtns[0].classList.add('active');
-                if(pageId === 'categoryPage') navBtns[1].classList.add('active');
-                if(pageId === 'cartPage') navBtns[2].classList.add('active');
-                if(pageId === 'profilePage') navBtns[3].classList.add('active');
-            }
-
-            var searchBar = document.getElementById('searchContainer');
-            if(pageId === 'profilePage') searchBar.style.display = 'none';
-            else searchBar.style.display = 'block';
-
-            if(pageId === 'cartPage') renderCart();
+        const floatBar = document.getElementById('floatingCart');
+        if (totalCount > 0) {
+            floatBar.classList.add('visible');
+            document.getElementById('cartCountText').innerText = `${totalCount} ITEM${totalCount > 1 ? 'S' : ''}`;
+            document.getElementById('cartPriceText').innerText = `₹${totalPrice.toFixed(2)}`;
+        } else {
+            floatBar.classList.remove('visible');
         }
 
-        // MODAL CONTROLS
-        function closeModal(modalId) {
-            document.getElementById(modalId).style.display = 'none';
-        }
+        const grandTotal = totalPrice > 0 ? totalPrice + 5 : 0;
+        document.getElementById('billSubtotal').innerText = `₹${totalPrice.toFixed(2)}`;
+        document.getElementById('billGrandTotal').innerText = `₹${grandTotal.toFixed(2)}`;
+        document.getElementById('checkoutTotalText').innerText = `₹${grandTotal.toFixed(2)}`;
 
-        function openLoginModal() {
-            document.getElementById('loginModal').style.display = 'flex';
-        }
+        document.getElementById('cartItemsList').innerHTML = Object.keys(cart).map(id => {
+            const p = products.find(prod => prod.id === id);
+            return `<div style="display: flex; justify-content: space-between; margin-bottom: 6px;"><div>${p.name} (x${cart[id]})</div><div>₹${(p.price * cart[id]).toFixed(2)}</div></div>`;
+        }).join('');
+    }
 
-        function submitLogin() {
-            var phone = document.getElementById('loginPhoneInput').value.trim();
-            if(phone.length >= 10) {
-                document.getElementById('displayUserPhone').innerText = "+91 " + phone;
-                document.getElementById('headerLoginBtn').innerText = "Verified ✓";
-                alert("✅ Successfully Logged In!");
-                closeModal('loginModal');
-            } else {
-                alert("Kripya sahi 10-digit mobile number daalein!");
-            }
-        }
+    function openCartScreen() { document.getElementById('cartModal').classList.add('active'); }
+    function closeCartScreen() { document.getElementById('cartModal').classList.remove('active'); }
+    function openProfileScreen() { document.getElementById('profileModal').classList.add('active'); }
+    function closeProfileScreen() { document.getElementById('profileModal').classList.remove('active'); }
 
-        // EDIT PROFILE MODAL LOGIC
-        function openEditProfileModal() {
-            var currentName = document.getElementById('displayUserName').innerText;
-            var currentPhone = document.getElementById('displayUserPhone').innerText.replace("+91 ", "");
-            
-            document.getElementById('editNameInput').value = currentName;
-            document.getElementById('editPhoneInput').value = currentPhone;
-            document.getElementById('editImageInput').value = "";
-            document.getElementById('editProfileModal').style.display = 'flex';
-        }
+    async function placeOrder() {
+        const orderId = Math.floor(100000 + Math.random() * 900000);
+        alert(`🎉 Order #DM-${orderId} Placed Successfully! Sending notification via Telegram Bot...`);
+        cart = {};
+        updateUI();
+        closeCartScreen();
+    }
 
-        function saveProfileChanges() {
-            var newName = document.getElementById('editNameInput').value.trim();
-            var newPhone = document.getElementById('editPhoneInput').value.trim();
-            var newImg = document.getElementById('editImageInput').value.trim();
-
-            if(newName) document.getElementById('displayUserName').innerText = newName;
-            if(newPhone) document.getElementById('displayUserPhone').innerText = "+91 " + newPhone;
-            if(newImg) document.getElementById('profileImage').src = newImg;
-
-            alert("✅ Profile Updated Successfully!");
-            closeModal('editProfileModal');
-        }
-
-        // PROFILE OPTIONS ROUTER (NO PROMPTS NOW)
-        function handleProfileOption(opt) {
-            if (opt === '1') {
-                openEditProfileModal();
-            } else if (opt === '2') {
-                document.getElementById('deliveryModal').style.display = 'flex';
-            } else if (opt === '3') {
-                switchPage('cartPage');
-            } else if (opt === '4') {
-                document.getElementById('wishlistModal').style.display = 'flex';
-            } else if (opt === '5') {
-                document.getElementById('addressInput').value = savedAddress;
-                document.getElementById('addressModal').style.display = 'flex';
-            } else if (opt === '6') {
-                window.open("https://t.me/" + TELEGRAM_BOT_USERNAME, '_blank');
-            } else if (opt === '7') {
-                document.getElementById('logoutModal').style.display = 'flex';
-            }
-        }
-
-        function saveAddressModal() {
-            var addr = document.getElementById('addressInput').value.trim();
-            if(addr) {
-                savedAddress = addr;
-                alert("✅ Delivery Address Saved!");
-                closeModal('addressModal');
-            } else {
-                alert("Kripya address daalein!");
-            }
-        }
-
-        function executeLogout() {
-            location.reload();
-        }
-
-        function submitDeliveryPartner() {
-            var name = document.getElementById('partnerName').value.trim();
-            var phone = document.getElementById('partnerPhone').value.trim();
-            var vehicle = document.getElementById('partnerVehicle').value.trim();
-
-            if(name && phone && vehicle) {
-                alert("🎉 Dhanyawad " + name + "! Aapka Delivery Partner application submit ho gaya hai.");
-                closeModal('deliveryModal');
-            } else {
-                alert("Kripya saari details bharein!");
-            }
-        }
-
-        // RENDER PRODUCTS
-        function renderProducts(items, containerId) {
-            var container = document.getElementById(containerId);
-            if(!container) return;
-            container.innerHTML = "";
-
-            if(items.length === 0) {
-                container.innerHTML = "<p style='grid-column:1/-1;'>No products found.</p>";
-                return;
-            }
-
-            for(var i = 0; i < items.length; i++) {
-                var p = items[i];
-                var imgSource = (p.img && p.img !== "") ? p.img : fallbackImg;
-                
-                var card = document.createElement('div');
-                card.className = 'product-card';
-                card.innerHTML = 
-                    '<img src="' + imgSource + '" onclick="openProductDetails(' + p.id + ')" onerror="this.src=\'' + fallbackImg + '\'">' +
-                    '<div>' +
-                        '<div class="product-title" onclick="openProductDetails(' + p.id + ')">' + p.name + '</div>' +
-                        '<div class="product-price">₹' + p.price + '</div>' +
-                    '</div>' +
-                    '<button class="btn-add" onclick="addToCart(' + p.id + ')">ADD</button>';
-                container.appendChild(card);
-            }
-        }
-
-        // OPEN PRODUCT DETAILS MODAL
-        function openProductDetails(id) {
-            var prod = null;
-            for(var i = 0; i < products.length; i++) {
-                if(products[i].id === id) { prod = products[i]; break; }
-            }
-            if(!prod) return;
-
-            document.getElementById('modalImg').src = (prod.img && prod.img !== "") ? prod.img : fallbackImg;
-            document.getElementById('modalTitle').innerText = prod.name;
-            document.getElementById('modalCategory').innerText = "Category: " + prod.category;
-            document.getElementById('modalPrice').innerText = "₹" + prod.price;
-            document.getElementById('modalDesc').innerText = prod.desc;
-
-            var addBtn = document.getElementById('modalAddCartBtn');
-            addBtn.onclick = function() {
-                addToCart(prod.id);
-                closeModal('productModal');
-            };
-
-            document.getElementById('productModal').style.display = 'flex';
-        }
-
-        // SELECT CATEGORY
-        function selectCategory(catName, btnElement) {
-            var btns = document.querySelectorAll('.category-btn');
-            for(var i = 0; i < btns.length; i++) btns[i].classList.remove('active');
-            if(btnElement) btnElement.classList.add('active');
-
-            if(catName === 'All') {
-                renderProducts(products, 'categoryProductGrid');
-            } else {
-                var filtered = [];
-                for(var j = 0; j < products.length; j++) {
-                    if(products[j].category.toLowerCase() === catName.toLowerCase()) filtered.push(products[j]);
-                }
-                renderProducts(filtered, 'categoryProductGrid');
-            }
-        }
-
-        // ADD TO CART
-        function addToCart(id) {
-            var prod = null;
-            for(var i = 0; i < products.length; i++) {
-                if(products[i].id === id) { prod = products[i]; break; }
-            }
-            if(prod) {
-                cart.push(prod);
-                document.getElementById('cartCount').innerText = cart.length;
-            }
-        }
-
-        // RENDER CART
-        function renderCart() {
-            var container = document.getElementById('cartContainer');
-            var paymentSec = document.getElementById('paymentSection');
-            if(!container) return;
-
-            paymentSec.style.display = "none";
-            container.style.display = "block";
-            container.innerHTML = "";
-
-            if(cart.length === 0) {
-                container.innerHTML = '<div style="text-align:center; padding:30px; color:#777;">🛒 Your cart is empty</div>';
-                return;
-            }
-
-            var total = 0;
-            for(var i = 0; i < cart.length; i++) {
-                total += cart[i].price;
-                var div = document.createElement('div');
-                div.className = 'cart-item';
-                div.innerHTML = 
-                    '<div><strong>' + cart[i].name + '</strong><div style="color:#0c831f; font-weight:bold;">₹' + cart[i].price + '</div></div>' +
-                    '<button style="background:#e74c3c; color:white; border:none; padding:6px 12px; border-radius:4px; cursor:pointer;" onclick="removeFromCart(' + i + ')">Remove</button>';
-                container.appendChild(div);
-            }
-
-            var totalDiv = document.createElement('div');
-            totalDiv.style.marginTop = "20px";
-            totalDiv.style.fontWeight = "bold";
-            totalDiv.style.fontSize = "1.1rem";
-            totalDiv.innerHTML = "Total Amount: ₹" + total;
-            container.appendChild(totalDiv);
-
-            var payBtn = document.createElement('button');
-            payBtn.className = 'btn-add';
-            payBtn.style.marginTop = '15px';
-            payBtn.style.padding = '12px';
-            payBtn.innerText = 'Proceed to Checkout';
-            payBtn.onclick = function() { showPaymentScreen(total); };
-            container.appendChild(payBtn);
-        }
-
-        function removeFromCart(index) {
-            cart.splice(index, 1);
-            document.getElementById('cartCount').innerText = cart.length;
-            renderCart();
-        }
-
-        // PAYMENT SCREEN
-        function showPaymentScreen(totalAmount) {
-            var container = document.getElementById('cartContainer');
-            var paymentSec = document.getElementById('paymentSection');
-
-            container.style.display = "none";
-            paymentSec.style.display = "block";
-
-            var upiLink = "upi://pay?pa=" + ADMIN_UPI_ID + "&pn=Dhawanmart&am=" + totalAmount + "&cu=INR";
-            var qrApiUrl = "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=" + encodeURIComponent(upiLink);
-
-            paymentSec.innerHTML = 
-                '<div class="payment-box">' +
-                    '<h3>Select Payment Mode</h3>' +
-                    '<div style="margin: 15px 0; text-align: left; background: #f9f9f9; padding: 10px; border-radius: 6px; border:1px solid #eee;">' +
-                        '<label style="display:block; margin-bottom:10px; cursor:pointer;">' +
-                            '<input type="radio" name="payMode" value="COD" checked onclick="togglePayMode(\'COD\')"> 💵 Cash on Delivery (COD)' +
-                        '</label>' +
-                        '<label style="display:block; cursor:pointer;">' +
-                            '<input type="radio" name="payMode" value="UPI" onclick="togglePayMode(\'UPI\')"> 📱 Online UPI / QR Code' +
-                        '</label>' +
-                    '</div>' +
-
-                    '<div id="upiArea" style="display:none; margin-bottom:15px;">' +
-                        '<p style="color:#666; font-size:0.85rem;">Scan & Pay <strong>₹' + totalAmount + '</strong></p>' +
-                        '<img src="' + qrApiUrl + '" class="qr-img" alt="UPI QR">' +
-                        '<p style="font-size:0.85rem;"><strong>UPI ID:</strong> ' + ADMIN_UPI_ID + '</p>' +
-                    '</div>' +
-
-                    '<hr style="margin:15px 0; border:0; border-top:1px solid #eee;">' +
-                    '<h4>Delivery Details</h4>' +
-                    '<input type="text" id="custName" class="input-field" placeholder="Full Name" value="' + document.getElementById('displayUserName').innerText + '">' +
-                    '<input type="tel" id="custPhone" class="input-field" placeholder="Mobile Number" value="' + document.getElementById('displayUserPhone').innerText + '">' +
-                    '<input type="text" id="custAddress" class="input-field" placeholder="Full Delivery Address (House No, Street, City)" value="' + savedAddress + '">' +
-                    '<input type="text" id="custUtr" class="input-field" placeholder="UPI UTR / Transaction ID" style="display:none;">' +
-                    
-                    '<button class="btn-add" style="margin-top:10px; padding:12px; background:#f8cb1c; color:#000;" onclick="confirmAndSendOrder(' + totalAmount + ')">Place Order Now</button>' +
-                    '<button class="btn-add" style="margin-top:8px; background:#777; padding:8px;" onclick="renderCart()">Back to Cart</button>' +
-                '</div>';
-        }
-
-        function togglePayMode(mode) {
-            var upiArea = document.getElementById('upiArea');
-            var custUtr = document.getElementById('custUtr');
-            if (mode === 'UPI') {
-                upiArea.style.display = 'block';
-                custUtr.style.display = 'block';
-            } else {
-                upiArea.style.display = 'none';
-                custUtr.style.display = 'none';
-            }
-        }
-
-        function confirmAndSendOrder(totalAmount) {
-            var payModeRadio = document.querySelector('input[name="payMode"]:checked');
-            var payMode = payModeRadio ? payModeRadio.value : 'COD';
-
-            var name = document.getElementById('custName').value.trim();
-            var phone = document.getElementById('custPhone').value.trim();
-            var address = document.getElementById('custAddress').value.trim();
-            var utr = document.getElementById('custUtr').value.trim();
-
-            if(!name || !phone || !address) {
-                alert("Kripya Naam, Phone aur Full Address bharein!");
-                return;
-            }
-
-            if(payMode === 'UPI' && !utr) {
-                alert("Online payment ke liye UTR ID zaroori hai!");
-                return;
-            }
-
-            if(TELEGRAM_BOT_TOKEN === "YOUR_BOT_TOKEN_HERE") {
-                alert("Pehle script me Telegram Bot Token daalein!");
-                return;
-            }
-
-            var orderMsg = "🚨 *NEW ORDER - DHAWANMART*\n\n" +
-                           "💳 *Payment Mode:* " + (payMode === 'COD' ? '💵 CASH ON DELIVERY' : '📱 ONLINE UPI') + "\n" +
-                           "👤 *Name:* " + name + "\n" +
-                           "📞 *Phone:* " + phone + "\n" +
-                           "🏠 *Address:* " + address + "\n";
-
-            if(payMode === 'UPI') orderMsg += "🔢 *UTR ID:* `" + utr + "`\n";
-
-            orderMsg += "\n📦 *ITEMS:* \n";
-            for(var i = 0; i < cart.length; i++) {
-                orderMsg += (i + 1) + ". " + cart[i].name + " - ₹" + cart[i].price + "\n";
-            }
-            orderMsg += "\n💰 *Total:* ₹" + totalAmount;
-
-            fetch("https://api.telegram.org/bot" + TELEGRAM_BOT_TOKEN + "/sendMessage", {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text: orderMsg, parse_mode: 'Markdown' })
-            })
-            .then(function(res) { return res.json(); })
-            .then(function(data) {
-                if(data.ok) {
-                    alert("✅ Order Placed Successfully! Will be delivered in 10 mins.");
-                    cart = [];
-                    document.getElementById('cartCount').innerText = 0;
-                    switchPage('homePage');
-                } else {
-                    alert("Telegram Bot Error!");
-                }
-            })
-            .catch(function() { alert("Network Error!"); });
-        }
-
-        function filterSearch() {
-            var query = document.getElementById('searchInput').value.toLowerCase();
-            var filtered = [];
-            for(var i = 0; i < products.length; i++) {
-                if(products[i].name.toLowerCase().indexOf(query) !== -1) filtered.push(products[i]);
-            }
-            var activePage = document.querySelector('.page.active').id;
-            if(activePage === 'homePage') renderProducts(filtered, 'homeProductGrid');
-            else if(activePage === 'categoryPage') renderProducts(filtered, 'categoryProductGrid');
-        }
-
-        window.onload = function() {
-            renderProducts(products, 'homeProductGrid');
-            renderProducts(products, 'categoryProductGrid');
-        };
-    </script>
+    renderProducts();
+    lucide.createIcons();
+</script>
 </body>
 </html>
