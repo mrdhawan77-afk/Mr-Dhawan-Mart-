@@ -2,232 +2,374 @@
 <html lang="hi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Dhawan Mart</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Content Security Policy -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' https: data:;">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <title>Dhawanmart App</title>
     <style>
         :root {
-            --primary: #2563eb;
-            --bg-color: #f1f5f9;
-            --card-bg: #ffffff;
-            --text-main: #0f172a;
-            --text-muted: #64748b;
-            --success: #16a34a;
-            --buy-btn: #fbbf24;
+            --primary: #27ae60;
+            --dark: #2c3e50;
+            --light: #f8f9fa;
+            --danger: #e74c3c;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
-        body { background-color: var(--bg-color); color: var(--text-main); padding-bottom: 70px; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
 
-        header { background: #1e293b; color: #38bdf8; padding: 14px 20px; font-size: 20px; font-weight: 800; position: sticky; top: 0; z-index: 100; text-align: center; }
+        body {
+            background-color: var(--light);
+            color: #333;
+            padding-bottom: 80px;
+        }
 
-        .search-container { padding: 12px 15px 5px; }
-        .search-box { width: 100%; padding: 12px 20px; border: 1px solid #cbd5e1; border-radius: 25px; font-size: 14px; outline: none; }
+        /* HEADER FIX: Circle App Logo Support */
+        header {
+            background-color: var(--dark);
+            color: white;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
 
-        .page-view { display: none; padding: 10px 15px; }
-        .page-view.active { display: block; }
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
 
-        /* Double Column Grid */
-        .product-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
-        .product-card { background: var(--card-bg); border-radius: 12px; padding: 10px; border: 1px solid #e2e8f0; cursor: pointer; display: flex; flex-direction: column; }
-        .product-image { width: 100%; height: 110px; object-fit: cover; border-radius: 8px; margin-bottom: 8px; }
-        .product-title { font-size: 13px; font-weight: 600; margin-bottom: 4px; height: 34px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
-        .product-price { font-size: 15px; font-weight: bold; }
-        .status-tag { font-size: 11px; font-weight: 700; color: var(--success); margin-top: 2px; }
+        .app-logo-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            border: 2px solid var(--primary);
+        }
 
-        /* Categories */
-        .category-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 10px; }
-        .category-card { background: #fff; padding: 25px 10px; border-radius: 12px; text-align: center; font-weight: bold; border: 1px solid #e2e8f0; cursor: pointer; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .app-logo-circle img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
 
-        /* Profile Section */
-        .profile-card { background: #fff; border-radius: 12px; padding: 15px; border: 1px solid #e2e8f0; }
-        .user-header { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }
-        .avatar-wrapper { position: relative; width: 60px; height: 60px; }
-        .user-avatar { width: 60px; height: 60px; background: var(--primary); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: bold; overflow: hidden; object-fit: cover; }
-        .edit-avatar-icon { position: absolute; bottom: 0; right: 0; background: #000; color: #fff; border-radius: 50%; width: 20px; height: 20px; font-size: 11px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-        
-        .profile-menu-item { padding: 12px 0; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; font-size: 14px; font-weight: 600; cursor: pointer; }
+        .app-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
 
-        /* Modals & Overlays */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.7); z-index: 1000; justify-content: center; align-items: flex-end; }
-        .modal-content { background: #fff; border-radius: 20px 20px 0 0; width: 100%; max-width: 500px; padding: 20px; position: relative; max-height: 85vh; overflow-y: auto; }
-        .close-btn { position: absolute; top: 12px; right: 15px; font-size: 22px; cursor: pointer; color: var(--text-muted); background: #f1f5f9; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+        /* SEARCH BAR WRAPPER */
+        .search-container {
+            padding: 10px 20px;
+            background: #fff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
 
-        /* Form Controls */
-        .form-group { margin-bottom: 12px; text-align: left; }
-        .form-group label { font-size: 12px; font-weight: 600; color: var(--text-muted); display: block; margin-bottom: 4px; }
-        .form-group input, .form-group textarea { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 14px; outline: none; }
+        .search-bar {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid #ccc;
+            border-radius: 20px;
+            outline: none;
+        }
 
-        /* Buttons */
-        .btn-group { display: flex; gap: 10px; margin-top: 15px; }
-        .btn-add-cart { flex: 1; background: #e2e8f0; border: none; padding: 12px; border-radius: 8px; font-weight: 700; cursor: pointer; }
-        .btn-buy-now { flex: 1; background: var(--buy-btn); border: none; padding: 12px; border-radius: 8px; font-weight: 700; cursor: pointer; }
-        .btn-submit { width: 100%; background: var(--primary); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: 700; cursor: pointer; margin-top: 10px; }
+        /* MAIN LAYOUT */
+        .page {
+            display: none;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
 
-        /* Success Popup (Image 1 Fix) */
-        .success-box { text-align: center; padding: 20px 10px; }
-        .green-circle { width: 70px; height: 70px; background: #dcfce7; color: var(--success); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 36px; margin: 0 auto 15px; border: 3px solid var(--success); }
+        .page.active {
+            display: block;
+        }
 
-        /* Bottom Nav Bar */
-        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: #ffffff; display: flex; justify-content: space-around; padding: 8px 0; border-top: 1px solid #e2e8f0; z-index: 900; }
-        .nav-item { text-align: center; color: var(--text-muted); font-size: 11px; cursor: pointer; flex: 1; }
-        .nav-item.active { color: var(--primary); font-weight: bold; }
-        .nav-icon { font-size: 18px; display: block; margin-bottom: 2px; }
+        /* PRODUCT GRID FIX */
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 8px;
+            padding: 12px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .product-card img {
+            width: 100%;
+            height: 120px;
+            object-fit: contain;
+            border-radius: 5px;
+            margin-bottom: 8px;
+        }
+
+        .product-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 4px;
+        }
+
+        .product-price {
+            font-size: 1.1rem;
+            color: var(--primary);
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .btn-add {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            width: 100%;
+            text-align: center;
+        }
+
+        .btn-add:hover {
+            opacity: 0.9;
+        }
+
+        /* CATEGORY BUTTONS FIX */
+        .category-list {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+
+        .category-btn {
+            background: #e9ecef;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            white-space: nowrap;
+            font-weight: 500;
+        }
+
+        .category-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* CART LIST FIX */
+        .cart-item {
+            background: white;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .empty-msg {
+            text-align: center;
+            color: #777;
+            margin-top: 40px;
+            font-size: 1.1rem;
+        }
+
+        /* PROFILE OPTIONS FIX */
+        .profile-option-list {
+            list-style: none;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .profile-option-item {
+            padding: 15px 20px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 500;
+        }
+
+        .profile-option-item:last-child {
+            border-bottom: none;
+            color: var(--danger);
+        }
+
+        /* BOTTOM NAVIGATION BAR */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            border-top: 1px solid #ddd;
+            z-index: 100;
+        }
+
+        .nav-btn {
+            background: none;
+            border: none;
+            color: #777;
+            font-size: 0.85rem;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+        }
+
+        .nav-btn.active {
+            color: var(--primary);
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
 
-    <header>Dhawan Mart</header>
-
-    <div class="search-container">
-        <input type="text" id="searchInput" class="search-box" placeholder="Search products...">
-    </div>
-
-    <!-- HOME TAB -->
-    <div id="homePage" class="page-view active">
-        <div class="product-grid" id="productGrid"></div>
-    </div>
-
-    <!-- CATEGORY TAB (IMAGE 2 FIXED) -->
-    <div id="categoryPage" class="page-view">
-        <h3 style="margin-bottom: 10px;">Categories</h3>
-        <div class="category-grid">
-            <div class="category-card" onclick="filterByCategory('Grocery')">Grocery</div>
-            <div class="category-card" onclick="filterByCategory('Electronics')">Electronics</div>
-            <div class="category-card" onclick="filterByCategory('Fashion')">Fashion</div>
-            <div class="category-card" onclick="filterByCategory('Personal Care')">Personal Care</div>
-        </div>
-    </div>
-
-    <!-- CART TAB -->
-    <div id="cartPage" class="page-view">
-        <h3>Your Shopping Cart</h3>
-        <div id="cartItemsList" style="margin-top: 15px; color: var(--text-muted);">Cart is empty.</div>
-    </div>
-
-    <!-- PROFILE TAB (IMAGE 3 FIXED) -->
-    <div id="profilePage" class="page-view">
-        <div class="profile-card">
-            <div class="user-header">
-                <div class="avatar-wrapper">
-                    <img id="avatarImg" class="user-avatar" src="https://via.placeholder.com/60?text=U" alt="Profile">
-                    <div class="edit-avatar-icon" onclick="document.getElementById('imageInput').click()">✏️</div>
-                    <input type="file" id="imageInput" accept="image/*" style="display:none" onchange="uploadProfileImage(event)">
-                </div>
-                <div>
-                    <div id="profDisplayName" style="font-weight: 700; font-size: 16px;">Dhawan User</div>
-                    <div id="profDisplayPhone" style="font-size: 12px; color: var(--text-muted);">+91 9876543210</div>
-                </div>
+    <!-- App Header -->
+    <header>
+        <div class="header-left">
+            <div class="app-logo-circle">
+                <img src="data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2240%22%20height%3D%2240%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Crect%20width%3D%22100%25%22%20height%3D%22100%25%22%20fill%3D%22%2327ae60%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2255%25%22%20font-size%3D%2220%22%20fill%3D%22white%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22middle%22%20font-weight%3D%22bold%22%3EDM%3C%2Ftext%3E%3C%2Fsvg%3E" alt="DM Logo">
             </div>
-
-            <!-- Form A & Form B Options -->
-            <div class="profile-menu-item" onclick="openModal('editProfileModal')"><span>👤 Edit Profile Details</span> <span>❯</span></div>
-            <div class="profile-menu-item" onclick="openModal('deliveryPartnerModal')"><span>🛵 Become Delivery Partner</span> <span>❯</span></div>
-            
-            <div class="profile-menu-item" onclick="alert('My Orders clicked')"><span>📦 My Orders</span> <span>❯</span></div>
-            <div class="profile-menu-item" onclick="alert('Saved Items clicked')"><span>❤️ Saved Items</span> <span>❯</span></div>
-            <div class="profile-menu-item" onclick="alert('Delivery Address clicked')"><span>📍 Delivery Address</span> <span>❯</span></div>
-            <div class="profile-menu-item" onclick="alert('Customer Support clicked')"><span>📞 Customer Support</span> <span>❯</span></div>
-            <div class="profile-menu-item" style="color: red; border: none;" onclick="alert('Logged out')"><span>🚪 Logout</span></div>
+            <span class="app-title">Dhawanmart</span>
         </div>
+    </header>
+
+    <!-- Search Bar Wrapper (Profile Page par HIDE rahega) -->
+    <div id="searchContainer" class="search-container">
+        <input type="text" id="searchInput" class="search-bar" placeholder="Search products in Dhawanmart..." onkeyup="filterSearch()">
     </div>
 
-    <!-- PRODUCT DETAIL MODAL -->
-    <div class="modal" id="productModal">
-        <div class="modal-content">
-            <span class="close-btn" onclick="closeModal('productModal')">&times;</span>
-            <img id="mImg" style="width:100%; height:180px; object-fit:cover; border-radius:10px;" src="" alt="">
-            <div id="mTitle" style="font-size: 16px; font-weight: 700; margin: 8px 0 4px;"></div>
-            <div id="mPrice" style="font-size: 18px; font-weight: 800;"></div>
-            <div class="status-tag">Available</div>
-            <div id="mDesc" style="font-size: 13px; color: var(--text-muted); margin: 10px 0; line-height: 1.4; background:#f8fafc; padding:8px; border-radius:6px;"></div>
-            <div class="btn-group">
-                <button class="btn-add-cart" onclick="addToCart()">Add to Cart</button>
-                <button class="btn-buy-now" onclick="triggerOrder()">Buy Now</button>
-            </div>
+    <!-- 1. HOME SCREEN -->
+    <div id="homePage" class="page active">
+        <h2>Featured Products</h2>
+        <div id="homeProductGrid" class="product-grid"></div>
+    </div>
+
+    <!-- 2. CATEGORY SCREEN -->
+    <div id="categoryPage" class="page">
+        <h2>Categories</h2>
+        <br>
+        <div class="category-list">
+            <button class="category-btn active" onclick="selectCategory('All')">All</button>
+            <button class="category-btn" onclick="selectCategory('Grocery')">Grocery</button>
+            <button class="category-btn" onclick="selectCategory('Electronics')">Electronics</button>
+            <button class="category-btn" onclick="selectCategory('Fashion')">Fashion</button>
+            <button class="category-btn" onclick="selectCategory('Personal Care')">Personal Care</button>
         </div>
+        <div id="categoryProductGrid" class="product-grid"></div>
     </div>
 
-    <!-- SUCCESS POPUP MODAL (FIXES IMAGE 1 BROWSER ALERT) -->
-    <div class="modal" id="successModal">
-        <div class="modal-content" style="border-radius:20px;">
-            <span class="close-btn" onclick="closeModal('successModal')">&times;</span>
-            <div class="success-box">
-                <div class="green-circle">✓</div>
-                <h2 style="color: var(--text-main); margin-bottom: 6px;">Congratulations!</h2>
-                <p id="successMsg" style="font-size: 14px; color: var(--text-muted);">Your order has been placed successfully.</p>
-            </div>
-        </div>
+    <!-- 3. CART SCREEN -->
+    <div id="cartPage" class="page">
+        <h2>Your Shopping Cart</h2>
+        <div id="cartContainer" style="margin-top:15px;"></div>
     </div>
 
-    <!-- FORM A: EDIT PROFILE MODAL -->
-    <div class="modal" id="editProfileModal">
-        <div class="modal-content">
-            <span class="close-btn" onclick="closeModal('editProfileModal')">&times;</span>
-            <h3 style="margin-bottom:15px;">Edit Profile</h3>
-            <div class="form-group"><label>Full Name</label><input type="text" id="pName" placeholder="Enter full name"></div>
-            <div class="form-group"><label>Mobile Number</label><input type="tel" id="pPhone" placeholder="Enter mobile number"></div>
-            <div class="form-group"><label>Email Address</label><input type="email" id="pEmail" placeholder="Enter email address"></div>
-            <div class="form-group"><label>Complete Address</label><textarea id="pAddress" rows="2" placeholder="Enter complete home address"></textarea></div>
-            <button class="btn-submit" onclick="saveProfileData()">Save Profile Details</button>
-        </div>
+    <!-- 4. PROFILE SCREEN (Search Bar Removed Here) -->
+    <div id="profilePage" class="page">
+        <h2>My Account</h2>
+        <br>
+        <ul class="profile-option-list">
+            <li class="profile-option-item" onclick="handleProfileOption('Edit Profile Details')">1. Edit Profile Details <span>&gt;</span></li>
+            <li class="profile-option-item" onclick="handleProfileOption('Become Delivery Partner')">2. Become Delivery Partner <span>&gt;</span></li>
+            <li class="profile-option-item" onclick="handleProfileOption('My Orders')">3. My Orders <span>&gt;</span></li>
+            <li class="profile-option-item" onclick="handleProfileOption('Saved Items')">4. Saved Items (Wishlist) <span>&gt;</span></li>
+            <li class="profile-option-item" onclick="handleProfileOption('Delivery Address')">5. Delivery Address <span>&gt;</span></li>
+            <li class="profile-option-item" onclick="handleProfileOption('Customer Support')">6. Customer Support <span>&gt;</span></li>
+            <li class="profile-option-item" onclick="handleLogout()">7. Logout <span>&gt;</span></li>
+        </ul>
     </div>
 
-    <!-- FORM B: DELIVERY PARTNER MODAL -->
-    <div class="modal" id="deliveryPartnerModal">
-        <div class="modal-content">
-            <span class="close-btn" onclick="closeModal('deliveryPartnerModal')">&times;</span>
-            <h3 style="margin-bottom:15px;">Delivery Partner Registration</h3>
-            <div class="form-group"><label>Applicant Name</label><input type="text" id="dpName" placeholder="Enter your name"></div>
-            <div class="form-group"><label>Mobile Number</label><input type="tel" id="dpPhone" placeholder="Enter phone number"></div>
-            <div class="form-group"><label>Village / City Name</label><input type="text" id="dpVillage" placeholder="Enter village or city name"></div>
-            <div class="form-group"><label>Full Address</label><textarea id="dpAddress" rows="2" placeholder="Enter address"></textarea></div>
-            <button class="btn-submit" onclick="submitDeliveryPartner()">Submit</button>
-        </div>
-    </div>
-
-    <!-- BOTTOM NAVIGATION -->
-    <div class="bottom-nav">
-        <div class="nav-item active" onclick="switchPage('homePage', this)"><span class="nav-icon">🏠</span>Home</div>
-        <div class="nav-item" onclick="switchPage('categoryPage', this)"><span class="nav-icon">📁</span>Category</div>
-        <div class="nav-item" onclick="switchPage('cartPage', this)"><span class="nav-icon">🛒</span>Cart</div>
-        <div class="nav-item" onclick="switchPage('profilePage', this)"><span class="nav-icon">👤</span>Profile</div>
-    </div>
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <button class="nav-btn active" onclick="switchPage('homePage', this)">
+            <span>🏠</span> Home
+        </button>
+        <button class="nav-btn" onclick="switchPage('categoryPage', this)">
+            <span>📁</span> Category
+        </button>
+        <button class="nav-btn" onclick="switchPage('cartPage', this)">
+            <span>🛒</span> Cart (<span id="cartCount">0</span>)
+        </button>
+        <button class="nav-btn" onclick="switchPage('profilePage', this)">
+            <span>👤</span> Profile
+        </button>
+    </nav>
 
     <script>
-        // CONFIGURATION (Apna Telegram Bot Token aur Chat ID yahan daalein)
-        const BOT_TOKEN = "8735436494:AAGWN69EV9j2b89kielRj5PSOPsh0JY4uxY";
-        const CHAT_ID = "8024913770";
-        const ADMIN_WHATSAPP = "918690631139"; // Aapka WhatsApp Number
+        // ==========================================
+        // TELEGRAM BOT CONFIGURATION (Fill your details)
+        // ==========================================
+        const TELEGRAM_BOT_TOKEN = "8735436494:AAGWN69EV9j2b89kielRj5PSOPsh0JY4uxY"; // Example: "123456789:ABCdefGHI..."
+        const TELEGRAM_CHAT_ID = "8024913770";     // Example: "987654321"
 
-        const productsList = [
-            {  name: "Matchbox Pack", pkg: "Box", price: 5, img: "https://i.pinimg.com/originals/66/36/88/6636889e7781ab791d5151332ee374d8.jpg" },
-            {  name: "dairymilk Chocolates", pkg: "box", price: 10, img: "https://m.media-amazon.com/images/I/61qvMq1Pd0L.jpg"},
-            {  name: "coconut oil", pkg: "Single Strip", price: 10, img: "https://tse3.mm.bing.net/th/id/OIP.RlICOJThFdFr9Z-PBf81kwHaHa?r=0&rs=1&pid=ImgDetMain&o=7&rm=3"  },
-            {  name: "Clinic Plus Shampoo ", pkg: "Sachet", price: 59, img: "https://instamart-media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto/NI_CATALOG/IMAGES/CIW/2026/3/18/9de1b103-21e3-4dae-8af0-cb0df54eead8_42663_1.png" },
-            {  name: "Bajaj Almond Hair Oil ", pkg: "Sachet", price: 179, img: "https://5.imimg.com/data5/SELLER/Default/2026/2/581157802/JO/HU/LG/240309587/bajaj-almond-drops-hair-oil-200ml-1000x1000.jpeg" },
-            {  name: "Eno powder", pkg: "Sachet", price: 10, img: "https://newassets.apollo247.com/pub/media/catalog/product/e/n/eno0008.jpg" },
-            {  name: "Parle-G Small Pack", pkg: "Wrapper", price: 99, img: "https://5.imimg.com/data5/SELLER/Default/2023/9/342395448/TR/LU/KX/31350683/parle-g-biscuit-24-packet-1000x1000.jpg" },
-            {  name: "Cello Butterflow Ball Pen", pkg: "Single Pen", price: 69, img: "https://www.bbassets.com/media/uploads/p/l/40293689_1-cello-butterflow-classic-ball-pen-for-smooth-writing-blue.jpg" },
-            {  name: "Lifebuoy Soap Bar Mini", pkg: "Wrapper", price: 36, img: "https://tse1.mm.bing.net/th/id/OIP.Rbi1JnITeOiHayvh9j2nOwHaFj?r=0&pid=ImgDet&w=474&h=355&rs=1&o=7&rm=3" },
-            {  name: " Detergent Soap Bar", pkg: "Wrapper", price: 47, img: "https://www.vridhistores.com/uploads/2023/Jul/products/16896191554898.jpg"},
-            {  name: "tomato Ketchup ", pkg: "Pouch", price: 10, img: "https://images.openfoodfacts.org/images/products/890/103/090/2932/front_en.5.full.jpg"},
-            {  name: "Crax Corn Rings", pkg: "Packet", price: 10, img: "https://crax.in/wp-content/uploads/2024/09/Rs5-tangy-tomato-front-wo5998x1227.png" },
-            {  name: "Colgate Toothpaste", pkg: "Tube", price: 10, img: "https://i5.walmartimages.com/seo/Colgate-Toothpaste-with-Cavity-Protection-Active-Fluoride-2-5-oz-1-Count-24-Packs-24-Total_63c056ca-6dd2-42af-a7d0-c535ec9d4523.9bd6451763409e4f58cbc171998b2ce9.jpeg" },
-            {  name: "Goldiee Turmeric Powder", pkg: "Pouch", price: 72, img: "https://www.goldieeonlinestore.com/cdn/shop/products/Haldi_Premium_815eaf57-f4c3-4512-aae1-11a2deeb8f2e_1024x1024.jpg?v=1591613722" },
-            {  name: "Maggi 2-Minute Noodles", pkg: "Pouch", price: 46, img: "https://m.media-amazon.com/images/I/818+KxkfbyL._AC_UL480_FMwebp_QL65_.jpg" },
-            {  name: "oreo (3 pack)", pkg: "wrapper", price: 70, img: "https://m.media-amazon.com/images/I/61RyeZgmW1L._AC_UL480_FMwebp_QL65_.jpg" },
-            {  name: "Lay’s Potato Chips Salted", pkg: "Packet", price: 20, img: "https://m.media-amazon.com/images/I/81oQOYKZHxL._AC_UL480_FMwebp_QL65_.jpg" },
-            {  name: "Kurkure Masala Munch", pkg: "Packet", price: 20, img: "https://m.media-amazon.com/images/I/81Tu78PWNUL._AC_UL480_FMwebp_QL65_.jpg" },
-            {  name: "Uncle Chipps Spicy Treat", pkg: "Packet", price: 70, img: "https://m.media-amazon.com/images/I/71IgXYBEjZL._AC_UL480_FMwebp_QL65_.jpg"},
-            {  name: "Bingo Mad chips", pkg: "Packet", price: 20, img: "https://m.media-amazon.com/images/I/91IW37hRJ9L._AC_UL480_FMwebp_QL65_.jpg"},
-            {  name: "Lizol Floor Cleaner Mini 100ml", pkg: "Bottle", price: 799, img: "https://5.imimg.com/data5/SELLER/Default/2025/5/510047542/GD/VC/HE/202686342/floor-cleaner-500x500.jpg" },
-            {  name: "oswal soap (pack of 4 pice)", pkg: "Wrapper", price: 140, img: "https://m.media-amazon.com/images/I/31b1ORnK9+L._AC_UL480_FMwebp_QL65_.jpg"},
-            { name: "Gillette Guard Shaving Razor", pkg: "Blister Pack", price: 149, img: "https://images.meesho.com/images/products/591580523/rarcv_512.avif?width=360" },
-            {  name: "cartridgas & Shaving Razor", pkg: "Blister Pack", price: 70, img: "https://images.meesho.com/images/products/480381628/9xosp_512.avif?width=360" },
-            {  name: "Dabur babool Toothpaste 50g", pkg: "Tube", price: 119, img: "https://images.meesho.com/images/products/537179488/hclb7_512.avif?width=360" },
-            {  name: "Tata Salt 1kg Pack", pkg: "Pouch", price: 34, img: "https://cdn.justgotochef.com/uploads/1522751768-Tata-Salt-Front.jpg"},
-            {  name: "Oreo Vanilla Biscuit", pkg: "Wrapper", price: 10, img: "https://m.media-amazon.com/images/I/61RyeZgmW1L._AC_UL480_FMwebp_QL65_.jpg" },
-            {  name: "Type-C OTG Adapter", pkg: "Blister Pack", price: 99, img: "https://m.media-amazon.com/images/I/51Fm7E8tMEL._AC_UY327_FMwebp_QL65_.jpg" },
+        // Master Product Array
+        const products = Object.freeze([
+            { id: 1, name: "Amul Butter 100g", category: "Grocery", price: 60, img: "https://th.bing.com/th/id/OIP.6Kbk4iQ1wYWf4R4byibVAwHaHa?w=178&h=180" },
+            { id: 2, name: "Fast Charging Cable Type-C", category: "Electronics", price: 199, img: "https://th.bing.com/th/id/OIP.PGAJzhY2nbatyor0Zfr4hQHaGM?w=225&h=188" },
+            { id: 3, name: "Men's Cotton T-Shirt", category: "Fashion", price: 399, img: "data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%22200%22%20height%3D%22200%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Crect%20width%3D%22100%25%22%20height%3D%22100%25%22%20fill%3D%22%23eee%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2250%25%22%20font-size%3D%2218%22%20text-anchor%3D%22middle%22%20fill%3D%22%23777%22%3ET-Shirt%3C%2Ftext%3E%3C%2Fsvg%3E" },
+            { id: 4, name: "Pond's Face Wash 100g", category: "Personal Care", price: 185, img: "https://th.bing.com/th/id/OIP.voTp60d35XxunIqTzjp5YAHaHa?w=188&h=188" },
+            { id: 5, name: "Britannia Good Day Butter", category: "Grocery", price: 30, img: "https://m.media-amazon.com/images/I/7134WCTHMoL._AC_UL480_FMwebp_QL65_.jpg" },
+            { id: 6, name: "Aux Cable 3.5mm Male to Male", category: "Electronics", price: 99, img: "https://th.bing.com/th/id/OIP.tMQLOmQP9edg-x-xvBFXHAHaHa?w=211&h=211" }
+            
+            { id: 1, name: "Matchbox Pack", pkg: "Box", price: 5, img: "https://i.pinimg.com/originals/66/36/88/6636889e7781ab791d5151332ee374d8.jpg" },
+            { id: 2, name: "dairymilk Chocolates", pkg: "box", price: 10, img: "https://m.media-amazon.com/images/I/61qvMq1Pd0L.jpg"},
+            { id: 3, name: "coconut oil", pkg: "Single Strip", price: 10, img: "https://tse3.mm.bing.net/th/id/OIP.RlICOJThFdFr9Z-PBf81kwHaHa?r=0&rs=1&pid=ImgDetMain&o=7&rm=3"  },
+            { id: 4, name: "Clinic Plus Shampoo ", pkg: "Sachet", price: 59, img: "https://instamart-media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto/NI_CATALOG/IMAGES/CIW/2026/3/18/9de1b103-21e3-4dae-8af0-cb0df54eead8_42663_1.png" },
+            { id: 5, name: "Bajaj Almond Hair Oil ", pkg: "Sachet", price: 179, img: "https://5.imimg.com/data5/SELLER/Default/2026/2/581157802/JO/HU/LG/240309587/bajaj-almond-drops-hair-oil-200ml-1000x1000.jpeg" },
+            { id: 6, name: "Eno powder", pkg: "Sachet", price: 10, img: "https://newassets.apollo247.com/pub/media/catalog/product/e/n/eno0008.jpg" },
+            { id: 7, name: "Parle-G Small Pack", pkg: "Wrapper", price: 99, img: "https://5.imimg.com/data5/SELLER/Default/2023/9/342395448/TR/LU/KX/31350683/parle-g-biscuit-24-packet-1000x1000.jpg" },
+            { id: 8, name: "Cello Butterflow Ball Pen", pkg: "Single Pen", price: 69, img: "https://www.bbassets.com/media/uploads/p/l/40293689_1-cello-butterflow-classic-ball-pen-for-smooth-writing-blue.jpg" },
+            { id: 9, name: "Lifebuoy Soap Bar Mini", pkg: "Wrapper", price: 36, img: "https://tse1.mm.bing.net/th/id/OIP.Rbi1JnITeOiHayvh9j2nOwHaFj?r=0&pid=ImgDet&w=474&h=355&rs=1&o=7&rm=3" },
+            { id: 10, name: " Detergent Soap Bar", pkg: "Wrapper", price: 47, img: "https://www.vridhistores.com/uploads/2023/Jul/products/16896191554898.jpg"},
+            { id: 11, name: "tomato Ketchup ", pkg: "Pouch", price: 10, img: "https://images.openfoodfacts.org/images/products/890/103/090/2932/front_en.5.full.jpg"},
+            { id: 12, name: "Crax Corn Rings", pkg: "Packet", price: 10, img: "https://crax.in/wp-content/uploads/2024/09/Rs5-tangy-tomato-front-wo5998x1227.png" },
+            { id: 13, name: "Colgate Toothpaste", pkg: "Tube", price: 10, img: "https://i5.walmartimages.com/seo/Colgate-Toothpaste-with-Cavity-Protection-Active-Fluoride-2-5-oz-1-Count-24-Packs-24-Total_63c056ca-6dd2-42af-a7d0-c535ec9d4523.9bd6451763409e4f58cbc171998b2ce9.jpeg" },
+            { id: 14, name: "Goldiee Turmeric Powder", pkg: "Pouch", price: 72, img: "https://www.goldieeonlinestore.com/cdn/shop/products/Haldi_Premium_815eaf57-f4c3-4512-aae1-11a2deeb8f2e_1024x1024.jpg?v=1591613722" },
+            { id: 15, name: "Maggi 2-Minute Noodles", pkg: "Pouch", price: 46, img: "https://m.media-amazon.com/images/I/818+KxkfbyL._AC_UL480_FMwebp_QL65_.jpg" },
+            { id: 16, name: "oreo (3 pack)", pkg: "wrapper", price: 70, img: "https://m.media-amazon.com/images/I/61RyeZgmW1L._AC_UL480_FMwebp_QL65_.jpg" },
+            { id: 17, name: "Lay’s Potato Chips Salted", pkg: "Packet", price: 20, img: "https://m.media-amazon.com/images/I/81oQOYKZHxL._AC_UL480_FMwebp_QL65_.jpg" },
+            { id: 18, name: "Kurkure Masala Munch", pkg: "Packet", price: 20, img: "https://m.media-amazon.com/images/I/81Tu78PWNUL._AC_UL480_FMwebp_QL65_.jpg" },
+            { id: 19, name: "Uncle Chipps Spicy Treat", pkg: "Packet", price: 70, img: "https://m.media-amazon.com/images/I/71IgXYBEjZL._AC_UL480_FMwebp_QL65_.jpg"},
+            { id: 20, name: "Bingo Mad chips", pkg: "Packet", price: 20, img: "https://m.media-amazon.com/images/I/91IW37hRJ9L._AC_UL480_FMwebp_QL65_.jpg"},
+            { id: 21, name: "Lizol Floor Cleaner Mini 100ml", pkg: "Bottle", price: 799, img: "https://5.imimg.com/data5/SELLER/Default/2025/5/510047542/GD/VC/HE/202686342/floor-cleaner-500x500.jpg" },
+            { id: 22, name: "oswal soap (pack of 4 pice)", pkg: "Wrapper", price: 140, img: "https://m.media-amazon.com/images/I/31b1ORnK9+L._AC_UL480_FMwebp_QL65_.jpg"},
+            { id: 23, name: "Gillette Guard Shaving Razor", pkg: "Blister Pack", price: 149, img: "https://images.meesho.com/images/products/591580523/rarcv_512.avif?width=360" },
+            { id: 23, name: "cartridgas & Shaving Razor", pkg: "Blister Pack", price: 70, img: "https://images.meesho.com/images/products/480381628/9xosp_512.avif?width=360" },
+            { id: 24, name: "Dabur babool Toothpaste 50g", pkg: "Tube", price: 119, img: "https://images.meesho.com/images/products/537179488/hclb7_512.avif?width=360" },
+            { id: 25, name: "Tata Salt 1kg Pack", pkg: "Pouch", price: 34, img: "https://cdn.justgotochef.com/uploads/1522751768-Tata-Salt-Front.jpg"},
+            { id: 26, name: "Oreo Vanilla Biscuit", pkg: "Wrapper", price: 10, img: "https://m.media-amazon.com/images/I/61RyeZgmW1L._AC_UL480_FMwebp_QL65_.jpg" },
+            { id: 27, name: "Type-C OTG Adapter", pkg: "Blister Pack", price: 99, img: "https://m.media-amazon.com/images/I/51Fm7E8tMEL._AC_UY327_FMwebp_QL65_.jpg" },
             { id: 28, name: "Britannia Bourbon Biscuits", pkg: "Wrapper", price: 50, img: "https://m.media-amazon.com/images/I/81c0jxRWx3L._AC_UL480_FMwebp_QL65_.jpg" },
             { id: 29, name: "Hide & Seek Chocolate Biscuits 200g", pkg: "Wrapper", price: 50, img: "https://m.media-amazon.com/images/I/71cw2JLKmvL._AC_UL480_FMwebp_QL65_.jpg" },
             { id: 30, name: "bikaneri Bhujia Sev 150g", pkg: "Packet", price: 216, img: "https://m.media-amazon.com/images/I/812T+cwA7vL._AC_UL480_FMwebp_QL65_.jpg"},
@@ -286,144 +428,219 @@
             { id: 88, name: "Ambrane 10000mAh Power Bank", pkg: "Box Pack", price: 899, img:"data:image/webp;base64,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" },
             { id: 89, name: "Boat Rockerz Bluetooth Neckband", pkg: "Box Pack", price: 999, img: "https://th.bing.com/th/id/OIP.xH7Pu5KFA_3uxwCofBJKEAAAAA?w=216&h=199&c=7&r=0&o=7&dpr=1.5&pid=1.7&rm=3"},
             { id: 90, name: "Philips Dry Iron Box 1000W", pkg: "Box Pack", price: 999, img: "data:image/webp;base64,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" }
-        ];
+        
+        ]);
 
-        let selectedProduct = null;
+        let cart = [];
 
-        function renderProducts(items) {
-            const grid = document.getElementById('productGrid');
-            grid.innerHTML = '';
+        // Input Sanitizer for Security
+        function sanitizeText(str) {
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        // Navigation Controller
+        function switchPage(pageId, btnElement) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+
+            document.getElementById(pageId).classList.add('active');
+            btnElement.classList.add('active');
+
+            // Hide search bar strictly on profile page
+            const searchBar = document.getElementById('searchContainer');
+            if (pageId === 'profilePage') {
+                searchBar.style.display = 'none';
+            } else {
+                searchBar.style.display = 'block';
+            }
+
+            if(pageId === 'cartPage') {
+                renderCart();
+            }
+        }
+
+        // Render Products Grid (Name & Price Included)
+        function renderProducts(items, containerId) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = "";
+
+            if(items.length === 0) {
+                container.innerHTML = "<p>No products found.</p>";
+                return;
+            }
+
             items.forEach(product => {
                 const card = document.createElement('div');
                 card.className = 'product-card';
                 card.innerHTML = `
-                    <img src="${product.img}" class="product-image">
-                    <div class="product-title">{product.name}</div>
-                    <div class="product-price">₹{product.price}</div>
-                    <div class="status-tag">Available</div>
+                    <img src="${product.img}" alt="${sanitizeText(product.name)}" onerror="this.src='data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%22200%22%20height%3D%22200%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Crect%20width%3D%22100%25%22%20height%3D%22100%25%22%20fill%3D%22%23eee%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2250%25%22%20font-size%3D%2216%22%20text-anchor%3D%22middle%22%20fill%3D%22%23aaa%22%3ENo%20Image%3C%2Ftext%3E%3C%2Fsvg%3E'">
+                    <div>
+                        <div class="product-title">${sanitizeText(product.name)}</div>
+                        <div class="product-price">₹${product.price}</div>
+                    </div>
+                    <button class="btn-add" onclick="addToCart(${product.id})">Add to Cart</button>
                 `;
-                card.onclick = () => openProductModal(product);
-                grid.appendChild(card);
+                container.appendChild(card);
             });
         }
 
-        function openProductModal(product) {
-            selectedProduct = product;
-            document.getElementById('mImg').src = product.img;
-            document.getElementById('mTitle').textContent = product.name;
-            document.getElementById('mPrice').textContent = '₹' + product.price;
-            document.getElementById('mDesc').textContent = product.desc;
-            openModal('productModal');
-        }
+        // Category Filter Logic
+        function selectCategory(catName) {
+            const btns = document.querySelectorAll('.category-btn');
+            btns.forEach(b => {
+                b.classList.toggle('active', b.innerText === catName);
+            });
 
-        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
-        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-
-        function switchPage(pageId, element) {
-            document.querySelectorAll('.page-view').forEach(p => p.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            document.getElementById(pageId).classList.add('active');
-            element.classList.add('active');
-        }
-
-        function filterByCategory(categoryName) {
-            const filtered = productsList.filter(p => p.category === categoryName);
-            renderProducts(filtered);
-            switchPage('homePage', document.querySelectorAll('.nav-item')[0]);
-        }
-
-        // Search logic
-        document.getElementById('searchInput').addEventListener('input', (e) => {
-            const q = e.target.value.toLowerCase().trim();
-            renderProducts(productsList.filter(p => p.name.toLowerCase().includes(q) || p.category.toLowerCase().includes(q)));
-        });
-
-        // Form A: Profile Data Handler
-        function saveProfileData() {
-            const profile = {
-                name: document.getElementById('pName').value || 'Dhawan User',
-                phone: document.getElementById('pPhone').value || '+91 9876543210',
-                email: document.getElementById('pEmail').value || 'Not Provided',
-                address: document.getElementById('pAddress').value || 'Not Provided'
-            };
-            localStorage.setItem('userProfile', JSON.stringify(profile));
-            document.getElementById('profDisplayName').textContent = profile.name;
-            document.getElementById('profDisplayPhone').textContent = profile.phone;
-            closeModal('editProfileModal');
-            showSuccessPopup('Profile updated successfully!');
-        }
-
-        function loadProfileData() {
-            const saved = localStorage.getItem('userProfile');
-            if (saved) {
-                const profile = JSON.parse(saved);
-                document.getElementById('pName').value = profile.name;
-                document.getElementById('pPhone').value = profile.phone;
-                document.getElementById('pEmail').value = profile.email;
-                document.getElementById('pAddress').value = profile.address;
-                document.getElementById('profDisplayName').textContent = profile.name;
-                document.getElementById('profDisplayPhone').textContent = profile.phone;
+            if (catName === 'All') {
+                renderProducts(products, 'categoryProductGrid');
+            } else {
+                const filtered = products.filter(p => p.category.toLowerCase() === catName.toLowerCase());
+                renderProducts(filtered, 'categoryProductGrid');
             }
         }
 
-        // Form B: Delivery Partner Registration
-        function submitDeliveryPartner() {
-            const name = document.getElementById('dpName').value;
-            const phone = document.getElementById('dpPhone').value;
-            const village = document.getElementById('dpVillage').value;
-            const address = document.getElementById('dpAddress').value;
-
-            if(!name || !phone) { alert("Please fill Name & Phone Number"); return; }
-
-            const msg = `🛵 *Delivery Partner Application*%0A*Name:* ${name}%0A*Phone:* ${phone}%0A*Village:* ${village}%0A*Address:* ${address}`;
-            window.open(`https://wa.me/${ADMIN_WHATSAPP}?text=${msg}`, '_blank');
-            closeModal('deliveryPartnerModal');
-        }
-
-        // Profile Image Upload
-        function uploadProfileImage(event) {
-            const reader = new FileReader();
-            reader.onload = function(){
-                document.getElementById('avatarImg').src = reader.result;
+        // Add to Cart
+        function addToCart(productId) {
+            const product = products.find(p => p.id === productId);
+            if (product) {
+                cart.push(product);
+                document.getElementById('cartCount').innerText = cart.length;
+                alert(`${product.name} Added to Cart!`);
             }
-            reader.readAsDataURL(event.target.files[0]);
         }
 
-        // Order Trigger & Telegram Integration
-        function triggerOrder() {
-            if(!selectedProduct) return;
-            closeModal('productModal');
+        // Render Cart Screen
+        function renderCart() {
+            const container = document.getElementById('cartContainer');
+            container.innerHTML = "";
 
-            const profile = JSON.parse(localStorage.getItem('userProfile') || '{}');
-            const custName = profile.name || "Customer";
-            const custPhone = profile.phone || "Not provided";
-            const custAddress = profile.address || "Not provided";
+            if (cart.length === 0) {
+                container.innerHTML = `<div class="empty-msg">🛒 Cart is Empty</div>`;
+                return;
+            }
 
-            const text = `🛍️ *NEW ORDER RECEIVED!*%0A%0A*Product:* ${selectedProduct.name}%0A*Price:* ₹${selectedProduct.price}%0A%0A👤 *Customer Details:*%0A*Name:* ${custName}%0A*Phone:* ${custPhone}%0A*Address:* ${custAddress}`;
+            let total = 0;
+            cart.forEach((item, index) => {
+                total += item.price;
+                const div = document.createElement('div');
+                div.className = 'cart-item';
+                div.innerHTML = `
+                    <div>
+                        <strong>${sanitizeText(item.name)}</strong>
+                        <div style="color:var(--primary); font-weight:bold;">₹${item.price}</div>
+                    </div>
+                    <button style="background:var(--danger); color:white; border:none; padding:6px 12px; border-radius:4px; cursor:pointer;" onclick="removeFromCart(${index})">Remove</button>
+                `;
+                container.appendChild(div);
+            });
 
-            // Send via Telegram API
-            fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+            const totalDiv = document.createElement('div');
+            totalDiv.style.marginTop = "20px";
+            totalDiv.style.fontWeight = "bold";
+            totalDiv.style.fontSize = "1.2rem";
+            totalDiv.innerHTML = `Total Amount: ₹${total}`;
+            container.appendChild(totalDiv);
+
+            // Place Order Button (Telegram Notification Trigger)
+            const orderBtn = document.createElement('button');
+            orderBtn.className = 'btn-add';
+            orderBtn.style.marginTop = '15px';
+            orderBtn.innerText = 'Place Order via Telegram';
+            orderBtn.onclick = placeOrder;
+            container.appendChild(orderBtn);
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            document.getElementById('cartCount').innerText = cart.length;
+            renderCart();
+        }
+
+        // Place Order Logic (Sends Cart Details to Admin Telegram Bot)
+        function placeOrder() {
+            if (cart.length === 0) {
+                alert("Aapka cart khali hai!");
+                return;
+            }
+
+            if (TELEGRAM_BOT_TOKEN === example "123456789:ABCdefGHI..." || TELEGRAM_CHAT_ID === example "987654321") {
+                alert("Please Code me APNA Telegram Bot Token aur Chat ID add karo!");
+                return;
+            }
+
+            let orderDetails = "🛍️ *NEW ORDER RECEIVED - DHAWANMART*\n\n";
+            let totalAmount = 0;
+
+            cart.forEach((item, index) => {
+                orderDetails += `${index + 1}. ${item.name} - ₹${item.price}\n`;
+                totalAmount += item.price;
+            });
+
+            orderDetails += `\n💰 *Total Amount:* ₹${totalAmount}`;
+
+            fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ chat_id: CHAT_ID, text: text, parse_mode: 'Markdown' })
-            }).catch(err => console.log("Telegram API Error: ", err));
-
-            showSuccessPopup(`Order placed for ${selectedProduct.name}`);
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    chat_id: TELEGRAM_CHAT_ID,
+                    text: orderDetails,
+                    parse_mode: 'Markdown'
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if(data.ok) {
+                    alert("Aapka Order Place ho gaya hai aur Admin ko notification bhej di gayi hai!");
+                    cart = [];
+                    document.getElementById('cartCount').innerText = 0;
+                    renderCart();
+                } else {
+                    alert("Order send karne me issue aaya. Bot Token/Chat ID check karein.");
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                alert("Network Error! Telegram Bot tak message nahi ja saka.");
+            });
         }
 
-        function addToCart() {
-            closeModal('productModal');
-            showSuccessPopup("Item added to cart successfully!");
+        // Live Search Filter
+        function filterSearch() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = products.filter(p => p.name.toLowerCase().includes(query));
+            
+            const activePage = document.querySelector('.page.active').id;
+            if(activePage === 'homePage') {
+                renderProducts(filtered, 'homeProductGrid');
+            } else if(activePage === 'categoryPage') {
+                renderProducts(filtered, 'categoryProductGrid');
+            }
         }
 
-        function showSuccessPopup(msg) {
-            document.getElementById('successMsg').textContent = msg;
-            openModal('successModal');
+        // Profile Menu Handling
+        function handleProfileOption(optionName) {
+            alert(`Opening: ${optionName}`);
         }
 
-        // Initial Execution
-        renderProducts(productsList);
-        loadProfileData();
+        function handleLogout() {
+            if(confirm("Are you sure you want to logout?")) {
+                cart = [];
+                document.getElementById('cartCount').innerText = 0;
+                alert("Logged out successfully.");
+                location.reload();
+            }
+        }
+
+        // Initializer
+        document.addEventListener("DOMContentLoaded", () => {
+            renderProducts(products, 'homeProductGrid');
+            renderProducts(products, 'categoryProductGrid');
+        });
     </script>
 </body>
 </html>
+
