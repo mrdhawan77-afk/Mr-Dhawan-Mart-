@@ -7,6 +7,9 @@
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
+    <!-- SweetAlert2 (For Success/Error Popups) -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <style>
         * {
             margin: 0;
@@ -15,310 +18,86 @@
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         }
 
-        body {
-            background-color: #f4f6fb;
-            padding-bottom: 80px;
-        }
+        body { background-color: #f4f6fb; }
 
-        /* --- BLINKIT STYLE GREEN HEADER --- */
-        header {
-            background-color: #0c831f;
-            color: white;
-            padding: 12px 16px;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
+        /* --- HEADER --- */
+        header { background-color: #0c831f; color: white; padding: 12px 16px; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .logo-container { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+        .md-logo { width: 36px; height: 36px; background: linear-gradient(135deg, #ffd700, #b8860b); color: #000; font-weight: 900; font-size: 16px; display: flex; align-items: center; justify-content: center; border-radius: 8px; border: 1px solid #fff; }
+        .brand-name { font-size: 20px; font-weight: 800; color: #fff; }
+        .delivery-badge { background-color: #fff; color: #0c831f; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 800; text-transform: uppercase; }
+        .search-container { position: relative; }
+        .search-container i { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #828282; }
+        .search-bar { width: 100%; padding: 12px 12px 12px 38px; border: none; border-radius: 10px; font-size: 14px; outline: none; background-color: #fff; }
 
-        .header-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-
-        .logo-container {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            cursor: pointer;
-        }
-
-        .md-logo {
-            width: 36px;
-            height: 36px;
-            background: linear-gradient(135deg, #ffd700, #b8860b);
-            color: #000;
-            font-weight: 900;
-            font-size: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 8px;
-            box-shadow: 0 0 8px rgba(255,215,0,0.6);
-            letter-spacing: 1px;
-            border: 1px solid #fff;
-        }
-
-        .brand-name {
-            font-size: 20px;
-            font-weight: 800;
-            color: #fff;
-            letter-spacing: -0.5px;
-        }
-
-        .delivery-badge {
-            background-color: #fff;
-            color: #0c831f;
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 800;
-            text-transform: uppercase;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-        }
-
-        .search-container {
-            position: relative;
-        }
-
-        .search-container i {
-            position: absolute;
-            left: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #828282;
-        }
-
-        .search-bar {
-            width: 100%;
-            padding: 12px 12px 12px 38px;
-            border: none;
-            border-radius: 10px;
-            font-size: 14px;
-            outline: none;
-            background-color: #fff;
-            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
-        }
+        /* --- TABS SYSTEM --- */
+        .page-section { display: none; padding-bottom: 80px; }
+        .page-section.active { display: block; }
 
         /* --- CATEGORIES --- */
-        .categories {
-            display: flex;
-            overflow-x: auto;
-            padding: 15px;
-            gap: 12px;
-            background: #fff;
-            scrollbar-width: none;
-        }
-
+        .categories { display: flex; overflow-x: auto; padding: 15px; gap: 12px; background: #fff; scrollbar-width: none; border-bottom:1px solid #eee;}
         .categories::-webkit-scrollbar { display: none; }
-
-        .category-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-width: 70px;
-            font-size: 12px;
-            color: #333;
-            font-weight: 600;
-        }
-
-        .category-img {
-            width: 55px;
-            height: 55px;
-            background-color: #eef7f0;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 6px;
-            font-size: 22px;
-            color: #0c831f;
-        }
+        .category-item { display: flex; flex-direction: column; align-items: center; min-width: 70px; font-size: 12px; color: #333; font-weight: 600; cursor: pointer; }
+        .category-img { width: 55px; height: 55px; background-color: #eef7f0; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 6px; font-size: 22px; color: #0c831f; }
 
         /* --- PRODUCT GRID --- */
-        .section-title {
-            padding: 15px 15px 5px 15px;
-            font-size: 18px;
-            font-weight: 700;
-            color: #1c1c1c;
-        }
-
-        .product-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-            padding: 12px 15px;
-        }
-
-        .product-card {
-            background: #fff;
-            border-radius: 12px;
-            padding: 12px;
-            border: 1px solid #e8e8e8;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-
-        .product-img {
-            width: 100%;
-            height: 110px;
-            object-fit: contain;
-            margin-bottom: 8px;
-        }
-
-        .product-time {
-            font-size: 10px;
-            color: #666;
-            background: #f0f0f0;
-            padding: 2px 6px;
-            border-radius: 4px;
-            width: max-content;
-            margin-bottom: 6px;
-            font-weight: 600;
-        }
-
-        .product-title {
-            font-size: 13px;
-            font-weight: 600;
-            color: #222;
-            line-height: 1.3;
-            height: 34px;
-            overflow: hidden;
-        }
-
-        .product-weight {
-            font-size: 11px;
-            color: #666;
-            margin: 4px 0 8px 0;
-        }
-
-        .product-bottom {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .price {
-            font-size: 14px;
-            font-weight: 700;
-            color: #000;
-        }
-
-        .add-btn {
-            background-color: #f7fff9;
-            color: #0c831f;
-            border: 1px solid #0c831f;
-            padding: 6px 16px;
-            border-radius: 6px;
-            font-weight: 700;
-            font-size: 12px;
-            cursor: pointer;
-            text-transform: uppercase;
-        }
+        .section-title { padding: 15px 15px 5px 15px; font-size: 18px; font-weight: 700; color: #1c1c1c; display:flex; justify-content:space-between;}
+        .product-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 12px 15px; }
+        .product-card { background: #fff; border-radius: 12px; padding: 12px; border: 1px solid #e8e8e8; display: flex; flex-direction: column; justify-content: space-between; position: relative; cursor:pointer;}
+        .product-img { width: 100%; height: 110px; object-fit: contain; margin-bottom: 8px; }
+        .product-time { font-size: 10px; color: #666; background: #f0f0f0; padding: 2px 6px; border-radius: 4px; width: max-content; margin-bottom: 6px; font-weight: 600; }
+        .product-title { font-size: 13px; font-weight: 600; color: #222; line-height: 1.3; height: 34px; overflow: hidden; }
+        .product-weight { font-size: 11px; color: #666; margin: 4px 0 8px 0; }
+        .product-bottom { display: flex; justify-content: space-between; align-items: center; }
+        .price { font-size: 14px; font-weight: 700; color: #000; }
+        .add-btn { background-color: #f7fff9; color: #0c831f; border: 1px solid #0c831f; padding: 6px 16px; border-radius: 6px; font-weight: 700; font-size: 12px; cursor: pointer; text-transform: uppercase; z-index:2; position: relative;}
 
         /* --- FLOATING CART STRIP --- */
-        .cart-bar {
-            position: fixed;
-            bottom: 60px;
-            left: 15px;
-            right: 15px;
-            background-color: #0c831f;
-            color: white;
-            padding: 12px 16px;
-            border-radius: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 4px 12px rgba(12, 131, 31, 0.4);
-            cursor: pointer;
-            z-index: 999;
-        }
+        .cart-bar { position: fixed; bottom: 60px; left: 15px; right: 15px; background-color: #0c831f; color: white; padding: 12px 16px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 12px rgba(12, 131, 31, 0.4); cursor: pointer; z-index: 999; }
 
         /* --- BOTTOM NAV --- */
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background: #fff;
-            display: flex;
-            justify-content: space-around;
-            padding: 10px 0;
-            border-top: 1px solid #eee;
-            z-index: 1000;
-        }
-
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            color: #777;
-            text-decoration: none;
-            font-size: 11px;
-            font-weight: 500;
-            cursor: pointer;
-        }
-
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: #fff; display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid #eee; z-index: 1000; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; color: #777; text-decoration: none; font-size: 11px; font-weight: 500; cursor: pointer; }
         .nav-item i { font-size: 18px; margin-bottom: 3px; }
         .nav-item.active { color: #0c831f; font-weight: 700; }
 
-        /* --- MODALS (LOGIN & CHECKOUT) --- */
-        .modal {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            z-index: 2000;
-            display: flex;
-            justify-content: center;
-            align-items: flex-end;
-        }
-
-        .modal-box {
-            background: #fff;
-            width: 100%;
-            max-width: 450px;
-            border-radius: 20px 20px 0 0;
-            padding: 20px;
-            position: relative;
-            max-height: 90vh;
-            overflow-y: auto;
-            animation: slideUp 0.3s ease-out;
-        }
-
-        @keyframes slideUp {
-            from { transform: translateY(100%); }
-            to { transform: translateY(0); }
-        }
-
-        .close-btn {
-            position: absolute;
-            top: 15px; right: 20px;
-            background: none; border: none;
-            font-size: 24px; color: #666; cursor: pointer;
-        }
-
+        /* --- MODALS --- */
+        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); z-index: 2000; display: flex; justify-content: center; align-items: flex-end; }
+        .modal-box { background: #fff; width: 100%; max-width: 450px; border-radius: 20px 20px 0 0; padding: 20px; position: relative; max-height: 90vh; overflow-y: auto; animation: slideUp 0.3s ease-out; }
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+        .close-btn { position: absolute; top: 15px; right: 20px; background: none; border: none; font-size: 24px; color: #666; cursor: pointer; z-index:10; }
+        
+        /* Form Inputs */
         .form-label { font-size: 12px; font-weight: 700; color: #333; margin: 8px 0 4px 0; display: block; }
-        .form-input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px; font-size: 13px; outline: none; }
-        .action-btn { width: 100%; background: #0c831f; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: 700; margin-top: 15px; cursor: pointer; }
+        .form-input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px; font-size: 13px; outline: none; margin-bottom:10px;}
+        .action-btn { width: 100%; background: #0c831f; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: 700; margin-top: 10px; cursor: pointer; }
         .pay-option { display: flex; align-items: center; gap: 10px; padding: 10px; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 8px; cursor: pointer; }
         .qr-box { text-align: center; background: #f7fff9; padding: 12px; border-radius: 10px; border: 1px dashed #0c831f; margin-top: 10px; }
+
+        /* Profile Menu Item */
+        .profile-menu-item { display:flex; justify-content:space-between; align-items:center; padding:15px; background:#fff; margin-bottom:10px; border-radius:10px; box-shadow:0 1px 3px rgba(0,0,0,0.05); cursor:pointer; font-weight:600; color:#444;}
+        
+        /* FULL PAGE MODAL */
+        .full-page-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #fff; z-index: 3000; overflow-y: auto; display: none; animation: fadeIn 0.2s ease-in; }
+        @keyframes fadeIn { from{opacity:0;} to{opacity:1;} }
+        .back-header { padding: 15px; position: sticky; top: 0; background: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.05); z-index: 10; }
+
+        /* Cart List Box */
+        .cart-item-list { max-height:180px; overflow-y:auto; border:1px solid #eee; border-radius:8px; padding:10px; margin-bottom:15px; background:#fafafa; font-size:13px;}
+        .cart-item-row { display:flex; justify-content:space-between; margin-bottom:8px; border-bottom:1px dashed #ddd; padding-bottom:8px;}
     </style>
 </head>
 <body>
 
     <!-- HEADER -->
-    <header>
+    <header id="mainHeader">
         <div class="header-top">
-            <div class="logo-container" onclick="openLogin()">
+            <div class="logo-container" onclick="openLoginModal()">
                 <div class="md-logo">MD</div>
                 <div class="brand-name">Dhawan Mart</div>
             </div>
-            <div class="delivery-badge">
-                <i class="fa-solid fa-truck-fast"></i> Delivery in 2 Days
-            </div>
+            <div class="delivery-badge"><i class="fa-solid fa-truck-fast"></i> 2 Days</div>
         </div>
         <div class="search-container">
             <i class="fa-solid fa-magnifying-glass"></i>
@@ -326,455 +105,118 @@
         </div>
     </header>
 
-    <!-- CATEGORIES -->
-    <div class="categories">
-        <div class="category-item">
-            <div class="category-img"><i class="fa-solid fa-box-archive"></i></div>
-            <span>Snacks</span>
+    <!-- ================== PAGE 1: HOME
+    PAGE ================== -->
+    <div id="homePage" class="page-section active">
+        <!-- CATEGORIES STRIP -->
+        <div class="categories">
+            <div class="category-item" onclick="filterCategory('Snacks')"><div class="category-img"><i class="fa-solid fa-box-archive"></i></div><span>Snacks</span></div>
+            <div class="category-item" onclick="filterCategory('Biscuits')"><div class="category-img"><i class="fa-solid fa-cookie"></i></div><span>Biscuits</span></div>
+            <div class="category-item" onclick="filterCategory('Atta & Oil')"><div class="category-img"><i class="fa-solid fa-bottle-droplet"></i></div><span>Atta & Oil</span></div>
+            <div class="category-item" onclick="filterCategory('Drinks')"><div class="category-img"><i class="fa-solid fa-bottle-water"></i></div><span>Drinks</span></div>
+            <div class="category-item" onclick="filterCategory('Chocolates')"><div class="category-img"><i class="fa-solid fa-candy-cane"></i></div><span>Chocolates</span></div>
         </div>
-        <div class="category-item">
-            <div class="category-img"><i class="fa-solid fa-cookie"></i></div>
-            <span>Biscuits</span>
+
+        <div class="section-title">
+            <span id="currentCategoryTitle">All Products</span>
+            <span style="font-size:12px; color:#0c831f; cursor:pointer;" onclick="filterCategory('All')">Clear Filter</span>
         </div>
-        <div class="category-item">
-            <div class="category-img"><i class="fa-solid fa-bottle-droplet"></i></div>
-            <span>Atta & Oil</span>
-        </div>
-        <div class="category-item">
-            <div class="category-img"><i class="fa-solid fa-bottle-water"></i></div>
-            <span>Drinks</span>
-        </div>
+        
+        <!-- JavaScript will inject products here -->
+        <div class="product-grid" id="productGridContainer"></div>
     </div>
 
-    <!-- PRODUCTS -->
-    <div class="section-title">Packaged Essentials</div>
-    <div class="product-grid">
-        <div class="product-card">
-            <img src="https://m.media-amazon.com/images/I/71wFfS5L2aL._SL1500_.jpg" class="product-img" alt="Lays">
-            <div class="product-time"><i class="fa-regular fa-clock"></i> 2 Days</div>
-            <div class="product-title">Lay's Magic Masala Chips</div>
-            <div class="product-weight">50 g</div>
-            <div class="product-bottom">
-                <div class="price">₹20</div>
-                <button class="add-btn" onclick="addToCart('Lay\'s Magic Masala', 20)">ADD</button>
+    <!-- ================== PAGE 2: CATEGORY PAGE ================== -->
+    <div id="categoryPage" class="page-section" style="padding: 20px;">
+        <h2 style="margin-bottom: 15px; color:#1c1c1c;">All Categories</h2>
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;">
+            <div onclick="filterCategory('Snacks')" style="background:#fff; padding:20px; border-radius:10px; text-align:center; box-shadow:0 1px 3px rgba(0,0,0,0.1); cursor:pointer;">
+                <i class="fa-solid fa-box-archive" style="font-size:30px; color:#0c831f; margin-bottom:10px;"></i><br><strong>Snacks</strong>
             </div>
-        </div>
-
-        <div class="product-card">
-            <img src="https://m.media-amazon.com/images/I/61y493b8L-L._SL1000_.jpg" class="product-img" alt="Atta">
-            <div class="product-time"><i class="fa-regular fa-clock"></i> 2 Days</div>
-            <div class="product-title">Aashirvaad MP Atta</div>
-            <div class="product-weight">5 kg</div>
-            <div class="product-bottom">
-                <div class="price">₹260</div>
-                <button class="add-btn" onclick="addToCart('Aashirvaad Atta 5kg', 260)">ADD</button>
+            <div onclick="filterCategory('Biscuits')" style="background:#fff; padding:20px; border-radius:10px; text-align:center; box-shadow:0 1px 3px rgba(0,0,0,0.1); cursor:pointer;">
+                <i class="fa-solid fa-cookie" style="font-size:30px; color:#0c831f; margin-bottom:10px;"></i><br><strong>Biscuits</strong>
             </div>
-        </div>
-
-        <div class="product-card">
-            <img src="https://m.media-amazon.com/images/I/61-A7C85pBL._SL1500_.jpg" class="product-img" alt="Oreo">
-            <div class="product-time"><i class="fa-regular fa-clock"></i> 2 Days</div>
-            <div class="product-title">Oreo Cream Biscuit</div>
-            <div class="product-weight">120 g</div>
-            <div class="product-bottom">
-                <div class="price">₹35</div>
-                <button class="add-btn" onclick="addToCart('Oreo Biscuit', 35)">ADD</button>
+            <div onclick="filterCategory('Atta & Oil')" style="background:#fff; padding:20px; border-radius:10px; text-align:center; box-shadow:0 1px 3px rgba(0,0,0,0.1); cursor:pointer;">
+                <i class="fa-solid fa-bottle-droplet" style="font-size:30px; color:#0c831f; margin-bottom:10px;"></i><br><strong>Atta & Oil</strong>
             </div>
-        </div>
-
-        <div class="product-card">
-            <img src="https://m.media-amazon.com/images/I/61N3K4v5p3L._SL1000_.jpg" class="product-img" alt="Oil">
-            <div class="product-time"><i class="fa-regular fa-clock"></i> 2 Days</div>
-            <div class="product-title">Fortune Sunflower Oil</div>
-            <div class="product-weight">1 L</div>
-            <div class="product-bottom">
-                <div class="price">₹145</div>
-                <button class="add-btn" onclick="addToCart('Fortune Oil 1L', 145)">ADD</button>
+            <div onclick="filterCategory('Drinks')" style="background:#fff; padding:20px; border-radius:10px; text-align:center; box-shadow:0 1px 3px rgba(0,0,0,0.1); cursor:pointer;">
+                <i class="fa-solid fa-bottle-water" style="font-size:30px; color:#0c831f; margin-bottom:10px;"></i><br><strong>Drinks</strong>
+            </div>
+            <div onclick="filterCategory('Chocolates')" style="background:#fff; padding:20px; border-radius:10px; text-align:center; box-shadow:0 1px 3px rgba(0,0,0,0.1); cursor:pointer;">
+                <i class="fa-solid fa-candy-cane" style="font-size:30px; color:#0c831f; margin-bottom:10px;"></i><br><strong>Chocolates</strong>
             </div>
         </div>
     </div>
 
-    <div class="product-card">
-    <img src="https://i.pinimg.com/originals/66/36/88/6636889e7781ab791d5151332ee374d8.jpg" class="product-img" alt="Matchbox Pack">
-    <div class="product-time"><i class="fa-regular fa-clock"></i> 2 Days</div>
-    <div class="product-title">Matchbox Pack</div>
-    <div class="product-weight">Box</div>
-    <div class="product-bottom">
-        <div class="price">₹5</div>
-        <button class="add-btn" onclick="addToCart('Matchbox Pack', 5)">ADD</button>
-    </div>
-</div>
-
-<div class="product-card">
-    <img src="https://m.media-amazon.com/images/I/61qvMq1Pd0L.jpg" class="product-img" alt="dairymilk Chocolates">
-    <div class="product-time"><i class="fa-regular fa-clock"></i> 2 Days</div>
-    <div class="product-title">dairymilk Chocolates</div>
-    <div class="product-weight">box</div>
-    <div class="product-bottom">
-        <div class="price">₹10</div>
-        <button class="add-btn" onclick="addToCart('dairymilk Chocolates', 10)">ADD</button>
-    </div>
-</div>
-
-<div class="product-card">
-    <img src="https://tse3.mm.bing.net/th/id/OIP.RlICOJThFdFr9Z-PBf81kwHaHa?r=0&rs=1&pid=ImgDetMain&o=7&rm=3" class="product-img" alt="coconut oil">
-    <div class="product-time"><i class="fa-regular fa-clock"></i> 2 Days</div>
-    <div class="product-title">coconut oil</div>
-    <div class="product-weight">Single Strip</div>
-    <div class="product-bottom">
-        <div class="price">₹10</div>
-        <button class="add-btn" onclick="addToCart('coconut oil', 10)">ADD</button>
-    </div>
-</div>
-
-<div class="product-card">
-    <img src="https://instamart-media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto/NI_CATALOG/IMAGES/CIW/2026/3/18/9de1b103-21e3-4dae-8af0-cb0df54eead8_42663_1.png" class="product-img" alt="Clinic Plus Shampoo ">
-    <div class="product-time"><i class="fa-regular fa-clock"></i> 2 Days</div>
-    <div class="product-title">Clinic Plus Shampoo </div>
-    <div class="product-weight">Sachet</div>
-    <div class="product-bottom">
-        <div class="price">₹59</div>
-        <button class="add-btn" onclick="addToCart('Clinic Plus Shampoo ', 59)">ADD</button>
-    </div>
-</div>
-
-<div class="product-card">
-    <img src="https://5.imimg.com/data5/SELLER/Default/2026/2/581157802/JO/HU/LG/240309587/bajaj-almond-drops-hair-oil-200ml-1000x1000.jpeg" class="product-img" alt="Bajaj Almond Hair Oil ">
-    <div class="product-time"><i class="fa-regular fa-clock"></i> 2 Days</div>
-    <div class="product-title">Bajaj Almond Hair Oil </div>
-    <div class="product-weight">Sachet</div>
-    <div class="product-bottom">
-        <div class="price">₹179</div>
-        <button class="add-btn" onclick="addToCart('Bajaj Almond Hair Oil ', 179)">ADD</button>
-    </div>
-</div>
-
-<div class="product-card">
-    <img src="https://newassets.apollo247.com/pub/media/catalog/product/e/n/eno0008.jpg" class="product-img" alt="Eno powder">
-    <div class="product-time"><i class="fa-regular fa-clock"></i> 2 Days</div>
-    <div class="product-title">Eno powder</div>
-    <div class="product-weight">Sachet</div>
-    <div class="product-bottom">
-        <div class="price">₹10</div>
-        <button class="add-btn" onclick="addToCart('Eno powder', 10)">ADD</button>
-    </div>
-</div>
-
-<div class="product-card">
-    <img src="https://5.imimg.com/data5/SELLER/Default/2023/9/342395448/TR/LU/KX/31350683/parle-g-biscuit-24-packet-1000x1000.jpg" class="product-img" alt="Parle-G Small Pack">
-    <div class="product-time"><i class="fa-regular fa-clock"></i> 2 Days</div>
-    <div class="product-title">Parle-G Small Pack</div>
-    <div class="product-weight">Wrapper</div>
-    <div class="product-bottom">
-        <div class="price">₹99</div>
-        <button class="add-btn" onclick="addToCart('Parle-G Small Pack', 99)">ADD</button>
-    </div>
-</div>
-
-<div class="product-card">
-    <img src="https://www.bbassets.com/media/uploads/p/l/40293689_1-cello-butterflow-classic-ball-pen-for-smooth-writing-blue.jpg" class="product-img" alt="Cello Butterflow Ball Pen">
-    <div class="product-time"><i class="fa-regular fa-clock"></i> 2 Days</div>
-    <div class="product-title">Cello Butterflow Ball Pen</div>
-    <div class="product-weight">Single Pen</div>
-    <div class="product-bottom">
-        <div class="price">₹69</div>
-        <button class="add-btn" onclick="addToCart('Cello Butterflow Ball Pen', 69)">ADD</button>
-    </div>
-</div>
-
-<div class="product-card">
-    <img src="https://tse1.mm.bing.net/th/id/OIP.Rbi1JnITeOiHayvh9j2nOwHaFj?r=0&pid=ImgDet&w=474&h=355&rs=1&o=7&rm=3" class="product-img" alt="Lifebuoy Soap Bar Mini">
-    <div class="product-time"><i class="fa-regular fa-clock"></i> 2 Days</div>
-    <div class="product-title">Lifebuoy Soap Bar Mini</div>
-    <div class="product-weight">Wrapper</div>
-    <div class="product-bottom">
-        <div class="price">₹36</div>
-        <button class="add-btn" onclick="addToCart('Lifebuoy Soap Bar Mini', 36)">ADD</button>
-    </div>
-</div>
-
-<div class="product-card">
-    <img src="https://www.vridhistores.com/uploads/2023/Jul/products/16896191554898.jpg" class="product-img" alt=" Detergent Soap Bar">
-    <div class="product-time"><i class="fa-regular fa-clock"></i> 2 Days</div>
-    <div class="product-title"> Detergent Soap Bar</div>
-    <div class="product-weight">Wrapper</div>
-    <div class="product-bottom">
-        <div class="price">₹47</div>
-        <button class="add-btn" onclick="addToCart(' Detergent Soap Bar', 47)">ADD</button>
-    </div>
-</div>
-
-<div class="product-card">
-    <img src="https://images.openfoodfacts.org/images/products/890/103/090/2932/front_en.5.full.jpg" class="product-img" alt="tomato Ketchup ">
-    <div class="product-time"><i class="fa-regular fa-clock"></i> 2 Days</div>
-    <div class="product-title">tomato Ketchup </div>
-    <div class="product-weight">Pouch</div>
-    <div class="product-bottom">
-        <div class="price">₹10</div>
-        <button class="add-btn" onclick="addToCart('tomato Ketchup ', 10)">ADD</button>
-    </div>
-</div>
-
-<div class="product-card">
-    <img src="https://crax.in/wp-content/uploads/2024/09/Rs5-tangy-tomato-front-wo5998x1227.png" class="product-img" alt="Crax Corn Rings">
-    <div class="product-time"><i class="fa-regular fa-clock"></i> 2 Days</div>
-    <div class="product-title">Crax Corn Rings</div>
-    <div class="product-weight">Packet</div>
-    <div class="product-bottom">
-        <div class="price">₹10</div>
-        <button class="add-btn" onclick="addToCart('Crax Corn Rings', 10)">ADD</button>
-    </div>
-</div>
-
-<div class="product-card">
-    <img src="https://i5.walmartimages.com/seo/Colgate-Toothpaste-with-Cavity-Protection-Active-Fluoride-2-5-oz-1-Count-24-Packs-24-Total_63c056ca-6dd2-42af-a7d0-c535ec9d4523.9bd6451763409e4f58cbc171998b2ce9.jpeg" class="product-img" alt="Colgate Toothpaste">
-    <div class="product-time"><i class="fa-regular fa-clock"></i> 2 Days</div>
-    <div class="product-title">Colgate Toothpaste</div>
-    <div class="product-weight">Tube</div>
-    <div class="product-bottom">
-        <div class="price">₹10</div>
-        <button class="add-btn" onclick="addToCart('Colgate Toothpaste', 10)">ADD</button>
-    </div>
-</div>
-
-<div class="product-card">
-    <img src="https://www.goldieeonlinestore.com/cdn/shop/products/Haldi_Premium_815eaf57-f4c3-4512-aae1-11a2deeb8f2e_1024x1024.jpg?v=1591613722" class="product-img" alt="Goldiee Turmeric Powder">
-    <div class="product-time"><i class="fa-regular fa-clock"></i> 2 Days</div>
-    <div class="product-title">Goldiee Turmeric Powder</div>
-    <div class="product-weight">Pouch</div>
-    <div class="product-bottom">
-        <div class="price">₹72</div>
-        <button class="add-btn" onclick="addToCart('Goldiee Turmeric Powder', 72)">ADD</button>
-    </div>
-</div>
-
-<div class="product-card">
-    <img src="https://m.media-amazon.com/images/I/818+KxkfbyL._AC_UL480_FMwebp_QL65_.jpg" class="product-img" alt="Maggi 2-Minute Noodles">
-    <div class="product-time"><i class="fa-regular fa-clock"></i> 2 Days</div>
-    <div class="product-title">Maggi 2-Minute Noodles</div>
-    <div class="product-weight">Pouch</div>
-    <div class="product-bottom">
-        <div class="price">₹46</div>
-        <button class="add-btn" onclick="addToCart('Maggi 2-Minute Noodles', 46)">ADD</button>
-    </div>
-</div>
-
-<div class="product-card">
-    <img src="https://m.media-amazon.com/images/I/61RyeZgmW1L._AC_UL480_FMwebp_QL65_.jpg" class="product-img" alt="oreo (3 pack)">
-    <div class="product-time"><i class="fa-regular fa-clock"></i> 2 Days</div>
-    <div class="product-title">oreo (3 pack)</div>
-    <div class="product-weight">wrapper</div>
-    <div class="product-bottom">
-        <div class="price">₹70</div>
-        <button class="add-btn" onclick="addToCart('oreo (3 pack)', 70)">ADD</button>
-    </div>
-</div>
-
-<div class="product-card">
-    <img src="https://m.media-amazon.com/images/I/81oQOYKZHxL._AC_UL480_FMwebp_QL65_.jpg" class="product-img" alt="Lay’s Potato Chips Salted">
-    <div class="product-time"><i class="fa-regular fa-clock"></i> 2 Days</div>
-    <div class="product-title">Lay’s Potato Chips Salted</div>
-    <div class="product-weight">Packet</div>
-    <div class="product-bottom">
-        <div class="price">₹20</div>
-        <button class="add-btn" onclick="addToCart('Lay’s Potato Chips Salted', 20)">ADD</button>
-    </div>
-</div>
-
-<div class="product-card">
-    <img src="https://m.media-amazon.com/images/I/81Tu78PWNUL._AC_UL480_FMwebp_QL65_.jpg" class="product-img" alt="Kurkure Masala Munch">
-    <div class="product-time"><i class="fa-regular fa-clock"></i> 2 Days</div>
-    <div class="product-title">Kurkure Masala Munch</div>
-    <div class="product-weight">Packet</div>
-    <div class="product-bottom">
-        <div class="price">₹20</div>
-        <button class="add-btn" onclick="addToCart('Kurkure Masala Munch', 20)">ADD</button>
-    </div>
-</div>
-
-<div class="product-card">
-    <img src="https://m.media-amazon.com/images/I/71IgXYBEjZL._AC_UL480_FMwebp_QL65_.jpg" class="product-img" alt="Uncle Chipps Spicy Treat">
-    <div class="product-time"><i class="fa-regular fa-clock"></i> 2 Days</div>
-    <div class="product-title">Uncle Chipps Spicy Treat</div>
-    <div class="product-weight">Packet</div>
-    <div class="product-bottom">
-        <div class="price">₹70</div>
-        <button class="add-btn" onclick="addToCart('Uncle Chipps Spicy Treat', 70)">ADD</button>
-    </div>
-</div>
-
-<div class="product-card">
-    <img src="https://m.media-amazon.com/images/I/91IW37hRJ9L._AC_UL480_FMwebp_QL65_.jpg" class="product-img" alt="Bingo Mad chips">
-    <div class="product-time"><i class="fa-regular fa-clock"></i> 2 Days</div>
-    <div class="product-title">Bingo Mad chips</div>
-    <div class="product-weight">Packet</div>
-    <div class="product-bottom">
-        <div class="price">₹20</div>
-        <button class="add-btn" onclick="addToCart('Bingo Mad chips', 20)">ADD</button>
-    </div>
-</div>
-
-<div class="product-card">
-    <img src="https://5.imimg.com/data5/SELLER/Default/2025/5/510047542/GD/VC/HE/202686342/floor-cleaner-500x500.jpg" class="product-img" alt="Lizol Floor Cleaner Mini 100ml">
-    <div class="product-time"><i class="fa-regular fa-clock"></i> 2 Days</div>
-    <div class="product-title">Lizol Floor Cleaner Mini 100ml</div>
-    <div class="product-weight">Bottle</div>
-    <div class="product-bottom">
-        <div class="price">₹799</div>
-        <button class="add-btn" onclick="addToCart('Lizol Floor Cleaner Mini 100ml', 799)">ADD</button>
-    </div>
-</div>
-
-<div class="product-card">
-    <img src="https://m.media-amazon.com/images/I/31b1ORnK+L._AC_UL480_FMwebp_QL65_.jpg" class="product-img" alt="oswal soap (pack of 4 pice)">
-    <div class="product-time"><i class="fa-regular fa-clock"></i> 2 Days</div>
-    <div class="product-title">oswal soap (pack of 4 pice)</div>
-    <div class="product-weight">Wrapper</div>
-    <div class="product-bottom">
-        <div class="price">₹140</div>
-        <button class="add-btn" onclick="addToCart('oswal soap (pack of 4 pice)', 140)">ADD</button>
-    </div>
-</div>
-
-<div class="product-card">
-    <img src="https://images.meesho.com/images/products/591580523/rarcv_512.avif?width=360" class="product-img" alt="Gillette Guard Shaving Razor">
-    <div class="product-time"><i class="fa-regular fa-clock"></i> 2 Days</div>
-    <div class="product-title">Gillette Guard Shaving Razor</div>
-    <div class="product-weight">Blister Pack</div>
-    <div class="product-bottom">
-        <div class="price">₹149</div>
-        <button class="add-btn" onclick="addToCart('Gillette Guard Shaving Razor', 149)">ADD</button>
-    </div>
-</div>
-
-<div class="product-card">
-    <img src="https://images.meesho.com/images/products/480381628/9xosp_512.avif?width=360" class="product-img" alt="cartridgas & Shaving Razor">
-    <div class="product-time"><i class="fa-regular fa-clock"></i> 2 Days</div>
-    <div class="product-title">cartridgas & Shaving Razor</div>
-    <div class="product-weight">Blister Pack</div>
-    <div class="product-bottom">
-        <div class="price">₹70</div>
-        <button class="add-btn" onclick="addToCart('cartridgas & Shaving Razor', 70)">ADD</button>
-    </div>
-</div>
-
-<div class="product-card">
-    <img src="https://images.meesho.com/images/products/537179488/hclb7_512.avif?width=360" class="product-img" alt="Dabur babool Toothpaste 50g">
-    <div class="product-time"><i class="fa-regular fa-clock"></i> 2 Days</div>
-    <div class="product-title">Dabur babool Toothpaste 50g</div>
-    <div class="product-weight">Tube</div>
-    <div class="product-bottom">
-        <div class="price">₹119</div>
-        <button class="add-btn" onclick="addToCart('Dabur babool Toothpaste 50g', 119)">ADD</button>
-    </div>
-</div>
-
-<div class="product-card">
-    <img src="https://cdn.justgotochef.com/uploads/1522751768-Tata-Salt-Front.jpg" class="product-img" alt="Tata Salt 1kg Pack">
-    <div class="product-time"><i class="fa-regular fa-clock"></i> 2 Days</div>
-    <div class="product-title">Tata Salt 1kg Pack</div>
-    <div class="product-weight">Pouch</div>
-    <div class="product-bottom">
-        <div class="price">₹34</div>
-        <button class="add-btn" onclick="addToCart('Tata Salt 1kg Pack', 34)">ADD</button>
-    </div>
-</div>
-
-<div class="product-card">
-    <img src="https://m.media-amazon.com/images/I/61RyeZgmW1L._AC_UL480_FMwebp_QL65_.jpg" class="product-img" alt="Oreo Vanilla Biscuit">
-    <div class="product-time"><i class="fa-regular fa-clock"></i> 2 Days</div>
-    <div class="product-title">Oreo Vanilla Biscuit</div>
-    <div class="product-weight">Wrapper</div>
-    <div class="product-bottom">
-        <div class="price">₹10</div>
-        <button class="add-btn" onclick="addToCart('Oreo Vanilla Biscuit', 10)">ADD</button>
-    </div>
-</div>
-
-<div class="product-card">
-    <img src="https://m.media-amazon.com/images/I/51Fm7E8tMEL._AC_UY327_FMwebp_QL65_.jpg" class="product-img" alt="Type-C OTG Adapter">
-    <div class="product-time"><i class="fa-regular fa-clock"></i> 2 Days</div>
-    <div class="product-title">Type-C OTG Adapter</div>
-    <div class="product-weight">Blister Pack</div>
-    <div class="product-bottom">
-        <div class="price">₹99</div>
-        <button class="add-btn" onclick="addToCart('Type-C OTG Adapter', 99)">ADD</button>
-    </div>
-</div>
-
-<div class="product-card">
-    <img src="https://m.media-amazon.com/images/I/81c0jxRWx3L._AC_UL480_FMwebp_QL65_.jpg" class="product-img" alt="Britannia Bourbon Biscuits">
-    <div class="product-time"><i class="fa-regular fa-clock"></i> 2 Days</div>
-    <div class="product-title">Britannia Bourbon Biscuits</div>
-    <div class="product-weight">Wrapper</div>
-    <div class="product-bottom">
-        <div class="price">₹50</div>
-        <button class="add-btn" onclick="addToCart('Britannia Bourbon Biscuits', 50)">ADD</button>
-    </div>
-</div>
-
-<div class="product-card">
-    <img src="https://m.media-amazon.com/images/I/71cw2JLKmvL._AC_UL480_FMwebp_QL65_.jpg" class="product-img" alt="Hide & Seek Chocolate Biscuits 200g">
-    <div class="product-time"><i class="fa-regular fa-clock"></i> 2 Days</div>
-    <div class="product-title">Hide & Seek Chocolate Biscuits 200g</div>
-    <div class="product-weight">Wrapper</div>
-    <div class="product-bottom">
-        <div class="price">₹50</div>
-        <button class="add-btn" onclick="addToCart('Hide & Seek Chocolate Biscuits 200g', 50)">ADD</button>
-    </div>
-</div>
-
-<div class="product-card">
-    <img src="https://m.media-amazon.com/images/I/812T+cwA7vL._AC_UL480_FMwebp_QL65_.jpg" class="product-img" alt="bikaneri Bhujia Sev 150g">
-    <div class="product-time"><i class="fa-regular fa-clock"></i> 2 Days</div>
-    <div class="product-title">bikaneri Bhujia Sev 150g</div>
-    <div class="product-weight">Packet</div>
-    <div class="product-bottom">
-        <div class="price">₹216</div>
-        <button class="add-btn" onclick="addToCart('bikaneri Bhujia Sev 150g', 216)">ADD</button>
-    </div>
-</div>
-
-
-    <!-- CART STRIP -->
-    <div class="cart-bar" id="cartBar" style="display: none;" onclick="openCheckout()">
-        <div>
-            <div id="cartCount" style="font-weight: 700; font-size: 13px;">0 ITEM</div>
-            <div id="cartTotal" style="font-size: 15px; font-weight: 800;">₹0</div>
+    <!-- ================== PAGE 3: PROFILE PAGE ================== -->
+    <div id="profilePage" class="page-section" style="padding: 20px;">
+        <h2 style="margin-bottom: 20px; color:#0c831f; text-align:center;">My Profile</h2>
+        
+        <!-- Profile View / Edit -->
+        <div style="background:#fff; padding:15px; border-radius:12px; margin-bottom:20px; box-shadow:0 2px 8px rgba(0,0,0,0.05);">
+            <div style="display:flex; align-items:center; gap:15px;">
+                <label for="dpUpload" style="cursor:pointer; position:relative;">
+                    <imgid="profileDp" src="https://via.placeholder.com/70" style="width:70px; height:70px; border-radius:50%; border:2px solid #0c831f; object-fit:cover;">
+                    <div style="position:absolute; bottom:0; right:0; background:#0c831f; color:#fff; border-radius:50%; width:22px; height:22px; display:flex; justify-content:center; align-items:center; font-size:10px;"><i class="fa-solid fa-camera"></i></div>
+                </label>
+                <input type="file" id="dpUpload" accept="image/*" style="display:none;" onchange="updateProfilePic(event)">
+                
+                <div style="flex-grow: 1;">
+                    <input type="text" id="profileName" placeholder="Enter Your Name" style="font-size:18px; font-weight:bold; border:none; outline:none; width:100%; background:transparent; color:#333; border-bottom:1px solid #ddd; padding-bottom:3px;">
+                    <p id="profilePhoneDisp" style="color:#666; font-size:13px; margin-top:5px; font-weight:bold;">Not Logged In</p>
+                </div>
+            </div>
+            <button class="action-btn" style="padding:8px; font-size:12px; margin-top:15px;" onclick="saveProfileName()">Save Profile Name</button>
         </div>
-        <div>View Cart <i class="fa-solid fa-caret-right"></i></div>
+
+        <div class="profile-menu-item" onclick="document.getElementById('partnerModal').style.display='flex'">
+            <span><i class="fa-solid fa-handshake" style="color:#0c831f; margin-right:10px;"></i> Become an App Partner</span>
+            <i class="fa-solid fa-chevron-right" style="color:#ccc;"></i>
+        </div>
+        <div class="profile-menu-item" onclick="openLoginModal()">
+            <span><i class="fa-solid fa-sign-in-alt" style="color:#0c831f; margin-right:10px;"></i> Login / Sign Up</span>
+            <i class="fa-solid fa-chevron-right" style="color:#ccc;"></i>
+        </div>
     </div>
 
-    <!-- BOTTOM NAV -->
-    <nav class="bottom-nav">
-        <div class="nav-item active"><i class="fa-solid fa-house"></i><span>Home</span></div>
-        <div class="nav-item"><i class="fa-solid fa-border-all"></i><span>Categories</span></div>
-        <div class="nav-item" onclick="openCheckout()"><i class="fa-solid fa-cart-shopping"></i><span>Cart</span></div>
-        <div class="nav-item" onclick="openLogin()"><i class="fa-solid fa-user"></i><span>Profile</span></div>
-    </nav>
 
-    <!-- LOGIN MODAL -->
-    <div id="loginModal" class="modal" style="display: none;">
+    <!-- ================== MODAL: BECOME APP PARTNER ================== -->
+    <div id="partnerModal" class="modal" style="display: none;">
         <div class="modal-box">
-            <button class="close-btn" onclick="closeModal('loginModal')">&times;</button>
-            <div style="text-align: center; margin-bottom: 15px;">
-                <div class="md-logo" style="margin: 0 auto 8px auto;">MD</div>
-                <h3>Dhawan Mart Login</h3>
-            </div>
+            <button class="close-btn" onclick="closeModal('partnerModal')">&times;</button>
+            <h3 style="color:#333; font-size:18px; text-align:center; margin-bottom:5px;">App Partner Registration</h3>
+            <p style="font-size:12px; color:#666; margin-bottom:15px; text-align:center;">Register and start earning with us!</p>
+            
+            <label class="form-label">Full Name</label>
+            <input type="text" id="p_name" class="form-input" placeholder="Enter Full Name">
+            
             <label class="form-label">Mobile Number</label>
-            <input type="tel" id="userPhone" class="form-input" placeholder="Enter 10-digit number" maxlength="10">
-            <button class="action-btn" onclick="saveLogin()">Login / Continue</button>
+            <input type="tel" id="p_phone" class="form-input" placeholder="10-digit number" maxlength="10">
+            
+            <label class="form-label">Age</label>
+            <input type="number" id="p_age" class="form-input" placeholder="e.g. 22">
+            
+            <label class="form-label">Gender</label>
+            <div style="display:flex; gap:15px; margin-top:5px; margin-bottom:15px;">
+                <label style="font-size:13px; display:flex; align-items:center; gap:5px;"><input type="radio" name="p_gender" value="Male" checked> Male</label>
+                <label style="font-size:13px; display:flex; align-items:center; gap:5px;"><input type="radio" name="p_gender" value="Female"> Female</label>
+            </div>
+            
+            <button onclick="submitPartnerForm()" class="action-btn">Submit Application</button>
         </div>
     </div>
 
-    <!-- CHECKOUT MODAL -->
+    <!-- ================== MODAL: CART & CHECKOUT ================== -->
     <div id="checkoutModal" class="modal" style="display: none;">
         <div class="modal-box">
             <button class="close-btn" onclick="closeModal('checkoutModal')">&times;</button>
-            <h3 style="color: #0c831f; text-align: center; margin-bottom: 15px;">Checkout</h3>
+            <h3 style="color: #0c831f; text-align: center; margin-bottom: 15px;">Your Cart & Checkout</h3>
             
+            <!-- Cart Items Display here -->
+            <div id="cartItemsList" class="cart-item-list"></div>
+
             <label class="form-label">Full Name</label>
-            <input type="text" id="custName" class="form-input" placeholder="Apna Naam">
+            <input type="text" id="custName" class="form-input"placeholder="Apna Naam">
 
             <label class="form-label">Phone</label>
             <input type="tel" id="custPhone" class="form-input" placeholder="Phone Number" maxlength="10">
@@ -785,7 +227,7 @@
             <label class="form-label">Payment Mode</label>
             <div class="pay-option" onclick="setPayment('ONLINE')">
                 <input type="radio" name="pay" id="pOnline" checked>
-                <label for="pOnline">Online UPI QR (Direct Bank Transfer)</label>
+                <label for="pOnline">Online UPI QR (Bank Transfer)</label>
             </div>
             <div class="pay-option" onclick="setPayment('COD')">
                 <input type="radio" name="pay" id="pCOD">
@@ -802,13 +244,166 @@
         </div>
     </div>
 
+
+    <!-- ================== FULL PAGE MODAL FOR PRODUCT DETAILS ================== -->
+    <div id="productDetailModal" class="full-page-modal">
+        <div class="back-header">
+            <i class="fa-solid fa-arrow-left" style="font-size:22px; cursor:pointer; color:#333;" onclick="closeProductDetail()"></i>
+        </div>
+        <div style="padding:20px; text-align:center;">
+            <img id="det_img" src="" style="width:100%; max-height:250px; object-fit:contain; margin-bottom:20px; border-radius:10px;">
+            <h2 id="det_title" style="font-size:22px; color:#222; margin-bottom:10px; text-align:left;"></h2>
+            <p id="det_weight" style="color:#666; font-size:14px; text-align:left; margin-bottom:15px;"></p>
+            
+            <div style="display:flex; justify-content:space-between; align-items:center; padding:15px; background:#f7fff9; border:1px solid #eef7f0; border-radius:12px;">
+                <span id="det_price" style="font-size:22px; font-weight:bold; color:#000;"></span>
+                <button class="action-btn" style="margin-top:0; width:auto; padding:10px 25px;" onclick="addDetailToCart()">Add to Cart</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CART STRIP -->
+    <div class="cart-bar" id="cartBar" style="display: none;" onclick="openCheckout()">
+        <div>
+            <div id="cartCount" style="font-weight: 700; font-size: 13px;">0 ITEM</div>
+            <div id="cartTotal" style="font-size: 15px; font-weight: 800;">₹0</div>
+        </div>
+        <div>View Cart <i class="fa-solid fa-caret-right"></i></div>
+    </div>
+
+    <!-- BOTTOM NAV -->
+    <nav class="bottom-nav">
+        <div class="nav-item active" onclick="switchTab('homePage', this)"><i class="fa-solid fa-house"></i><span>Home</span></div>
+        <div class="nav-item" onclick="switchTab('categoryPage', this)"><i class="fa-solid fa-border-all"></i><span>Categories</span></div>
+        <div class="nav-item" onclick="openCheckout()"><i class="fa-solid fa-cart-shopping"></i><span>Cart</span></div>
+        <div class="nav-item" onclick="switchTab('profilePage', this)"><i class="fa-solid fa-user"></i><span>Profile</span></div>
+    </nav>
+
+    <!-- OTP LOGIN MODAL -->
+    <div id="loginModal" class="modal" style="display:none; align-items:center;">
+      <div class="modal-box" style="text-align:center;">
+        <span class="close-btn" onclick="closeLoginModal()">&times;</span>
+        <h2 style="color:#0c831f;">Login / Sign Up</h2>
+        <p style="font-size:13px; color:#666; margin-bottom:15px;">Enter mobile number</p>
+        <div id="mobileStep">
+          <input type="tel" id="userMobile" class="form-input" placeholder="+91 Enter Mobile Number"maxlength="10">
+          <button onclick="sendOTP()" class="action-btn">Send OTP</button>
+        </div>
+        <div id="otpStep" style="display: none;">
+          <input type="number" id="userOTP" class="form-input" placeholder="Enter 4-Digit OTP" maxlength="4">
+          <button onclick="verifyOTP()" class="action-btn">Verify & Continue</button>
+        </div>
+      </div>
+    </div>
+
     <!-- JAVASCRIPT LOGIC -->
     <script>
-        // CONFIGURATION: APNA TELEGRAM BOT TOKEN AUR CHAT ID YAHAN DALEIN
         const TELEGRAM_BOT_TOKEN = "8735436494:AAGWN69EV9j2b89kielRj5PSOPsh0JY4uxY";
         const TELEGRAM_CHAT_ID = "8024913770";
-        const MY_UPI_ID = "mrdhawan77@upi";
+        const MY_UPI_ID = "8764578505@ybl";
 
+        // ================= 100 PRODUCTS GENERATOR =================
+        // aap "img" ke andar apni image ka link laga sakte hain.
+        const productsList = [];
+        
+        const genericNames = [
+            { cat: 'Snacks', name: "Lay's Magic Masala", price: 20, w: "50g", img: "https://th.bing.com/th/id/OIP.-I58WkRguT11zXQoco4L3gHaHa?w=174&h=180&c=7&r=0&o=7&dpr=1.5&pid=1.7&rm=3" },
+            { cat: 'Snacks', name: "Kurkure Masala Munch", price: 20, w: "50g", img: "https://m.media-amazon.com/images/I/81Tu78PWNUL._AC_UL480_FMwebp_QL65_.jpg" },
+            { cat: 'Snacks', name: "Bingo Mad Angles", price: 20, w: "50g", img: "https://m.media-amazon.com/images/I/91IW37hRJ9L._AC_UL480_FMwebp_QL65_.jpg" },
+            { cat: 'Snacks', name: "Uncle Chipps", price: 20, w: "50g", img: "https://m.media-amazon.com/images/I/71IgXYBEjZL._AC_UL480_FMwebp_QL65_.jpg" },
+            { cat: 'Biscuits', name: "Oreo Original", price: 35, w: "120g", img: "https://th.bing.com/th/id/OIP.FywZLjJWKtlHr9pHZ5ichQHaHa?w=183&h=183&c=7&r=0&o=7&dpr=1.5&pid=1.7&rm=3" },
+            { cat: 'Biscuits', name: "Parle-G Gold", price: 10, w: "100g", img: "https://5.imimg.com/data5/SELLER/Default/2023/9/342395448/TR/LU/KX/31350683/parle-g-biscuit-24-packet-1000x1000.jpg" },
+            { cat: 'Biscuits', name: "Britannia Bourbon", price: 30, w: "150g", img: "https://m.media-amazon.com/images/I/81c0jxRWx3L._AC_UL480_FMwebp_QL65_.jpg" },
+            { cat: 'Atta & Oil', name: "Aashirvaad Atta", price: 260, w: "5kg", img: "https://tse3.mm.bing.net/th/id/OIP.IVueFa1JIoL3nMKXUieEQAHaHa?r=0&pid=ImgDet&w=189&h=189&c=7&dpr=1.5&o=7&rm=3" },
+            { cat: 'Atta & Oil', name: "Fortune Sunflower Oil", price: 190, w: "1L", img: "https://th.bing.com/th/id/OIP.RupkNkEDx3vQjNvDjnFt-gHaHa?w=176&h=180&c=7&r=0&o=7&dpr=1.5&pid=1.7&rm=3" },
+            { cat: 'Chocolates', name: "Dairy Milk Silk", price: 80, w: "60g", img: "https://m.media-amazon.com/images/I/61qvMq1Pd0L.jpg" },
+            { cat: 'Drinks', name: "Coca Cola", price: 40, w: "750ml", img: "https://m.media-amazon.com/images/I/51v8nyxSOYL._SX300_SY300_QL70_FMwebp_.jpg" }
+        ];
+
+        // Generating 100 products using the generic base for demonstration
+        for(let i=0; i<10000000; i++) {
+            let base = genericNames[i % genericNames.length];
+            productsList.push({
+                id: i,
+                category: base.cat,
+                name: base.name + (i > genericNames.length ? " "+(i+1) : ""),
+                price: base.price,
+                weight: base.w,
+                img: base.img || "https://via.placeholder.com/150"
+            });
+        }
+
+        // ================= RENDER PRODUCTS & CATEGORY FILTER =================
+        function renderProducts(filterCat = 'All') {
+            const grid = document.getElementById('productGridContainer');
+            grid.innerHTML = ''; // clear purane products
+            document.getElementById('currentCategoryTitle').innerText = filterCat === 'All' ? 'All Products' : filterCat;
+
+            productsList.forEach(prod => {
+                if(filterCat === 'All' || prod.category === filterCat) {
+                    let card = document.createElement('div');
+                    card.className = 'product-card';
+                    card.innerHTML = `
+                        <img src="${prod.img}" class="product-img" onclick="openProductDetail('${prod.name}', '${prod.img}', '₹${prod.price}', '${prod.weight}')">
+                       <div class="product-time"><i class="fa-regular fa-clock"></i> 2 Days</div>
+                        <div class="product-title" onclick="openProductDetail('${prod.name}', '${prod.img}', '₹${prod.price}', '${prod.weight}')">${prod.name}</div>
+                        <div class="product-weight">${prod.weight}</div>
+                        <div class="product-bottom">
+                            <div class="price">₹${prod.price}</div>
+                            <button class="add-btn" onclick="addToCart('${prod.name}', ${prod.price})">ADD</button>
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                }
+            });
+        }
+
+        function filterCategory(catName) {
+            switchTab('homePage', document.querySelectorAll('.nav-item')[0]);
+            renderProducts(catName);
+        }
+
+        // Initialize Products on Load
+        document.addEventListener("DOMContentLoaded", () => {
+            renderProducts('All');
+            loadProfileData(); // load saved profile
+        });
+
+        // ================= BOTTOM NAVIGATION TABS =================
+        function switchTab(pageId, navElement) {
+            document.querySelectorAll('.page-section').forEach(page => page.classList.remove('active'));
+            document.querySelectorAll('.bottom-nav .nav-item').forEach(nav => nav.classList.remove('active'));
+            
+            document.getElementById(pageId).classList.add('active');
+            navElement.classList.add('active');
+
+            if(pageId === 'profilePage') {
+                document.getElementById('mainHeader').style.display = 'none';
+                loadProfileData();
+            } else {
+                document.getElementById('mainHeader').style.display = 'block';
+            }
+            window.scrollTo(0,0);
+        }
+
+        // ================= PRODUCT DETAILS CLICK FEATURE =================
+        let currentDetailItem = { title: "", price: 0 };
+        function openProductDetail(title, img, priceText, weight) {
+            document.getElementById('det_img').src = img;
+            document.getElementById('det_title').innerText = title;
+            document.getElementById('det_weight').innerText = weight;
+            document.getElementById('det_price').innerText = priceText;
+            currentDetailItem = { title: title, price: parseInt(priceText.replace('₹', '')) };
+            document.getElementById('productDetailModal').style.display = 'block';
+        }
+        function closeProductDetail() { document.getElementById('productDetailModal').style.display = 'none'; }
+        function addDetailToCart() {
+            addToCart(currentDetailItem.title, currentDetailItem.price);
+            closeProductDetail();
+            Swal.fire({ icon: 'success', title: 'Added', text: 'Item added to cart!', timer: 1000, showConfirmButton: false });
+        }
+
+        // ================= CART LOGIC =================
         let cart = [];
         let payMode = 'ONLINE';
 
@@ -832,37 +427,134 @@
             }
         }
 
-        function openLogin() { document.getElementById('loginModal').style.display = 'flex'; }
+        // CART PAGE / CHECKOUT MODAL OPEN
         function openCheckout() {
-            if (cart.length === 0) return alert('Cart Khali Hai!');
+            if (cart.length === 0) return Swal.fire('Cart Khali Hai!', 'Pehle kuch items add karein.', 'info');
             
+            // Populating Cart Items inside Checkout Modal
+            letcartHtml = '';
+            cart.forEach(item => {
+                cartHtml += `<div class="cart-item-row">
+                    <div><b>${item.name}</b> <br><small>Qty: ${item.qty} x ₹${item.price}</small></div>
+                    <div style="font-weight:bold; color:#0c831f;">₹${item.price * item.qty}</div>
+                </div>`;
+            });
+            document.getElementById('cartItemsList').innerHTML = cartHtml;
+
             let total = cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
             document.getElementById('payTotal').innerText = '₹' + total;
             document.getElementById('upiQR').src = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=upi://pay?pa=${MY_UPI_ID}&pn=DhawanMart&am=${total}&cu=INR`;
             
-            const savedPhone = localStorage.getItem('dm_user');
+            const savedPhone = localStorage.getItem('dhawan_mart_user');
             if (savedPhone) document.getElementById('custPhone').value = savedPhone;
+            
+            const savedName = localStorage.getItem('dhawan_user_name');
+            if (savedName) document.getElementById('custName').value = savedName;
 
             document.getElementById('checkoutModal').style.display = 'flex';
         }
 
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-
-        function saveLogin() {
-            let p = document.getElementById('userPhone').value;
-            if (p.length === 10) {
-                localStorage.setItem('dm_user', p);
-                alert('Login Successful!');
-                closeModal('loginModal');
-            } else { alert('10-digit number dalein'); }
-        }
-
         function setPayment(mode) {
             payMode = mode;
             document.getElementById('qrBox').style.display = mode === 'ONLINE' ? 'block' : 'none';
         }
 
+        // ================= LOGIN SYSTEM =================
+        let generatedOTP = null;
+        function openLoginModal() { document.getElementById("loginModal").style.display = "flex"; }
+        function closeLoginModal() { document.getElementById("loginModal").style.display = "none"; }
+
+        function sendOTP() {
+            const mobile = document.getElementById("userMobile").value;
+            if (mobile.length === 10 && /^\d+$/.test(mobile)) {
+                generatedOTP = "1234";
+                alert("Aapka Testing OTP hai: 1234");
+                document.getElementById("mobileStep").style.display = "none";
+                document.getElementById("otpStep").style.display = "block";
+            } else { alert("Kripya 10-digit ka valid mobile number dalein."); }
+        }
+
+        function verifyOTP() {
+            const enteredOTP = document.getElementById("userOTP").value;
+            if (enteredOTP === generatedOTP) {
+                localStorage.setItem("dhawan_mart_user", document.getElementById("userMobile").value);
+                alert("Login Successful!");
+                closeLoginModal();
+                loadProfileData(); // Reload Profile Page Data
+                document.getElementById("mobileStep").style.display = "block";
+                document.getElementById("otpStep").style.display = "none";
+            } else { alert("Galat OTP, phir se try karein"); }
+        }
+
+        function checkLoginBeforeOrder() {
+            if (!localStorage.getItem("dhawan_mart_user")) { openLoginModal(); return false; }
+            return true;
+        }
+
+        // ================= PROFILE EDIT SYSTEM =================
+        function loadProfileData() {
+            const phone = localStorage.getItem("dhawan_mart_user");
+            const name = localStorage.getItem("dhawan_user_name") || "";
+            const dp = localStorage.getItem("dhawan_user_dp");
+            
+            if(phone) {
+                document.getElementById("profilePhoneDisp").innerText = "+91 " + phone;
+                document.getElementById("profilePhoneDisp").style.color = "#0c831f";
+            }
+            if(name) document.getElementById("profileName").value = name;
+            if(dp) document.getElementById("profileDp").src = dp;
+        }
+
+        function saveProfileName() {
+            const newName = document.getElementById("profileName").value.trim();
+            if(newName) {
+                localStorage.setItem("dhawan_user_name", newName);
+                Swal.fire({icon: 'success', title: 'Saved', text: 'Profile Name Updated!', timer:1500, showConfirmButton:false});
+            }
+        }
+                 function updateProfilePic(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const imgData = e.target.result;
+                    document.getElementById('profileDp').src = imgData;
+                    localStorage.setItem('dhawan_user_dp', imgData);
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // ================= APP PARTNER FORM TO TELEGRAM =================
+        async function submitPartnerForm() {
+            let name = document.getElementById('p_name').value.trim();
+            let phone = document.getElementById('p_phone').value.trim();
+            let age = document.getElementById('p_age').value.trim();
+            let gender = document.querySelector('input[name="p_gender"]:checked').value;
+
+            if(!name || !phone || !age) { return Swal.fire('Incomplete!', 'Kripya saari details bharein.', 'warning'); }
+
+            let msg = `🤝 *NEW APP PARTNER REQUEST*\n---\n👤 *Name:* ${name}\n📞 *Phone:* ${phone}\n🎂 *Age:* ${age}\n🚻 *Gender:* ${gender}`;
+            let url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage?chat_id=${TELEGRAM_CHAT_ID}&text=${encodeURIComponent(msg)}&parse_mode=Markdown`;
+
+            try {
+                let res = await fetch(url);
+                let data = await res.json();
+                if(data.ok) {
+                    Swal.fire('Success!', 'Aapki application successfully bhej di gayi hai.', 'success');
+                    closeModal('partnerModal');
+                    document.getElementById('p_name').value = '';
+                    document.getElementById('p_phone').value = '';
+                    document.getElementById('p_age').value = '';
+                } else { Swal.fire('Error', 'Bot token ya chat ID check karein.', 'error'); }
+            } catch(e) { Swal.fire('Network Error', 'Internet connection check karein.', 'error'); }
+        }
+
+        // ================= PLACE ORDER =================
         async function placeOrder() {
+            if (!checkLoginBeforeOrder()) { closeModal('checkoutModal'); return; }
+
             let name = document.getElementById('custName').value.trim();
             let phone = document.getElementById('custPhone').value.trim();
             let address = document.getElementById('custAddress').value.trim();
@@ -873,26 +565,24 @@
             let total = cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
 
             let msg = `🛍️ *NEW ORDER - DHAWAN MART*\n---\n👤 *Name:* ${name}\n📞 *Phone:* ${phone}\n📍 *Address:* ${address}\n💳 *Payment:* ${payMode}\n\n🛒 *ITEMS:*\n${itemsList}\n\n💰 *TOTAL:* ₹${total}\n🚚 *Delivery:* 2 Days`;
+            let url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage?chat_id=${TELEGRAM_CHAT_ID}&text=${encodeURIComponent(msg)}&parse_mode=Markdown`;
 
             try {
-                let res = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text: msg, parse_mode: 'Markdown' })
-                });
+                let res = await fetch(url);
                 let data = await res.json();
-                if (data.ok) {
-                    alert('Order Placed Successfully! Message Sent to Telegram.');
+              
+
+   if (data.ok) {
+                    Swal.fire({ icon: 'success', title: 'Success!', text: 'Order Placed Successfully!', timer: 2000, showConfirmButton: false });
                     cart = [];
                     updateCartUI();
                     closeModal('checkoutModal');
-                } else {
-                    alert('Order confirmed! (Bot token update karna mat bhoolna)');
-                }
-            } catch (e) {
-                alert('Order Recorded!');
-            }
+                } else { Swal.fire({ icon: 'info', title: 'Order Confirmed', text: 'Bot details check karein.' }); }
+            } catch (e) { Swal.fire({ icon: 'error', title: 'Network Error', text: 'Lekin network me kuch issue aaya.' }); }
         }
     </script>
 </body>
 </html>
+
+
+        
