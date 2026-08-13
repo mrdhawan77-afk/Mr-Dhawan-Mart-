@@ -1,773 +1,214 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dhawan Mart - Fresh Groceries Delivered Instant</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        green: {
-                            750: '#14532d',
-                            850: '#064e3b'
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-    <!-- Lucide Icons (CDN) -->
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <!-- SweetAlert2 (CDN) -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <style>
-        /* Custom scrollbars and transitions */
-        .no-scrollbar::-webkit-scrollbar {
-            display: none;
-        }
-        .no-scrollbar {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
-        .cart-transition {
-            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dhawan Mart - Grocery & Daily Essentials</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background-color: #f4f6f9; color: #333; padding-bottom: 60px; }
+    header { background-color: #1b5e20; color: white; padding: 15px 20px; text-align: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+    header h1 { font-size: 24px; margin-bottom: 5px; }
+    .search-container { margin: 15px auto; max-width: 600px; padding: 0 15px; }
+    .search-input { width: 100%; padding: 12px 18px; font-size: 16px; border: 2px solid #1b5e20; border-radius: 25px; outline: none; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 15px; display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; }
+    .product-card { background: white; border-radius: 10px; padding: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.2s; }
+    .product-card:hover { transform: translateY(-3px); }
+    .product-img { width: 100%; height: 120px; object-fit: contain; border-radius: 6px; margin-bottom: 8px; }
+    .product-title { font-size: 14px; font-weight: 600; margin-bottom: 5px; height: 36px; overflow: hidden; }
+    .product-price { font-size: 16px; font-weight: bold; color: #2e7d32; margin-bottom: 8px; }
+    .btn-add { background-color: #2e7d32; color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; font-weight: bold; width: 100%; }
+    .btn-add:hover { background-color: #1b5e20; }
+    
+    /* Cart Bar Floating */
+    .cart-float-bar { position: fixed; bottom: 0; left: 0; right: 0; background-color: #ffffff; border-top: 2px solid #2e7d32; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 -2px 10px rgba(0,0,0,0.1); z-index: 999; }
+    .cart-info { font-size: 16px; font-weight: bold; color: #1b5e20; }
+    .btn-checkout { background-color: #ff6f00; color: white; border: none; padding: 10px 20px; border-radius: 20px; font-weight: bold; cursor: pointer; }
+
+    /* Modal */
+    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1001; }
+    .modal-content { background: white; padding: 20px; border-radius: 10px; width: 90%; max-width: 450px; max-height: 90vh; overflow-y: auto; }
+    .form-group { margin-bottom: 12px; }
+    .form-group label { display: block; margin-bottom: 5px; font-weight: 600; font-size: 14px; }
+    .form-group input, .form-group textarea { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 5px; }
+    .modal-actions { display: flex; justify-content: space-between; margin-top: 15px; }
+    .btn-cancel { background: #757575; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; }
+    .btn-submit { background: #2e7d32; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; }
+  </style>
 </head>
-<body class="bg-slate-50/70 text-slate-800 font-sans selection:bg-green-100 selection:text-green-800">
+<body>
 
-    <!-- 1. HEADER SECTION -->
-    <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-100 shadow-sm">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
-            
-            <!-- Logo -->
-            <div class="flex items-center gap-3">
-                <div class="h-12 w-12 rounded-xl bg-green-700 flex items-center justify-center text-white shadow-md shadow-green-100">
-                    <i data-lucide="store" class="h-6 w-6"></i>
-                </div>
-                <div>
-                    <h1 class="text-2xl font-black tracking-tight text-green-950 leading-none">
-                        Dhawan <span class="text-amber-500 font-bold">Mart</span>
-                    </h1>
-                    <span class="text-xs text-slate-500 font-medium">Always Fresh • Instant Delivery</span>
-                </div>
-            </div>
+  <header>
+    <h1>Dhawan Mart</h1>
+    <p>आपकी अपनी किराना दुकान (Instant Home Delivery)</p>
+  </header>
 
-            <!-- Search input (Desktop) -->
-            <div class="hidden md:flex flex-1 max-w-lg relative">
-                <input
-                    type="text"
-                    id="search-input"
-                    placeholder="Search farm fresh vegetables, dairy, pantry staples..."
-                    class="w-full bg-slate-100/80 border-0 focus:bg-white focus:ring-2 focus:ring-green-700/20 focus:border-green-700 text-sm py-2.5 pl-10 pr-4 rounded-xl outline-none transition duration-150"
-                    oninput="handleSearch(this.value)"
-                >
-                <i data-lucide="search" class="absolute left-3.5 top-3 h-4.5 w-4.5 text-slate-400"></i>
-            </div>
+  <div class="search-container">
+    <input type="text" id="searchInput" class="search-input" placeholder="आटा, दाल, तेल, मसाले, साबुन खोजें..." onkeyup="filterProducts()">
+  </div>
 
-            <!-- Right Controls -->
-            <div class="flex items-center gap-3">
-                <!-- AI Support Bubble Toggle -->
-                <button
-                    onclick="toggleChat()"
-                    class="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-200 text-sm font-semibold bg-white text-slate-700 hover:bg-slate-50 transition"
-                >
-                    <i data-lucide="sparkles" class="h-4.5 w-4.5 text-amber-500 animate-pulse"></i>
-                    <span class="hidden sm:inline">Ask AI Helper</span>
-                </button>
+  <div class="container" id="productGrid">
+    <div style="grid-column: 1/-1; text-align: center; padding: 40px;">प्रोडक्ट्स लोड हो रहे हैं...</div>
+  </div>
 
-                <!-- Shopping Cart Toggle -->
-                <button
-                    onclick="openCart()"
-                    class="bg-green-700 hover:bg-green-800 text-white px-5 py-2.5 rounded-xl flex items-center gap-2.5 shadow-lg shadow-green-100 relative transition duration-150"
-                >
-                    <i data-lucide="shopping-cart" class="h-5 w-5"></i>
-                    <span class="font-bold text-sm hidden sm:inline">My Cart</span>
-                    <span id="cart-badge" class="hidden absolute -top-1.5 -right-1.5 h-5 min-w-5 px-1.5 bg-amber-500 text-white rounded-full text-xs font-bold border-2 border-white flex items-center justify-center">
-                        0
-                    </span>
-                </button>
-            </div>
-        </div>
+  <div class="cart-float-bar">
+    <div class="cart-info" id="cartSummary">कार्ट खाली है | Total: ₹0</div>
+    <button class="btn-checkout" onclick="openCheckoutModal()">ऑर्डर करें (Checkout)</button>
+  </div>
 
-        <!-- Search input (Mobile) -->
-        <div class="md:hidden px-4 pb-4 bg-white border-b border-slate-100">
-            <div class="relative">
-                <input
-                    type="text"
-                    id="search-input-mobile"
-                    placeholder="Search fresh vegetables, dairy, staples..."
-                    class="w-full bg-slate-100/80 border-0 focus:bg-white focus:ring-2 focus:ring-green-700/20 focus:border-green-700 text-sm py-2.5 pl-10 pr-4 rounded-xl outline-none transition duration-150"
-                    oninput="handleSearch(this.value)"
-                >
-                <i data-lucide="search" class="absolute left-3.5 top-3 h-4.5 w-4.5 text-slate-400"></i>
-            </div>
-        </div>
-    </header>
-
-    <!-- 2. HERO PROMO BANNER -->
-    <section class="bg-gradient-to-r from-green-900 to-green-850 text-white py-12 md:py-16 relative overflow-hidden">
-        <div class="absolute -right-10 -top-10 w-48 h-48 rounded-full bg-green-700/20 blur-2xl"></div>
-        <div class="absolute left-1/4 -bottom-10 w-72 h-72 rounded-full bg-amber-500/10 blur-3xl"></div>
-
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 grid md:grid-cols-12 gap-8 items-center">
-            <div class="md:col-span-7 space-y-5 text-center md:text-left">
-                <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-green-700/50 border border-green-600/30 text-amber-300 text-xs font-semibold rounded-full tracking-wider uppercase">
-                    <i data-lucide="sparkles" class="h-3.5 w-3.5"></i> 100% Organic & Farm Fresh
-                </span>
-                <h2 class="text-3xl md:text-5xl font-black tracking-tight leading-tight">
-                    Get Fresh Groceries <br class="hidden md:inline">
-                    Delivered In <span class="text-amber-400">2 Hours</span>
-                </h2>
-                <p class="text-green-100/90 text-sm md:text-base max-w-lg leading-relaxed">
-                    Order farm-picked vegetables, premium dairy products, and pantry essentials from Dhawan Mart. Get <strong>Free City Delivery</strong> on orders over $30.00!
-                </p>
-
-                <div class="flex flex-wrap justify-center md:justify-start gap-4 pt-2">
-                    <div class="bg-green-750/50 backdrop-blur-sm border border-green-700/30 px-4 py-3 rounded-xl flex items-center gap-3">
-                        <div class="h-9 w-9 bg-green-700 rounded-lg flex items-center justify-center">
-                            <i data-lucide="truck" class="h-5 w-5 text-amber-400"></i>
-                        </div>
-                        <div class="text-left">
-                            <p class="text-xs text-green-200">Express Shipping</p>
-                            <p class="text-sm font-bold">Free Over $30</p>
-                        </div>
-                    </div>
-                    <div class="bg-green-750/50 backdrop-blur-sm border border-green-700/30 px-4 py-3 rounded-xl flex items-center gap-3">
-                        <div class="h-9 w-9 bg-green-700 rounded-lg flex items-center justify-center">
-                            <i data-lucide="shield-check" class="h-5 w-5 text-amber-400"></i>
-                        </div>
-                        <div class="text-left">
-                            <p class="text-xs text-green-200">Quality Assured</p>
-                            <p class="text-sm font-bold">Fresh Guarantee</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Categories Banner Box -->
-            <div class="md:col-span-5 bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10 hidden md:block text-left">
-                <h3 class="text-lg font-bold text-amber-300 mb-3 flex items-center gap-2">
-                    <i data-lucide="trending-up" class="h-5 w-5"></i> Trending Categories
-                </h3>
-                <div class="space-y-3">
-                    <div onclick="filterCategory('Vegetables')" class="bg-white/10 hover:bg-white/20 border border-white/5 p-3 rounded-xl flex items-center justify-between cursor-pointer transition">
-                        <span class="text-sm font-medium">Organic Leafy Greens</span>
-                        <span class="text-xs text-amber-300 font-semibold">8 items</span>
-                    </div>
-                    <div onclick="filterCategory('Dairy & Eggs')" class="bg-white/10 hover:bg-white/20 border border-white/5 p-3 rounded-xl flex items-center justify-between cursor-pointer transition">
-                        <span class="text-sm font-medium">Premium Farm Eggs & Dairy</span>
-                        <span class="text-xs text-amber-300 font-semibold">5 items</span>
-                    </div>
-                    <div onclick="filterCategory('Bakery')" class="bg-white/10 hover:bg-white/20 border border-white/5 p-3 rounded-xl flex items-center justify-between cursor-pointer transition">
-                        <span class="text-sm font-medium">Artisanal Bread & Croissants</span>
-                        <span class="text-xs text-amber-300 font-semibold">4 items</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- 3. MAIN PRODUCT CATALOG -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-        
-        <!-- Category Selector -->
-        <div class="flex items-center justify-between flex-wrap gap-4 border-b border-slate-200 pb-5 mb-8">
-            <div id="category-tabs" class="flex items-center gap-1.5 overflow-x-auto no-scrollbar scroll-smooth -mb-5 pb-5 w-full md:w-auto">
-                <!-- Categories loaded dynamically -->
-            </div>
-            <div id="catalog-count" class="text-xs font-semibold text-slate-500 bg-slate-100 px-3 py-1.5 rounded-lg">
-                Loading items...
-            </div>
-        </div>
-
-        <!-- Product Grid -->
-        <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            <!-- Products loaded dynamically -->
-        </div>
-    </main>
-
-    <!-- 4. CART SIDE-PANEL DRAWER -->
-    <div id="cart-drawer" class="fixed inset-0 z-50 hidden">
-        <!-- Backdrop Overlay -->
-        <div onclick="closeCart()" class="absolute inset-0 bg-black/50 backdrop-blur-xs"></div>
-        
-        <!-- Drawer Body -->
-        <div class="absolute right-0 top-0 bottom-0 w-full max-w-md bg-white shadow-2xl flex flex-col justify-between">
-            <!-- Header -->
-            <div class="p-5 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
-                <div class="flex items-center gap-2">
-                    <i data-lucide="shopping-cart" class="h-5.5 w-5.5 text-green-700"></i>
-                    <h3 class="text-lg font-black text-slate-900">Your Shopping Cart</h3>
-                </div>
-                <button onclick="closeCart()" class="h-9 w-9 bg-slate-200 hover:bg-slate-300 text-slate-600 rounded-lg flex items-center justify-center transition">
-                    <i data-lucide="x" class="h-5 w-5"></i>
-                </button>
-            </div>
-
-            <!-- Items list -->
-            <div id="cart-items-list" class="flex-1 overflow-y-auto p-5 space-y-4">
-                <!-- Loaded dynamically -->
-            </div>
-
-            <!-- Checkout Summary & Button -->
-            <div id="cart-footer" class="p-5 border-t border-slate-150 bg-slate-50 space-y-4 hidden">
-                <div class="space-y-2">
-                    <div class="flex justify-between text-slate-600 text-sm">
-                        <span>Subtotal</span>
-                        <span id="cart-subtotal" class="font-bold">$0.00</span>
-                    </div>
-                    <div class="flex justify-between text-slate-600 text-sm items-center">
-                        <span>Delivery Charge</span>
-                        <span id="cart-delivery" class="font-bold">$0.00</span>
-                    </div>
-                    <hr class="border-slate-250">
-                    <div class="flex justify-between text-slate-900 text-base font-extrabold">
-                        <span>Total Invoice</span>
-                        <span id="cart-total" class="text-green-800">$0.00</span>
-                    </div>
-                </div>
-
-                <button onclick="checkout()" class="w-full bg-green-700 hover:bg-green-800 text-white py-3.5 px-5 rounded-xl font-bold shadow-lg shadow-green-100 flex items-center justify-center gap-2 group transition">
-                    Proceed to Checkout
-                    <i data-lucide="arrow-right" class="h-4 w-4 transition group-hover:translate-x-1"></i>
-                </button>
-            </div>
-        </div>
+  <!-- Checkout Modal -->
+  <div class="modal" id="checkoutModal">
+    <div class="modal-content">
+      <h3 style="margin-bottom: 15px; color: #1b5e20;">कस्टमर जानकारी भरें</h3>
+      <div class="form-group">
+        <label>आपका नाम (Name):</label>
+        <input type="text" id="custName" placeholder="उदा. राहुल शर्मा">
+      </div>
+      <div class="form-group">
+        <label>मोबाइल नंबर (Phone):</label>
+        <input type="tel" id="custPhone" placeholder="उदा. 9876543210">
+      </div>
+      <div class="form-group">
+        <label>पूरा पता (Delivery Address):</label>
+        <textarea id="custAddress" rows="3" placeholder="मकान नं, गली/मोहल्ला, शहर"></textarea>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-cancel" onclick="closeCheckoutModal()">रद्द करें</button>
+        <button class="btn-submit" onclick="submitOrder()">ऑर्डर कन्फर्म करें</button>
+      </div>
     </div>
+  </div>
 
-    <!-- 5. FLOATING AI ASSISTANT WIDGET -->
-    <div class="fixed bottom-6 right-6 z-40 flex flex-col items-end gap-3">
-        <!-- Expanded Chat Box -->
-        <div id="chat-box" class="hidden w-[calc(100vw-32px)] sm:w-96 h-[500px] bg-white rounded-2xl shadow-2xl border border-slate-150 flex flex-col overflow-hidden">
-            <!-- Chat Header -->
-            <div class="p-4 bg-gradient-to-r from-green-800 to-green-700 text-white flex items-center justify-between">
-                <div class="flex items-center gap-2.5">
-                    <div class="h-8 w-8 bg-white/10 rounded-lg flex items-center justify-center">
-                        <i data-lucide="sparkles" class="h-4.5 w-4.5 text-amber-300"></i>
-                    </div>
-                    <div>
-                        <h4 class="font-extrabold text-sm leading-tight">Dhawan AI Helper</h4>
-                        <span class="text-[10px] text-green-100 flex items-center gap-1 font-medium">
-                            <span class="h-1.5 w-1.5 bg-green-400 rounded-full animate-ping"></span>
-                            Online Assistance
-                        </span>
-                    </div>
-                </div>
-                <button onclick="toggleChat()" class="h-8 w-8 hover:bg-white/10 rounded-lg flex items-center justify-center transition">
-                    <i data-lucide="x" class="h-4 w-4"></i>
-                </button>
-            </div>
+  <script>
+    let products = [];
+    let cart = [];
 
-            <!-- Messages Area -->
-            <div id="chat-messages" class="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-50/50">
-                <div class="flex flex-col items-start">
-                    <div class="max-w-[85%] p-3 rounded-xl text-sm leading-relaxed bg-white text-slate-800 border border-slate-150 shadow-sm rounded-tl-none">
-                        👋 Hello! Welcome to <strong>Dhawan Mart</strong>! I am your AI assistant. Ask me anything about our fresh vegetables, organic fruits, stock availability, city-wide delivery, or recipes!
-                    </div>
-                    <span class="text-[9px] text-slate-400 mt-1 px-1">Just now</span>
-                </div>
-            </div>
+    // JSON फ़ाइल से प्रोडक्ट्स लोड करने का फंक्शन
+    async function loadProducts() {
+      try {
+        const response = await fetch('./products.json');
+        products = await response.json();
+        renderProducts(products);
+      } catch (error) {
+        console.error("Products load करने में त्रुटि:", error);
+        document.getElementById('productGrid').innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 40px;">प्रोडक्ट्स लोड करने में समस्या आई।</div>';
+      }
+    }
 
-            <!-- Quick Suggestions -->
-            <div class="p-3 bg-slate-50 border-t border-slate-100 overflow-x-auto no-scrollbar flex gap-2">
-                <button onclick="quickAsk('Do you have fresh tomatoes?')" class="bg-white hover:bg-green-50 hover:border-green-300 text-green-900 border border-slate-200 px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap transition">
-                    Do you have fresh tomatoes?
-                </button>
-                <button onclick="quickAsk('What are your delivery hours?')" class="bg-white hover:bg-green-50 hover:border-green-300 text-green-900 border border-slate-200 px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap transition">
-                    What are your delivery hours?
-                </button>
-                <button onclick="quickAsk('Suggest a simple Italian pasta recipe.')" class="bg-white hover:bg-green-50 hover:border-green-300 text-green-900 border border-slate-200 px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap transition">
-                    Suggest a recipe
-                </button>
-            </div>
+    // Render Product Cards
+    function renderProducts(itemsToRender) {
+      const grid = document.getElementById('productGrid');
+      grid.innerHTML = '';
 
-            <!-- Chat Form Input -->
-            <form onsubmit="submitChat(event)" class="p-3 border-t border-slate-150 bg-white flex items-center gap-2">
-                <input
-                    type="text"
-                    id="chat-input"
-                    placeholder="Ask a question..."
-                    class="flex-1 bg-slate-100 text-sm px-3 py-2 rounded-xl border-0 focus:bg-white focus:ring-2 focus:ring-green-700/20 focus:border-green-700 outline-none transition"
-                >
-                <button type="submit" class="h-9 w-9 bg-green-700 hover:bg-green-800 text-white rounded-xl flex items-center justify-center transition">
-                    <i data-lucide="send" class="h-4.5 w-4.5"></i>
-                </button>
-            </form>
-        </div>
+      if (itemsToRender.length === 0) {
+        grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 40px;">कोई प्रोडक्ट नहीं मिला!</div>`;
+        return;
+      }
 
-        <!-- Floating Chat Circle Toggle -->
-        <button
-            onclick="toggleChat()"
-            class="h-14 w-14 bg-green-700 text-white rounded-full flex items-center justify-center shadow-xl hover:bg-green-800 transition relative"
-        >
-            <i data-lucide="message-square" id="chat-icon-normal" class="h-6 w-6"></i>
-            <span class="absolute top-0 right-0 h-3.5 w-3.5 bg-amber-500 rounded-full border-2 border-white animate-ping"></span>
-        </button>
-    </div>
+      itemsToRender.forEach(p => {
+        const card = document.createElement('div');
+        card.className = 'product-card';
+        card.innerHTML = `
+          <img src="${p.img}" class="product-img" alt="${p.name}">
+          <div class="product-title">${p.name}</div>
+          <div class="product-price">₹${p.price}</div>
+          <button class="btn-add" onclick="addToCart(${p.id})">+ जोड़ें (Add)</button>
+        `;
+        grid.appendChild(card);
+      });
+    }
 
-    <!-- FOOTER -->
-    <footer class="bg-slate-900 text-slate-400 py-12 mt-16 border-t border-slate-800 text-left">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div class="space-y-4">
-                <h5 class="text-white text-lg font-black tracking-tight">
-                    Dhawan <span class="text-amber-400">Mart</span>
-                </h5>
-                <p class="text-xs leading-relaxed max-w-sm">
-                    Your neighborhood premium online grocery store. Offering fresh farm fruits, hand-picked seasonal vegetables, rich dairy products, artisan loaves, and pantry essentials.
-                </p>
-            </div>
-            <div>
-                <h6 class="text-white text-sm font-bold uppercase tracking-wider mb-4">Quick Store Info</h6>
-                <ul class="text-xs space-y-2.5">
-                    <li>📍 Delivering city-wide in 2 hours</li>
-                    <li>⏰ Daily Delivery: 8:00 AM - 10:00 PM</li>
-                    <li>💵 UPI, Card, or Cash on Delivery</li>
-                    <li>⚡ Free Delivery for orders of $30.00+</li>
-                </ul>
-            </div>
-            <div>
-                <h6 class="text-white text-sm font-bold uppercase tracking-wider mb-4">Categories</h6>
-                <ul class="text-xs space-y-2.5">
-                    <li>• Organic Leafy Vegetables</li>
-                    <li>• Fresh Seasonal Sweet Fruits</li>
-                    <li>• Farm Eggs & Aged Cheddar Cheese</li>
-                    <li>• Warm Golden Sourdough Loaves</li>
-                </ul>
-            </div>
-            <div class="space-y-3">
-                <h6 class="text-white text-sm font-bold uppercase tracking-wider mb-2">AI Assistance</h6>
-                <p class="text-xs leading-relaxed">
-                    Click the <strong>Ask AI Helper</strong> floating bubble in the bottom right corner of your screen! Our AI bot is online 24/7.
-                </p>
-            </div>
-        </div>
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 mt-8 border-t border-slate-800 text-center text-xs">
-            <p>© 2026 Dhawan Mart Online Services Private Limited. All rights reserved.</p>
-        </div>
-    </footer>
+    // Filter Search
+    function filterProducts() {
+      const query = document.getElementById('searchInput').value.toLowerCase();
+      const filtered = products.filter(p => p.name.toLowerCase().includes(query));
+      renderProducts(filtered);
+    }
 
-    <!-- VANILLA FRONTEND JAVASCRIPT -->
-    <script>
-        // Grocery Products Catalog
-        const PRODUCTS = [
-            { id: "p1", name: "Organic Roma Tomatoes", price: 2.99, category: "Vegetables", image: "https://images.unsplash.com/photo-1595855759920-86582396756a?auto=format&fit=crop&q=80&w=400", unit: "kg", description: "Plump, red organic Roma tomatoes, perfect for salads, sauces, and cooking." },
-            { id: "p2", name: "Fresh Baby Spinach", price: 3.49, category: "Vegetables", image: "https://images.unsplash.com/photo-1576045057995-568f588f82fb?auto=format&fit=crop&q=80&w=400", unit: "pack", description: "Pre-washed tender organic baby spinach leaves rich in iron and vitamins." },
-            { id: "p3", name: "Crisp Organic Carrots", price: 1.89, category: "Vegetables", image: "https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?auto=format&fit=crop&q=80&w=400", unit: "kg", description: "Sweet, crunchy carrots freshly harvested from certified organic farms." },
-            { id: "p4", name: "Honeycrisp Apples", price: 4.29, category: "Fruits", image: "https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?auto=format&fit=crop&q=80&w=400", unit: "kg", description: "Delightfully sweet, juicy, and crisp premium Honeycrisp apples." },
-            { id: "p5", name: "Organic Bananas", price: 1.49, category: "Fruits", image: "https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?auto=format&fit=crop&q=80&w=400", unit: "bunch", description: "Rich in potassium, organic sweet bananas sourced from sustainable plantations." },
-            { id: "p6", name: "Sweet Strawberries", price: 3.99, category: "Fruits", image: "https://images.unsplash.com/photo-1464965911861-746a04b4bca6?auto=format&fit=crop&q=80&w=400", unit: "box", description: "Plump, ripe, and sweet fresh handpicked garden strawberries." },
-            { id: "p7", name: "Premium Whole Milk", price: 3.29, category: "Dairy & Eggs", image: "https://images.unsplash.com/photo-1550583724-b2692b85b150?auto=format&fit=crop&q=80&w=400", unit: "gallon", description: "Vitamin D fortified pasteurized whole milk from local dairy farms." },
-            { id: "p8", name: "Aged Cheddar Cheese Block", price: 5.49, category: "Dairy & Eggs", image: "https://images.unsplash.com/photo-1618067425550-b0daf3636d74?auto=format&fit=crop&q=80&w=400", unit: "block", description: "Rich, sharp aged cheddar cheese block. Excellent for snacking or melting." },
-            { id: "p9", name: "Farm Fresh Free-Range Eggs", price: 3.99, category: "Dairy & Eggs", image: "https://images.unsplash.com/photo-1516448620398-c5f44bf9f441?auto=format&fit=crop&q=80&w=400", unit: "dozen", description: "Twelve farm-fresh, large brown eggs from free-range hens." },
-            { id: "p10", name: "Artisanal Sourdough Bread", price: 4.49, category: "Bakery", image: "https://images.unsplash.com/photo-1549931319-a545dcf3bc73?auto=format&fit=crop&q=80&w=400", unit: "loaf", description: "Freshly baked sourdough bread with a crispy crust and soft, airy interior." },
-            { id: "p11", name: "Golden Butter Croissants", price: 4.99, category: "Bakery", image: "https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&q=80&w=400", unit: "pack of 4", description: "Flaky, buttery, golden baked croissants that melt in your mouth." },
-            { id: "p12", name: "Extra Virgin Olive Oil", price: 9.99, category: "Pantry", image: "https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?auto=format&fit=crop&q=80&w=400", unit: "bottle", description: "Cold-pressed extra virgin olive oil of superior category from Mediterranean olives." },
-            { id: "p13", name: "Premium Basmati Rice", price: 7.99, category: "Pantry", image: "https://images.unsplash.com/photo-1586201375761-83865001e31c?auto=format&fit=crop&q=80&w=400", unit: "5lb bag", description: "Long grain, aromatic, aged premium Basmati rice for perfect fluffy results." },
-            { id: "p14", name: "Raw Organic Forest Honey", price: 6.49, category: "Pantry", image: "https://images.unsplash.com/photo-1587049352846-4a222e784d38?auto=format&fit=crop&q=80&w=400", unit: "jar", description: "Pure, unfiltered wild forest honey containing natural enzymes and antioxidants." }
-        ];
+    // Add to Cart Function
+    function addToCart(productId) {
+      const product = products.find(p => p.id === productId);
+      const existing = cart.find(item => item.id === productId);
 
-        const CATEGORIES = ["All", "Vegetables", "Fruits", "Dairy & Eggs", "Bakery", "Pantry"];
+      if (existing) {
+        existing.quantity += 1;
+      } else {
+        cart.push({ ...product, quantity: 1 });
+      }
+      updateCartUI();
+    }
 
-        // Application State
-        let cart = [];
-        let selectedCategory = "All";
-        let searchQuery = "";
-        let chatMessagesHistory = [];
+    // Update Cart Floating Bar
+    function updateCartUI() {
+      const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+      const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
-        // DOM Initializations
-        document.addEventListener("DOMContentLoaded", () => {
-            renderCategories();
-            renderProducts();
-            lucide.createIcons();
+      const cartSummary = document.getElementById('cartSummary');
+      if (totalItems === 0) {
+        cartSummary.innerText = "कार्ट खाली है | Total: ₹0";
+      } else {
+        cartSummary.innerText = `कार्ट: ${totalItems} आइटम्स | Total: ₹${totalPrice}`;
+      }
+    }
+
+    // Modal Control
+    function openCheckoutModal() {
+      if (cart.length === 0) {
+        alert("कृपया ऑर्डर करने से पहले कम से कम एक प्रोडक्ट कार्ट में जोड़ें!");
+        return;
+      }
+      document.getElementById('checkoutModal').style.display = 'flex';
+    }
+
+    function closeCheckoutModal() {
+      document.getElementById('checkoutModal').style.display = 'none';
+    }
+
+    // Submit Order to Backend
+    async function submitOrder() {
+      const name = document.getElementById('custName').value.trim();
+      const phone = document.getElementById('custPhone').value.trim();
+      const address = document.getElementById('custAddress').value.trim();
+
+      if (!name || !phone || !address) {
+        alert("कृपया नाम, फोन नंबर और पता सभी फ़ील्ड्स भरें!");
+        return;
+      }
+
+      const totalAmount = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
+      const orderData = {
+        items: cart,
+        customer: { name, phone, address },
+        totalAmount: totalAmount
+      };
+
+      try {
+        const response = await fetch('/api/orders', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(orderData)
         });
 
-        // 1. RENDER CATEGORIES
-        function renderCategories() {
-            const container = document.getElementById("category-tabs");
-            container.innerHTML = CATEGORIES.map(cat => `
-                <button
-                    onclick="filterCategory('${cat}')"
-                    class="px-4.5 py-2.5 rounded-xl text-sm font-bold transition duration-150 whitespace-nowrap ${
-                        selectedCategory === cat
-                            ? "bg-green-700 text-white shadow-md shadow-green-100"
-                            : "bg-white border border-slate-200 text-slate-600 hover:bg-slate-50"
-                    }"
-                >
-                    ${cat}
-                </button>
-            `).join("");
+        const result = await response.json();
+
+        if (result.success) {
+          alert(`बधाई हो! आपका ऑर्डर सफ़लतापूर्वक प्लेस हो गया है।\nऑर्डर आईडी: ${result.orderId}`);
+          cart = [];
+          updateCartUI();
+          closeCheckoutModal();
+        } else {
+          alert("ऑर्डर प्लेस करने में समस्या आई, कृपया पुनः प्रयास करें।");
         }
+      } catch (error) {
+        console.error("Order error:", error);
+        alert("सर्वर से कनेक्ट नहीं हो सका।");
+      }
+    }
 
-        function filterCategory(cat) {
-            selectedCategory = cat;
-            renderCategories();
-            renderProducts();
-        }
-
-        // 2. RENDER PRODUCTS GRID
-        function renderProducts() {
-            const grid = document.getElementById("product-grid");
-            const filtered = PRODUCTS.filter(p => {
-                const matchesCat = selectedCategory === "All" || p.category === selectedCategory;
-                const matchesSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                                      p.description.toLowerCase().includes(searchQuery.toLowerCase());
-                return matchesCat && matchesSearch;
-            });
-
-            document.getElementById("catalog-count").textContent = `Showing ${filtered.length} premium items`;
-
-            if (filtered.length === 0) {
-                grid.innerHTML = `
-                    <div class="col-span-full bg-white border border-slate-100 rounded-2xl p-12 text-center max-w-md mx-auto my-10 space-y-4">
-                        <div class="h-14 w-14 bg-amber-50 text-amber-500 rounded-full flex items-center justify-center mx-auto">
-                            <i data-lucide="search" class="h-7 w-7"></i>
-                        </div>
-                        <h3 class="text-lg font-bold text-slate-800">No products found</h3>
-                        <p class="text-sm text-slate-500">Try modifying your search or picking another category.</p>
-                    </div>
-                `;
-                lucide.createIcons();
-                return;
-            }
-
-            grid.innerHTML = filtered.map(product => {
-                const cartItem = cart.find(item => item.product.id === product.id);
-                const qty = cartItem ? cartItem.quantity : 0;
-
-                return `
-                    <div class="bg-white rounded-2xl border border-slate-150 shadow-sm hover:shadow-lg hover:border-slate-200 transition duration-200 flex flex-col justify-between overflow-hidden group text-left">
-                        <div class="relative pt-[75%] bg-slate-100 overflow-hidden">
-                            <img src="${product.image}" alt="${product.name}" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition duration-300" />
-                            <span class="absolute top-3 left-3 bg-white/90 backdrop-blur-sm text-green-900 border border-green-100 font-bold text-xs px-2.5 py-1 rounded-full shadow-sm">
-                                ${product.category}
-                            </span>
-                        </div>
-                        <div class="p-4 flex-1 flex flex-col justify-between space-y-3">
-                            <div class="space-y-1">
-                                <h4 class="font-bold text-base text-slate-900 group-hover:text-green-800 transition">
-                                    ${product.name}
-                                </h4>
-                                <p class="text-xs text-slate-500 line-clamp-2 leading-relaxed">
-                                    ${product.description}
-                                </p>
-                            </div>
-                            <div class="flex items-center justify-between pt-1">
-                                <div>
-                                    <span class="text-lg font-extrabold text-slate-900">$${product.price.toFixed(2)}</span>
-                                    <span class="text-xs text-slate-500 font-medium"> / ${product.unit}</span>
-                                </div>
-                                ${qty > 0 ? `
-                                    <div class="flex items-center gap-2 bg-green-50 border border-green-200 rounded-lg p-1">
-                                        <button onclick="changeQty('${product.id}', -1)" class="h-8 w-8 rounded bg-white hover:bg-green-100 text-green-800 flex items-center justify-center font-bold transition border border-green-100">-</button>
-                                        <span class="w-6 text-center font-extrabold text-sm text-green-950">${qty}</span>
-                                        <button onclick="changeQty('${product.id}', 1)" class="h-8 w-8 rounded bg-white hover:bg-green-100 text-green-800 flex items-center justify-center font-bold transition border border-green-100">+</button>
-                                    </div>
-                                ` : `
-                                    <button onclick="addToCart('${product.id}')" class="bg-green-700 hover:bg-green-800 text-white font-bold text-xs px-3.5 py-2.5 rounded-xl shadow-sm transition flex items-center gap-1.5">
-                                        <i data-lucide="plus" class="h-4 w-4"></i> Add to Cart
-                                    </button>
-                                `}
-                            </div>
-                        </div>
-                    </div>
-                `;
-            }).join("");
-            lucide.createIcons();
-        }
-
-        function handleSearch(val) {
-            searchQuery = val;
-            renderProducts();
-        }
-
-        // 3. CART OPERATIONS
-        function addToCart(productId) {
-            const product = PRODUCTS.find(p => p.id === productId);
-            const existing = cart.find(item => item.product.id === productId);
-            if (existing) {
-                existing.quantity += 1;
-            } else {
-                cart.push({ product, quantity: 1 });
-            }
-            updateCartUI();
-            renderProducts();
-        }
-
-        function changeQty(productId, amount) {
-            const existing = cart.find(item => item.product.id === productId);
-            if (existing) {
-                existing.quantity += amount;
-                if (existing.quantity <= 0) {
-                    cart = cart.filter(item => item.product.id !== productId);
-                }
-            }
-            updateCartUI();
-            renderProducts();
-        }
-
-        function deleteItem(productId) {
-            cart = cart.filter(item => item.product.id !== productId);
-            updateCartUI();
-            renderProducts();
-        }
-
-        function openCart() {
-            document.getElementById("cart-drawer").classList.remove("hidden");
-        }
-
-        function closeCart() {
-            document.getElementById("cart-drawer").classList.add("hidden");
-        }
-
-        function updateCartUI() {
-            const badge = document.getElementById("cart-badge");
-            const list = document.getElementById("cart-items-list");
-            const footer = document.getElementById("cart-footer");
-
-            const count = cart.reduce((acc, item) => acc + item.quantity, 0);
-            if (count > 0) {
-                badge.textContent = count;
-                badge.classList.remove("hidden");
-            } else {
-                badge.classList.add("hidden");
-            }
-
-            if (cart.length === 0) {
-                list.innerHTML = `
-                    <div class="py-20 text-center space-y-4">
-                        <div class="h-16 w-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto text-slate-400">
-                            <i data-lucide="shopping-cart" class="h-8 w-8"></i>
-                        </div>
-                        <div>
-                            <h4 class="font-bold text-slate-700">Your cart is empty</h4>
-                            <p class="text-xs text-slate-400 mt-1">Add items to see them here.</p>
-                        </div>
-                    </div>
-                `;
-                footer.classList.add("hidden");
-                lucide.createIcons();
-                return;
-            }
-
-            // Calculation
-            const subtotal = cart.reduce((acc, item) => acc + item.product.price * item.quantity, 0);
-            const isFree = subtotal >= 30;
-            const delivery = isFree ? 0 : 4.99;
-            const total = subtotal + delivery;
-
-            list.innerHTML = `
-                <div class="p-3 rounded-xl text-center text-xs font-semibold ${isFree ? 'bg-green-50 border border-green-200 text-green-800' : 'bg-amber-50 border border-amber-200 text-amber-800'}">
-                    ${isFree ? '🎉 Superb! You got <strong>FREE Express Delivery</strong>!' : `Add <strong>$${(30 - subtotal).toFixed(2)}</strong> more to get <strong>FREE Delivery</strong>`}
-                </div>
-            ` + cart.map(item => `
-                <div class="flex items-center gap-3 p-3 bg-slate-50 rounded-xl border border-slate-100 text-left">
-                    <img src="${item.product.image}" class="h-16 w-16 object-cover rounded-lg border border-slate-200" />
-                    <div class="flex-1 min-w-0">
-                        <h4 class="font-bold text-sm text-slate-800 truncate">${item.product.name}</h4>
-                        <p class="text-xs text-slate-500">$${item.product.price.toFixed(2)} / ${item.product.unit}</p>
-                        <div class="flex items-center gap-2 mt-2">
-                            <button onclick="changeQty('${item.product.id}', -1)" class="h-6 w-6 rounded bg-white text-slate-700 flex items-center justify-center border border-slate-200">-</button>
-                            <span class="text-xs font-bold w-5 text-center">${item.quantity}</span>
-                            <button onclick="changeQty('${item.product.id}', 1)" class="h-6 w-6 rounded bg-white text-slate-700 flex items-center justify-center border border-slate-200">+</button>
-                        </div>
-                    </div>
-                    <div class="text-right">
-                        <p class="font-extrabold text-sm text-slate-900">$${(item.product.price * item.quantity).toFixed(2)}</p>
-                        <button onclick="deleteItem('${item.product.id}')" class="text-slate-400 hover:text-red-500 mt-2"><i data-lucide="trash-2" class="h-4 w-4"></i></button>
-                    </div>
-                </div>
-            `).join("");
-
-            document.getElementById("cart-subtotal").textContent = `$${subtotal.toFixed(2)}`;
-            document.getElementById("cart-delivery").textContent = delivery === 0 ? "FREE" : `$${delivery.toFixed(2)}`;
-            document.getElementById("cart-total").textContent = `$${total.toFixed(2)}`;
-            footer.classList.remove("hidden");
-            lucide.createIcons();
-        }
-
-        // 4. CHECKOUT POPUP WITH SWEETALERT2
-        function checkout() {
-            Swal.fire({
-                title: `<span class="text-2xl font-bold text-green-800">Checkout Details</span>`,
-                html: `
-                    <div class="text-left space-y-4">
-                        <div>
-                            <label class="block text-sm font-medium text-slate-700 mb-1">Full Name *</label>
-                            <input id="swal-name" class="swal2-input m-0 w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-green-500 focus:outline-none" placeholder="Enter your full name">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-slate-700 mb-1">Mobile Number *</label>
-                            <input id="swal-phone" type="tel" class="swal2-input m-0 w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-green-500 focus:outline-none" placeholder="10-digit mobile number">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-slate-700 mb-1">Delivery Address *</label>
-                            <textarea id="swal-address" class="swal2-textarea m-0 w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-green-500 focus:outline-none" rows="3" placeholder="Apartment, street, city"></textarea>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-slate-700 mb-1">Payment Method *</label>
-                            <select id="swal-payment" class="swal2-select m-0 w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-green-500 focus:outline-none">
-                                <option value="Cash on Delivery">Cash on Delivery (COD)</option>
-                                <option value="UPI">UPI (Paytm / GPay)</option>
-                                <option value="Card">Credit / Debit Card</option>
-                            </select>
-                        </div>
-                    </div>
-                `,
-                focusConfirm: false,
-                showCancelButton: true,
-                confirmButtonText: "Place Order 🚀",
-                confirmButtonColor: "#15803d",
-                preConfirm: () => {
-                     const name = document.getElementById("swal-name").value.trim();
-                     const phone = document.getElementById("swal-phone").value.trim();
-                     const address = document.getElementById("swal-address").value.trim();
-                     const payment = document.getElementById("swal-payment").value;
-
-                     if (!name || !phone || !address || !payment) {
-                         Swal.showValidationMessage("All fields marked with * are required.");
-                         return false;
-                     }
-                     return { name, phone, address, payment };
-                }
-            }).then(async (result) => {
-                if (result.isConfirmed) {
-                    const formData = result.value;
-
-                    Swal.fire({
-                        title: "Placing Order...",
-                        allowOutsideClick: false,
-                        didOpen: () => { Swal.showLoading(); }
-                    });
-
-                    try {
-                        const subtotal = cart.reduce((acc, item) => acc + item.product.price * item.quantity, 0);
-                        const delivery = subtotal >= 30 ? 0 : 4.99;
-
-                        const response = await fetch("/api/orders", {
-                            method: "POST",
-                            headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify({
-                                customerName: formData.name,
-                                mobileNumber: formData.phone,
-                                address: formData.address,
-                                paymentMethod: formData.payment,
-                                items: cart.map(i => ({ productId: i.product.id, name: i.product.name, quantity: i.quantity, price: i.product.price })),
-                                totalAmount: subtotal + delivery
-                            })
-                        });
-
-                        const data = await response.json();
-                        if (response.ok && data.success) {
-                            cart = [];
-                            updateCartUI();
-                            closeCart();
-                            renderProducts();
-
-                            Swal.fire({
-                                icon: "success",
-                                title: "Order Placed Successfully!",
-                                html: `
-                                    <div class="text-left space-y-2 text-sm p-3 bg-slate-50 rounded-lg">
-                                        <p class="text-center text-lg font-bold">Order ID: <span class="text-green-600">${data.orderId}</span></p>
-                                        <hr class="my-2">
-                                        <p><strong>Name:</strong> ${formData.name}</p>
-                                        <p><strong>Phone:</strong> ${formData.phone}</p>
-                                        <p><strong>Delivery Address:</strong> ${formData.address}</p>
-                                        <p><strong>Payment Mode:</strong> ${formData.payment}</p>
-                                    </div>
-                                `,
-                                confirmButtonColor: "#15803d"
-                            });
-                        } else {
-                            throw new Error(data.error || "Failed to place order.");
-                        }
-                    } catch (err) {
-                        Swal.fire({ icon: "error", title: "Error", text: err.message, confirmButtonColor: "#15803d" });
-                    }
-                }
-            });
-        }
-
-        // 5. CHATBOT ASSISTANT
-        function toggleChat() {
-            const box = document.getElementById("chat-box");
-            box.classList.toggle("hidden");
-        }
-
-        function quickAsk(text) {
-            document.getElementById("chat-input").value = text;
-            submitChat();
-        }
-
-        async function submitChat(e) {
-            if (e) e.preventDefault();
-            const input = document.getElementById("chat-input");
-            const text = input.value.trim();
-            if (!text) return;
-
-            appendMsg(text, "user");
-            input.value = "";
-
-            // Add thinking loading
-            const messagesArea = document.getElementById("chat-messages");
-            const loadingId = "loader-" + Date.now();
-            const loaderDiv = document.createElement("div");
-            loaderDiv.id = loadingId;
-            loaderDiv.className = "flex items-center gap-1.5 bg-white p-3 rounded-xl border border-slate-100 shadow-sm max-w-[80px]";
-            loaderDiv.innerHTML = `
-                <span class="h-2 w-2 bg-green-700 rounded-full animate-bounce"></span>
-                <span class="h-2 w-2 bg-green-700 rounded-full animate-bounce" style="animation-delay: 0.2s"></span>
-                <span class="h-2 w-2 bg-green-700 rounded-full animate-bounce" style="animation-delay: 0.4s"></span>
-            `;
-            messagesArea.appendChild(loaderDiv);
-            messagesArea.scrollTop = messagesArea.scrollHeight;
-
-            try {
-                const res = await fetch("/api/chat", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ message: text, history: chatMessagesHistory.slice(-6) })
-                });
-                const data = await res.json();
-                loaderDiv.remove();
-
-                if (res.ok && data.reply) {
-                    appendMsg(data.reply, "bot");
-                    chatMessagesHistory.push({ sender: "user", text: text });
-                    chatMessagesHistory.push({ sender: "bot", text: data.reply });
-                } else {
-                    throw new Error(data.error || "Offline helper");
-                }
-            } catch (err) {
-                loaderDiv.remove();
-                appendMsg("⚠️ *Dhawan AI is offline.* Connect the server and configure GEMINI_API_KEY in the secrets tab to enable AI.", "bot");
-            }
-        }
-
-        function appendMsg(text, sender) {
-            const area = document.getElementById("chat-messages");
-            const div = document.createElement("div");
-            div.className = `flex flex-col ${sender === "user" ? "items-end" : "items-start"}`;
-            
-            // Basic formatting for bold markdowns
-            const formattedText = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-
-            div.innerHTML = `
-                <div class="max-w-[85%] p-3 rounded-xl text-sm leading-relaxed ${
-                    sender === "user" ? "bg-green-700 text-white rounded-tr-none font-medium" : "bg-white text-slate-800 border border-slate-150 shadow-sm rounded-tl-none"
-                }">
-                    ${formattedText}
-                </div>
-                <span class="text-[9px] text-slate-400 mt-1 px-1">Just now</span>
-            `;
-            area.appendChild(div);
-            area.scrollTop = area.scrollHeight;
-        }
-    </script>
+    // Page लोड होते ही प्रोडक्ट्स लोड करें
+    loadProducts();
+  </script>
 </body>
-</html>>
+</html>
+
