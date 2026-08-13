@@ -3,116 +3,345 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dhawan Mart - Grocery & Daily Essentials</title>
+  <title>Dhawan Mart</title>
+  <!-- Font Awesome CDN for Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-    body { background-color: #f4f6f9; color: #333; padding-bottom: 60px; }
-    header { background-color: #1b5e20; color: white; padding: 15px 20px; text-align: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
-    header h1 { font-size: 24px; margin-bottom: 5px; }
-    .search-container { margin: 15px auto; max-width: 600px; padding: 0 15px; }
-    .search-input { width: 100%; padding: 12px 18px; font-size: 16px; border: 2px solid #1b5e20; border-radius: 25px; outline: none; }
-    .container { max-width: 1200px; margin: 0 auto; padding: 15px; display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; }
-    .product-card { background: white; border-radius: 10px; padding: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.2s; }
-    .product-card:hover { transform: translateY(-3px); }
-    .product-img { width: 100%; height: 120px; object-fit: contain; border-radius: 6px; margin-bottom: 8px; }
-    .product-title { font-size: 14px; font-weight: 600; margin-bottom: 5px; height: 36px; overflow: hidden; }
-    .product-price { font-size: 16px; font-weight: bold; color: #2e7d32; margin-bottom: 8px; }
-    .btn-add { background-color: #2e7d32; color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; font-weight: bold; width: 100%; }
-    .btn-add:hover { background-color: #1b5e20; }
-    
-    /* Cart Bar Floating */
-    .cart-float-bar { position: fixed; bottom: 0; left: 0; right: 0; background-color: #ffffff; border-top: 2px solid #2e7d32; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 -2px 10px rgba(0,0,0,0.1); z-index: 999; }
-    .cart-info { font-size: 16px; font-weight: bold; color: #1b5e20; }
-    .btn-checkout { background-color: #ff6f00; color: white; border: none; padding: 10px 20px; border-radius: 20px; font-weight: bold; cursor: pointer; }
+    body { background-color: #f4f6f9; color: #333; padding-bottom: 70px; }
 
-    /* Modal */
-    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1001; }
-    .modal-content { background: white; padding: 20px; border-radius: 10px; width: 90%; max-width: 450px; max-height: 90vh; overflow-y: auto; }
+    /* Top Header */
+    header { background-color: #1b5e20; color: white; padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+    .header-left { display: flex; align-items: center; gap: 10px; }
+    .app-logo { width: 38px; height: 38px; background: white; color: #1b5e20; border-radius: 8px; display: flex; justify-content: center; align-items: center; font-size: 20px; font-weight: bold; }
+    .brand-title { font-size: 18px; font-weight: bold; line-height: 1.1; }
+    .brand-sub { font-size: 11px; opacity: 0.9; }
+
+    /* Views / Sections */
+    .view-section { display: none; padding: 15px; max-width: 800px; margin: 0 auto; }
+    .view-section.active { display: block; }
+
+    /* Search Bar */
+    .search-container { margin-bottom: 15px; }
+    .search-input { width: 100%; padding: 12px 18px; font-size: 15px; border: 2px solid #1b5e20; border-radius: 25px; outline: none; }
+
+    /* Products Grid */
+    .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+    .product-card { background: white; border-radius: 10px; padding: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.08); display: flex; flex-direction: column; justify-content: space-between; }
+    .product-img { width: 100%; height: 110px; object-fit: contain; border-radius: 6px; margin-bottom: 8px; }
+    .product-title { font-size: 13px; font-weight: 600; margin-bottom: 5px; height: 34px; overflow: hidden; line-height: 1.2; }
+    .product-price { font-size: 15px; font-weight: bold; color: #2e7d32; margin-bottom: 8px; }
+    .btn-add { background-color: #1b5e20; color: white; border: none; padding: 8px; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 13px; }
+
+    /* Categories Page */
+    .category-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .category-card { background: white; padding: 20px; border-radius: 10px; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.08); cursor: pointer; border-left: 5px solid #1b5e20; }
+    .category-card i { font-size: 28px; color: #1b5e20; margin-bottom: 8px; }
+    .category-card h4 { font-size: 15px; color: #333; }
+
+    /* Cart Page */
+    .cart-item { background: white; border-radius: 8px; padding: 12px; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+    .cart-item-info { flex: 1; margin-left: 10px; }
+    .cart-item-title { font-size: 14px; font-weight: 600; }
+    .cart-item-price { font-size: 13px; color: #2e7d32; font-weight: bold; }
+    .qty-controls { display: flex; align-items: center; gap: 8px; margin-top: 5px; }
+    .btn-qty { background: #e0e0e0; border: none; width: 26px; height: 26px; border-radius: 4px; font-weight: bold; cursor: pointer; }
+    .cart-summary-box { background: white; padding: 15px; border-radius: 10px; margin-top: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.08); }
+    .btn-checkout-page { width: 100%; background: #ff6f00; color: white; border: none; padding: 12px; border-radius: 8px; font-size: 16px; font-weight: bold; margin-top: 10px; cursor: pointer; }
+
+    /* Profile Page */
+    .profile-header { background: white; padding: 20px; border-radius: 10px; text-align: center; margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.08); }
+    .profile-img-container { position: relative; width: 80px; height: 80px; margin: 0 auto 10px auto; }
+    .profile-img { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid #1b5e20; }
+    .btn-edit-img { position: absolute; bottom: 0; right: 0; background: #ff6f00; color: white; border: none; width: 26px; height: 26px; border-radius: 50%; cursor: pointer; font-size: 12px; }
+    .profile-menu { background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.08); }
+    .menu-item { padding: 15px 20px; border-bottom: 1px solid #eee; display: flex; align-items: center; justify-content: space-between; cursor: pointer; color: #333; font-weight: 500; }
+    .menu-item i { color: #1b5e20; margin-right: 12px; width: 20px; }
+    .menu-item:last-child { border-bottom: none; }
+    .menu-item.logout { color: #d32f2f; }
+    .menu-item.logout i { color: #d32f2f; }
+
+    /* Form Styles */
+    .form-container { background: white; padding: 15px; border-radius: 10px; margin-top: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.08); }
     .form-group { margin-bottom: 12px; }
-    .form-group label { display: block; margin-bottom: 5px; font-weight: 600; font-size: 14px; }
-    .form-group input, .form-group textarea { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 5px; }
-    .modal-actions { display: flex; justify-content: space-between; margin-top: 15px; }
-    .btn-cancel { background: #757575; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; }
-    .btn-submit { background: #2e7d32; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; }
+    .form-group label { display: block; margin-bottom: 5px; font-weight: 600; font-size: 13px; }
+    .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; }
+    .radio-group { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 5px; }
+    .radio-label { background: #f0f0f0; padding: 6px 12px; border-radius: 15px; font-size: 12px; cursor: pointer; display: flex; align-items: center; gap: 5px; }
+    .radio-label input { width: auto; }
+    .btn-submit-form { background: #1b5e20; color: white; border: none; padding: 12px; width: 100%; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+
+    /* Custom Modal / Alert Popup with ❌ Symbol */
+    .custom-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); justify-content: center; align-items: center; z-index: 2000; }
+    .modal-card { background: white; width: 85%; max-width: 360px; border-radius: 12px; padding: 20px; position: relative; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+    .close-modal-btn { position: absolute; top: 10px; right: 12px; font-size: 20px; font-weight: bold; color: #777; cursor: pointer; border: none; background: none; }
+    .modal-icon { font-size: 40px; color: #ff6f00; margin-bottom: 10px; }
+    .modal-msg { font-size: 15px; font-weight: 500; color: #333; margin-bottom: 15px; line-height: 1.4; }
+    .btn-modal-ok { background: #1b5e20; color: white; border: none; padding: 8px 25px; border-radius: 20px; font-weight: bold; cursor: pointer; }
+
+    /* Bottom Navigation Bar */
+    .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: white; border-top: 1px solid #ddd; display: flex; justify-content: space-around; padding: 8px 0; z-index: 1000; }
+    .nav-item { display: flex; flex-direction: column; align-items: center; color: #666; text-decoration: none; font-size: 11px; cursor: pointer; width: 25%; position: relative; }
+    .nav-item i { font-size: 18px; margin-bottom: 2px; }
+    .nav-item.active { color: #1b5e20; font-weight: bold; }
+    .cart-badge { position: absolute; top: -2px; right: 22px; background: #d32f2f; color: white; font-size: 10px; font-weight: bold; padding: 2px 6px; border-radius: 10px; }
   </style>
 </head>
 <body>
 
+  <!-- Top Header -->
   <header>
-    <h1>Dhawan Mart</h1>
-    <p>आपकी अपनी किराना दुकान (Instant Home Delivery)</p>
-  </header>
-
-  <div class="search-container">
-    <input type="text" id="searchInput" class="search-input" placeholder="आटा, दाल, तेल, मसाले, साबुन खोजें..." onkeyup="filterProducts()">
-  </div>
-
-  <div class="container" id="productGrid">
-    <div style="grid-column: 1/-1; text-align: center; padding: 40px;">प्रोडक्ट्स लोड हो रहे हैं...</div>
-  </div>
-
-  <div class="cart-float-bar">
-    <div class="cart-info" id="cartSummary">कार्ट खाली है | Total: ₹0</div>
-    <button class="btn-checkout" onclick="openCheckoutModal()">ऑर्डर करें (Checkout)</button>
-  </div>
-
-  <!-- Checkout Modal -->
-  <div class="modal" id="checkoutModal">
-    <div class="modal-content">
-      <h3 style="margin-bottom: 15px; color: #1b5e20;">कस्टमर जानकारी भरें</h3>
-      <div class="form-group">
-        <label>आपका नाम (Name):</label>
-        <input type="text" id="custName" placeholder="उदा. राहुल शर्मा">
-      </div>
-      <div class="form-group">
-        <label>मोबाइल नंबर (Phone):</label>
-        <input type="tel" id="custPhone" placeholder="उदा. 9876543210">
-      </div>
-      <div class="form-group">
-        <label>पूरा पता (Delivery Address):</label>
-        <textarea id="custAddress" rows="3" placeholder="मकान नं, गली/मोहल्ला, शहर"></textarea>
-      </div>
-      <div class="modal-actions">
-        <button class="btn-cancel" onclick="closeCheckoutModal()">रद्द करें</button>
-        <button class="btn-submit" onclick="submitOrder()">ऑर्डर कन्फर्म करें</button>
+    <div class="header-left">
+      <div class="app-logo"><i class="fa-solid fa-basket-shopping"></i></div>
+      <div>
+        <div class="brand-title">Dhawan Mart</div>
+        <div class="brand-sub">delivery in 2 days</div>
       </div>
     </div>
+  </header>
+
+  <!-- 1. HOME SECTION -->
+  <section id="homeView" class="view-section active">
+    <div class="search-container">
+      <input type="text" id="searchInput" class="search-input" placeholder="आटा, दाल, तेल, मसाले, साबुन खोजें..." onkeyup="filterProducts()">
+    </div>
+    <div class="product-grid" id="productGrid">
+      <div style="grid-column: 1/-1; text-align: center; padding: 30px;">प्रोडक्ट्स लोड हो रहे हैं...</div>
+    </div>
+  </section>
+
+  <!-- 2. CATEGORIES SECTION -->
+  <section id="categoriesView" class="view-section">
+    <h3 style="margin-bottom: 15px; color: #1b5e20;">सभी कैटेगरीज (Categories)</h3>
+    <div class="category-grid">
+      <div class="category-card" onclick="filterByCategory('Atta')">
+        <i class="fa-solid fa-wheat-awn"></i>
+        <h4>आटा एवं अनाज</h4>
+      </div>
+      <div class="category-card" onclick="filterByCategory('Oil')">
+        <i class="fa-solid fa-bottle-droplet"></i>
+        <h4>तेल एवं घी</h4>
+      </div>
+      <div class="category-card" onclick="filterByCategory('Dal')">
+        <i class="fa-solid fa-bowl-rice"></i>
+        <h4>दाल एवं दालें</h4>
+      </div>
+      <div class="category-card" onclick="filterByCategory('Masala')">
+        <i class="fa-solid fa-pepper-hot"></i>
+        <h4>मसाले एवं नमक</h4>
+      </div>
+      <div class="category-card" onclick="filterByCategory('Snacks')">
+        <i class="fa-solid fa-cookie-bite"></i>
+        <h4>बिस्कुट एवं स्नैक्स</h4>
+      </div>
+      <div class="category-card" onclick="filterByCategory('Soap')">
+        <i class="fa-solid fa-soap"></i>
+        <h4>साबुन एवं डिटर्जेंट</h4>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. CART SECTION -->
+  <section id="cartView" class="view-section">
+    <h3 style="margin-bottom: 15px; color: #1b5e20;">आपकी कार्ट (Shopping Cart)</h3>
+    <div id="cartItemsList">
+      <!-- Dynamic Cart Items -->
+    </div>
+    <div class="cart-summary-box" id="cartSummaryBox" style="display: none;">
+      <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 16px;">
+        <span>कुल राशि (Total):</span>
+        <span id="cartTotalPrice">₹0</span>
+      </div>
+      <button class="btn-checkout-page" onclick="openCheckoutModal()">ऑर्डर करें (Proceed to Checkout)</button>
+    </div>
+  </section>
+
+  <!-- 4. PROFILE SECTION -->
+  <section id="profileView" class="view-section">
+    <div class="profile-header">
+      <div class="profile-img-container">
+        <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" id="userProfileImg" class="profile-img" alt="User Profile">
+        <button class="btn-edit-img" onclick="triggerProfileImageUpload()"><i class="fa-solid fa-camera"></i></button>
+        <input type="file" id="profileImgInput" accept="image/*" style="display: none;" onchange="changeProfileImage(event)">
+      </div>
+      <h3 id="profileNameDisplay">कस्टमर प्रोफाइल</h3>
+      <p style="font-size: 12px; color: #666;" id="profilePhoneDisplay">+91-XXXXXXXXXX</p>
+    </div>
+
+    <div class="profile-menu">
+      <div class="menu-item" onclick="toggleSubSection('detailsForm')">
+        <span><i class="fa-solid fa-user"></i> My Details (मेरी जानकारी)</span>
+        <i class="fa-solid fa-chevron-right"></i>
+      </div>
+      
+      <div class="menu-item" onclick="toggleSubSection('partnerForm')">
+        <span><i class="fa-solid fa-motorcycle"></i> become Partnership </span>
+        <i class="fa-solid fa-chevron-right"></i>
+      </div>
+
+      <div class="menu-item" onclick="toggleSubSection('feedbackForm')">
+        <span><i class="fa-solid fa-comment-dots"></i> Feedback (प्रतिक्रिया)</span>
+        <i class="fa-solid fa-chevron-right"></i>
+      </div>
+
+      <div class="menu-item" onclick="openCustomerServiceSMS()">
+        <span><i class="fa-solid fa-headset"></i> Customer Service (मदद लें)</span>
+        <i class="fa-solid fa-chevron-right"></i>
+      </div>
+
+      <div class="menu-item logout" onclick="handleLogout()">
+        <span><i class="fa-solid fa-right-from-bracket"></i> Logout (लॉग आउट)</span>
+      </div>
+    </div>
+
+    <!-- Sub Form 1: My Details -->
+    <div id="detailsForm" class="form-container" style="display: none;">
+      <h4>मेरी जानकारी (Customer Details)</h4>
+      <div class="form-group" style="margin-top: 10px;">
+        <label>नाम:</label>
+        <input type="text" id="custDetailName" value="मिस्टर धवन">
+      </div>
+      <div class="form-group">
+        <label>मोबाइल नंबर:</label>
+        <input type="tel" id="custDetailPhone" value="9876543210">
+      </div>
+      <div class="form-group">
+        <label>पता:</label>
+        <textarea id="custDetailAddress">लालसोट, राजस्थान</textarea>
+      </div>
+      <button class="btn-submit-form" onclick="saveCustomerDetails()">सेव करें</button>
+    </div>
+
+    <!-- Sub Form 2: Delivery Boy Partnership -->
+    <div id="partnerForm" class="form-container" style="display: none;">
+      <h4>Delivery Boy Registration Form</h4>
+      <div class="form-group" style="margin-top: 10px;">
+        <label>पूरा नाम:</label>
+        <input type="text" id="pName" placeholder="आपका नाम">
+      </div>
+      <div class="form-group">
+        <label>मोबाइल नंबर:</label>
+        <input type="tel" id="pMobile" placeholder="मोबाइल नंबर">
+      </div>
+      <div class="form-group">
+        <label>व्हाट्सएप नंबर:</label>
+        <input type="tel" id="pWhatsapp" placeholder="व्हाट्सएप नंबर">
+      </div>
+      <div class="form-group">
+        <label>ईमेल एड्रेस:</label>
+        <input type="email" id="pEmail" placeholder="example@gmail.com">
+      </div>
+      <div class="form-group">
+        <label>पूरा पता:</label>
+        <textarea id="pAddress" placeholder="पता भरें"></textarea>
+      </div>
+      <div class="form-group">
+        <label>गाँव (Village):</label>
+        <div class="radio-group">
+          <label class="radio-label"><input type="radio" name="village" value="Lalsot" onclick="checkOtherVillage(false)"> Lalsot</label>
+          <label class="radio-label"><input type="radio" name="village" value="Shyampura" onclick="checkOtherVillage(false)"> Shyampura</label>
+          <label class="radio-label"><input type="radio" name="village" value="Sanwasa" onclick="checkOtherVillage(false)"> Sanwasa</label>
+          <label class="radio-label"><input type="radio" name="village" value="Thuniya Dhirajpura" onclick="checkOtherVillage(false)"> Thuniya Dhirajpura</label>
+          <label class="radio-label"><input type="radio" name="village" value="Choundiyash" onclick="checkOtherVillage(false)"> Choundiyash</label>
+          <label class="radio-label"><input type="radio" name="village" value="Ajabpura" onclick="checkOtherVillage(false)"> Ajabpura</label>
+          <label class="radio-label"><input type="radio" name="village" value="Ratanpura" onclick="checkOtherVillage(false)"> Ratanpura</label>
+          <label class="radio-label"><input type="radio" name="village" value="Chainpura" onclick="checkOtherVillage(false)"> Chainpura</label>
+          <label class="radio-label"><input type="radio" name="village" value="Nirjharna" onclick="checkOtherVillage(false)"> Nirjharna</label>
+          <label class="radio-label"><input type="radio" name="village" value="Other" onclick="checkOtherVillage(true)"> Other</label>
+        </div>
+        <input type="text" id="otherVillageInput" placeholder="अपने गाँव का नाम लिखें" style="display: none; margin-top: 8px;">
+      </div>
+      <div class="form-group">
+        <label>राज्य (State):</label>
+        <input type="text" id="pState" value="Rajasthan">
+      </div>
+      <button class="btn-submit-form" onclick="submitDeliveryBoyForm()">रजिस्ट्रेशन सबमिट करें</button>
+    </div>
+
+    <!-- Sub Form 3: Feedback -->
+    <div id="feedbackForm" class="form-container" style="display: none;">
+      <h4>आपकी प्रतिक्रिया (Feedback)</h4>
+      <div class="form-group" style="margin-top: 10px;">
+        <label>संदेश / सुझाव:</label>
+        <textarea id="feedbackText" rows="4" placeholder="अपना सुझाव या समस्या यहाँ लिखें..."></textarea>
+      </div>
+      <button class="btn-submit-form" onclick="submitFeedback()">सबमिट करें</button>
+    </div>
+  </section>
+
+  <!-- CUSTOM ALERT POPUP (Replacing Default Browser Alert) -->
+  <div class="custom-modal" id="customAlertModal">
+    <div class="modal-card">
+      <button class="close-modal-btn" onclick="closeCustomAlert()"✴️</button>
+      <div class="modal-icon"><i class="fa-solid fa-circle-exclamation"></i></div>
+      <div class="modal-msg" id="customAlertMsg">संदेश यहाँ दिखेगा</div>
+      <button class="btn-modal-ok" onclick="closeCustomAlert()">ठीक है (OK)</button>
+    </div>
   </div>
+
+  <!-- BOTTOM NAVIGATION BAR -->
+  <nav class="bottom-nav">
+    <div class="nav-item active" id="navHome" onclick="showSection('homeView', this)">
+      <i class="fa-solid fa-house"></i>
+      <span>Home</span>
+    </div>
+    <div class="nav-item" id="navCategories" onclick="showSection('categoriesView', this)">
+      <i class="fa-solid fa-list-check"></i>
+      <span>Category</span>
+    </div>
+    <div class="nav-item" id="navCart" onclick="showSection('cartView', this)">
+      <i class="fa-solid fa-cart-shopping"></i>
+      <span>Cart</span>
+      <span class="cart-badge" id="cartCountBadge" style="display: none;">0</span>
+    </div>
+    <div class="nav-item" id="navProfile" onclick="showSection('profileView', this)">
+      <i class="fa-solid fa-user"></i>
+      <span>Profile</span>
+    </div>
+  </nav>
 
   <script>
     let products = [];
     let cart = [];
 
-    // JSON फ़ाइल से प्रोडक्ट्स लोड करने का फंक्शन
+    // Custom Alert Function (Replaces window.alert)
+    function showAlert(message) {
+      document.getElementById('customAlertMsg').innerText = message;
+      document.getElementById('customAlertModal').style.display = 'flex';
+    }
+
+    function closeCustomAlert() {
+      document.getElementById('customAlertModal').style.display = 'none';
+    }
+
+    // Load Products from JSON
     async function loadProducts() {
       try {
         const response = await fetch('./products.json');
         products = await response.json();
         renderProducts(products);
       } catch (error) {
-        console.error("Products load करने में त्रुटि:", error);
-        document.getElementById('productGrid').innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 40px;">प्रोडक्ट्स लोड करने में समस्या आई।</div>';
+        console.error("Products load error:", error);
+        document.getElementById('productGrid').innerHTML = '<div style="grid-column: 1/-1; text-align: center;">प्रोडक्ट्स लोड करने में असमर्थ।</div>';
       }
     }
 
-    // Render Product Cards
-    function renderProducts(itemsToRender) {
+    // Render Products
+    function renderProducts(items) {
       const grid = document.getElementById('productGrid');
       grid.innerHTML = '';
-
-      if (itemsToRender.length === 0) {
-        grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 40px;">कोई प्रोडक्ट नहीं मिला!</div>`;
+      if (items.length === 0) {
+        grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 20px;">कोई प्रोडक्ट नहीं मिला!</div>';
         return;
       }
-
-      itemsToRender.forEach(p => {
+      items.forEach(p => {
         const card = document.createElement('div');
         card.className = 'product-card';
         card.innerHTML = `
           <img src="${p.img}" class="product-img" alt="${p.name}">
           <div class="product-title">${p.name}</div>
           <div class="product-price">₹${p.price}</div>
-          <button class="btn-add" onclick="addToCart(${p.id})">+ जोड़ें (Add)</button>
+          <button class="btn-add" onclick="addToCart(${p.id})">+ कार्ट में जोड़ें</button>
         `;
         grid.appendChild(card);
       });
@@ -125,90 +354,185 @@
       renderProducts(filtered);
     }
 
-    // Add to Cart Function
-    function addToCart(productId) {
-      const product = products.find(p => p.id === productId);
-      const existing = cart.find(item => item.id === productId);
+    // Filter By Category
+    function filterByCategory(cat) {
+      showSection('homeView', document.getElementById('navHome'));
+      const filtered = products.filter(p => p.name.toLowerCase().includes(cat.toLowerCase()));
+      renderProducts(filtered);
+    }
 
+    // Add to Cart
+    function addToCart(id) {
+      const p = products.find(prod => prod.id === id);
+      const existing = cart.find(item => item.id === id);
       if (existing) {
         existing.quantity += 1;
       } else {
-        cart.push({ ...product, quantity: 1 });
+        cart.push({ ...p, quantity: 1 });
+      }
+      updateCartUI();
+      showAlert(`${p.name} कार्ट में जोड़ा गया!`);
+    }
+
+    // Update Cart UI
+    function updateCartUI() {
+      const badge = document.getElementById('cartCountBadge');
+      const totalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+      if (totalCount > 0) {
+        badge.innerText = totalCount;
+        badge.style.display = 'block';
+      } else {
+        badge.style.display = 'none';
+      }
+
+      const cartList = document.getElementById('cartItemsList');
+      const cartSummaryBox = document.getElementById('cartSummaryBox');
+      
+      if (cart.length === 0) {
+        cartList.innerHTML = '<div style="text-align: center; padding: 40px; color: #777;">आपकी कार्ट खाली है!</div>';
+        cartSummaryBox.style.display = 'none';
+        return;
+      }
+
+      cartList.innerHTML = '';
+      let total = 0;
+
+      cart.forEach(item => {
+        total += item.price * item.quantity;
+        const div = document.createElement('div');
+        div.className = 'cart-item';
+        div.innerHTML = `
+          <img src="${item.img}" width="50" height="50" style="object-fit:contain;" alt="">
+          <div class="cart-item-info">
+            <div class="cart-item-title">${item.name}</div>
+            <div class="cart-item-price">₹${item.price} x ${item.quantity} = ₹${item.price * item.quantity}</div>
+            <div class="qty-controls">
+              <button class="btn-qty" onclick="changeQty(${item.id}, -1)">-</button>
+              <span>${item.quantity}</span>
+              <button class="btn-qty" onclick="changeQty(${item.id}, 1)">+</button>
+            </div>
+          </div>
+          <button style="border:none; background:none; color:#d32f2f; cursor:pointer;" onclick="removeItem(${item.id})"><i class="fa-solid fa-trash"></i></button>
+        `;
+        cartList.appendChild(div);
+      });
+
+      document.getElementById('cartTotalPrice').innerText = `₹${total}`;
+      cartSummaryBox.style.display = 'block';
+    }
+
+    function changeQty(id, delta) {
+      const item = cart.find(i => i.id === id);
+      if (item) {
+        item.quantity += delta;
+        if (item.quantity <= 0) {
+          cart = cart.filter(i => i.id !== id);
+        }
       }
       updateCartUI();
     }
 
-    // Update Cart Floating Bar
-    function updateCartUI() {
-      const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-      const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    function removeItem(id) {
+      cart = cart.filter(i => i.id !== id);
+      updateCartUI();
+    }
 
-      const cartSummary = document.getElementById('cartSummary');
-      if (totalItems === 0) {
-        cartSummary.innerText = "कार्ट खाली है | Total: ₹0";
+    // Navigation Switcher
+    function showSection(sectionId, navElement) {
+      document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+      
+      document.getElementById(sectionId).classList.add('active');
+      if (navElement) navElement.classList.add('active');
+    }
+
+    // Toggle Profile Sub Sections
+    function toggleSubSection(id) {
+      const el = document.getElementById(id);
+      if (el.style.display === 'block') {
+        el.style.display = 'none';
       } else {
-        cartSummary.innerText = `कार्ट: ${totalItems} आइटम्स | Total: ₹${totalPrice}`;
+        document.querySelectorAll('.form-container').forEach(f => f.style.display = 'none');
+        el.style.display = 'block';
       }
     }
 
-    // Modal Control
+    // Profile Image Change
+    function triggerProfileImageUpload() {
+      document.getElementById('profileImgInput').click();
+    }
+
+    function changeProfileImage(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          document.getElementById('userProfileImg').src = e.target.result;
+          showAlert("प्रोफाइल फोटो सफलतापूर्वक बदल दी गई!");
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    // Village Other Input Check
+    function checkOtherVillage(isOther) {
+      const otherInput = document.getElementById('otherVillageInput');
+      if (isOther) {
+        otherInput.style.display = 'block';
+      } else {
+        otherInput.style.display = 'none';
+      }
+    }
+
+    // Customer Service via Android Messenger (SMS Protocol)
+    function openCustomerServiceSMS() {
+      const myPhoneNumber = "919876543210"; // यहाँ अपना डिलीवरी/कस्टमर केयर नंबर बदलें
+      const defaultText = encodeURIComponent("नमस्ते Dhawan Mart, मुझे अपने ऑर्डर / ऐप में मदद चाहिए।");
+      window.location.href = `sms:${myPhoneNumber}?body=${defaultText}`;
+    }
+
+    // Submissions
+    function saveCustomerDetails() {
+      showAlert("आपकी जानकारी सफलतापूर्वक सेव कर ली गई है!");
+      toggleSubSection('detailsForm');
+    }
+
+    function submitDeliveryBoyForm() {
+      const name = document.getElementById('pName').value.trim();
+      const mobile = document.getElementById('pMobile').value.trim();
+      if (!name || !mobile) {
+        showAlert("कृपया अपना नाम और मोबाइल नंबर भरें!");
+        return;
+      }
+      showAlert("धन्यवाद! आपका डिलीवरी बॉय रजिस्ट्रेशन फॉर्म जमा हो गया है। हम जल्द ही आपसे संपर्क करेंगे।");
+      toggleSubSection('partnerForm');
+    }
+
+    function submitFeedback() {
+      const fb = document.getElementById('feedbackText').value.trim();
+      if (!fb) {
+        showAlert("कृपया अपनी प्रतिक्रिया दर्ज करें!");
+        return;
+      }
+      showAlert("आपकी बहुमूल्य प्रतिक्रिया के लिए धन्यवाद!");
+      document.getElementById('feedbackText').value = '';
+      toggleSubSection('feedbackForm');
+    }
+
+    function handleLogout() {
+      showAlert("आप सफलतापूर्वक लॉग आउट हो गए हैं।");
+    }
+
     function openCheckoutModal() {
-      if (cart.length === 0) {
-        alert("कृपया ऑर्डर करने से पहले कम से कम एक प्रोडक्ट कार्ट में जोड़ें!");
-        return;
-      }
-      document.getElementById('checkoutModal').style.display = 'flex';
+      showAlert("ऑर्डर प्लेस करने के लिए धन्यवाद! आपका ऑर्डर दर्ज कर लिया गया है।");
+      cart = [];
+      updateCartUI();
+      showSection('homeView', document.getElementById('navHome'));
     }
 
-    function closeCheckoutModal() {
-      document.getElementById('checkoutModal').style.display = 'none';
-    }
-
-    // Submit Order to Backend
-    async function submitOrder() {
-      const name = document.getElementById('custName').value.trim();
-      const phone = document.getElementById('custPhone').value.trim();
-      const address = document.getElementById('custAddress').value.trim();
-
-      if (!name || !phone || !address) {
-        alert("कृपया नाम, फोन नंबर और पता सभी फ़ील्ड्स भरें!");
-        return;
-      }
-
-      const totalAmount = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-
-      const orderData = {
-        items: cart,
-        customer: { name, phone, address },
-        totalAmount: totalAmount
-      };
-
-      try {
-        const response = await fetch('/api/orders', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(orderData)
-        });
-
-        const result = await response.json();
-
-        if (result.success) {
-          alert(`बधाई हो! आपका ऑर्डर सफ़लतापूर्वक प्लेस हो गया है।\nऑर्डर आईडी: ${result.orderId}`);
-          cart = [];
-          updateCartUI();
-          closeCheckoutModal();
-        } else {
-          alert("ऑर्डर प्लेस करने में समस्या आई, कृपया पुनः प्रयास करें।");
-        }
-      } catch (error) {
-        console.error("Order error:", error);
-        alert("सर्वर से कनेक्ट नहीं हो सका।");
-      }
-    }
-
-    // Page लोड होते ही प्रोडक्ट्स लोड करें
+    // Init
     loadProducts();
+    updateCartUI();
   </script>
 </body>
 </html>
-
