@@ -71,20 +71,31 @@
     .radio-label input { width: auto; }
     .btn-submit-form { background: #1b5e20; color: white; border: none; padding: 12px; width: 100%; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 10px; }
 
-    /* Custom Modal / Alert Popup with ❌ Symbol */
-    .custom-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); justify-content: center; align-items: center; z-index: 2000; }
-    .modal-card { background: white; width: 85%; max-width: 360px; border-radius: 12px; padding: 20px; position: relative; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
-    .close-modal-btn { position: absolute; top: 10px; right: 12px; font-size: 20px; font-weight: bold; color: #777; cursor: pointer; border: none; background: none; }
-    .modal-icon { font-size: 40px; color: #ff6f00; margin-bottom: 10px; }
-    .modal-msg { font-size: 15px; font-weight: 500; color: #333; margin-bottom: 15px; line-height: 1.4; }
-    .btn-modal-ok { background: #1b5e20; color: white; border: none; padding: 8px 25px; border-radius: 20px; font-weight: bold; cursor: pointer; }
-
     /* Bottom Navigation Bar */
     .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: white; border-top: 1px solid #ddd; display: flex; justify-content: space-around; padding: 8px 0; z-index: 1000; }
     .nav-item { display: flex; flex-direction: column; align-items: center; color: #666; text-decoration: none; font-size: 11px; cursor: pointer; width: 25%; position: relative; }
     .nav-item i { font-size: 18px; margin-bottom: 2px; }
     .nav-item.active { color: #1b5e20; font-weight: bold; }
     .cart-badge { position: absolute; top: -2px; right: 22px; background: #d32f2f; color: white; font-size: 10px; font-weight: bold; padding: 2px 6px; border-radius: 10px; }
+  
+  .btn-toggle-village {
+  width: 100%;
+  padding: 10px 15px;
+  background-color: #e8f5e9;
+  color: #1b5e20;
+  border: 1px solid #1b5e20;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 13px;
+  text-align: left;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+}
+
+
+                                                                 
   </style>
 </head>
 <body>
@@ -196,7 +207,7 @@
 
     <!-- Sub Form 1: My Details -->
     <div id="detailsForm" class="form-container" style="display: none;">
-      <h4>मेरी जानकारी (Customer Details)</h4>
+      <h4>my Details)</h4>
       <div class="form-group" style="margin-top: 10px;">
         <label>नाम:</label>
         <input type="text" id="custDetailName" value="मिस्टर धवन">
@@ -207,60 +218,75 @@
       </div>
       <div class="form-group">
         <label>पता:</label>
-        <textarea id="custDetailAddress">लालसोट, राजस्थान</textarea>
+        <textarea id="custDetailAddress">  </textarea>
       </div>
       <button class="btn-submit-form" onclick="saveCustomerDetails()">सेव करें</button>
     </div>
-
-    <!-- Sub Form 2: Delivery Boy Partnership -->
-    <div id="partnerForm" class="form-container" style="display: none;">
-      <h4>Delivery Boy Registration Form</h4>
-      <div class="form-group" style="margin-top: 10px;">
-        <label>पूरा नाम:</label>
-        <input type="text" id="pName" placeholder="आपका नाम">
-      </div>
-      <div class="form-group">
-        <label>मोबाइल नंबर:</label>
-        <input type="tel" id="pMobile" placeholder="मोबाइल नंबर">
-      </div>
-      <div class="form-group">
-        <label>व्हाट्सएप नंबर:</label>
-        <input type="tel" id="pWhatsapp" placeholder="व्हाट्सएप नंबर">
-      </div>
-      <div class="form-group">
-        <label>ईमेल एड्रेस:</label>
-        <input type="email" id="pEmail" placeholder="example@gmail.com">
-      </div>
-      <div class="form-group">
-        <label>पूरा पता:</label>
-        <textarea id="pAddress" placeholder="पता भरें"></textarea>
-      </div>
-      <div class="form-group">
-        <label>गाँव (Village):</label>
-        <div class="radio-group">
-          <label class="radio-label"><input type="radio" name="village" value="Lalsot" onclick="checkOtherVillage(false)"> Lalsot</label>
-          <label class="radio-label"><input type="radio" name="village" value="Shyampura" onclick="checkOtherVillage(false)"> Shyampura</label>
-          <label class="radio-label"><input type="radio" name="village" value="Sanwasa" onclick="checkOtherVillage(false)"> Sanwasa</label>
-          <label class="radio-label"><input type="radio" name="village" value="Thuniya Dhirajpura" onclick="checkOtherVillage(false)"> Thuniya Dhirajpura</label>
-          <label class="radio-label"><input type="radio" name="village" value="Choundiyash" onclick="checkOtherVillage(false)"> Choundiyash</label>
-          <label class="radio-label"><input type="radio" name="village" value="Ajabpura" onclick="checkOtherVillage(false)"> Ajabpura</label>
-          <label class="radio-label"><input type="radio" name="village" value="Ratanpura" onclick="checkOtherVillage(false)"> Ratanpura</label>
-          <label class="radio-label"><input type="radio" name="village" value="Chainpura" onclick="checkOtherVillage(false)"> Chainpura</label>
-          <label class="radio-label"><input type="radio" name="village" value="Nirjharna" onclick="checkOtherVillage(false)"> Nirjharna</label>
-          <label class="radio-label"><input type="radio" name="village" value="Other" onclick="checkOtherVillage(true)"> Other</label>
-        </div>
-        <input type="text" id="otherVillageInput" placeholder="अपने गाँव का नाम लिखें" style="display: none; margin-top: 8px;">
-      </div>
-      <div class="form-group">
-        <label>राज्य (State):</label>
-        <input type="text" id="pState" value="Rajasthan">
-      </div>
-      <button class="btn-submit-form" onclick="submitDeliveryBoyForm()">रजिस्ट्रेशन सबमिट करें</button>
+<!-- Sub Form 2: Delivery Boy Partnership -->
+<div id="partnerForm" class="form-container" style="display: none;">
+  <h4>Delivery Boy Registration Form</h4>
+  
+  <div class="form-group" style="margin-top: 10px;">
+    <label>पूरा नाम:</label>
+    <input type="text" id="pName" placeholder="आपका नाम">
+  </div>
+  
+  <div class="form-group">
+    <label>मोबाइल नंबर:</label>
+    <input type="tel" id="pMobile" placeholder="मोबाइल नंबर">
+  </div>
+  
+  <div class="form-group">
+    <label>व्हाट्सएप नंबर:</label>
+    <input type="tel" id="pWhatsapp" placeholder="व्हाट्सएप नंबर">
+  </div>
+  
+  <div class="form-group">
+    <label>ईमेल एड्रेस:</label>
+    <input type="email" id="pEmail" placeholder="example@gmail.com">
+  </div>
+  
+  <div class="form-group">
+    <label>पूरा पता:</label>
+    <textarea id="pAddress" placeholder="पता भरें"></textarea>
+  </div>
+  
+  <!-- गाँव की लिस्ट (छिपी हुई - Click करने पर खुलेगी) -->
+  <div class="form-group">
+    <label>गाँव (Village):</label>
+    <button type="button" class="btn-toggle-village" onclick="toggleVillageList()">
+      📍 अपना गाँव चुनें (Click to Select Village) <i class="fa-solid fa-chevron-down" id="villageArrow"></i>
+    </button>
+    
+    <!-- यह रेडियो बटन ग्रुप डिफ़ॉल्ट रूप से छिपा रहेगा (display: none) -->
+    <div class="radio-group" id="villageRadioGroup" style="display: none; margin-top: 10px;">
+      <label class="radio-label"><input type="radio" name="village" value="Lalsot" onclick="checkOtherVillage(false)"> Lalsot</label>
+      <label class="radio-label"><input type="radio" name="village" value="Shyampura" onclick="checkOtherVillage(false)"> Shyampura</label>
+      <label class="radio-label"><input type="radio" name="village" value="Sanwasa" onclick="checkOtherVillage(false)"> Sanwasa</label>
+      <label class="radio-label"><input type="radio" name="village" value="Thuniya Dhirajpura" onclick="checkOtherVillage(false)"> Thuniya Dhirajpura</label>
+      <label class="radio-label"><input type="radio" name="village" value="Choundiyash" onclick="checkOtherVillage(false)"> Choundiyash</label>
+      <label class="radio-label"><input type="radio" name="village" value="Ajabpura" onclick="checkOtherVillage(false)"> Ajabpura</label>
+      <label class="radio-label"><input type="radio" name="village" value="Ratanpura" onclick="checkOtherVillage(false)"> Ratanpura</label>
+      <label class="radio-label"><input type="radio" name="village" value="Chainpura" onclick="checkOtherVillage(false)"> Chainpura</label>
+      <label class="radio-label"><input type="radio" name="village" value="Nirjharna" onclick="checkOtherVillage(false)"> Nirjharna</label>
+      <label class="radio-label"><input type="radio" name="village" value="Other" onclick="checkOtherVillage(true)"> Other</label>
     </div>
+    
+    <input type="text" id="otherVillageInput" placeholder="अपने गाँव का नाम लिखें" style="display: none; margin-top: 8px;">
+  </div>
+
+  <div class="form-group">
+    <label>राज्य (State):</label>
+    <input type="text" id="pState" value="Rajasthan">
+  </div>
+  
+  <button class="btn-submit-form" onclick="submitDeliveryBoyForm()">रजिस्ट्रेशन सबमिट करें</button>
+</div>
+
 
     <!-- Sub Form 3: Feedback -->
     <div id="feedbackForm" class="form-container" style="display: none;">
-      <h4>आपकी प्रतिक्रिया (Feedback)</h4>
+      <h4> Feedback</h4>
       <div class="form-group" style="margin-top: 10px;">
         <label>संदेश / सुझाव:</label>
         <textarea id="feedbackText" rows="4" placeholder="अपना सुझाव या समस्या यहाँ लिखें..."></textarea>
@@ -272,10 +298,10 @@
   <!-- CUSTOM ALERT POPUP (Replacing Default Browser Alert) -->
   <div class="custom-modal" id="customAlertModal">
     <div class="modal-card">
-      <button class="close-modal-btn" onclick="closeCustomAlert()"✴️</button>
+      <button class="close-modal-btn" onclick="CustomAlert()"</button>
       <div class="modal-icon"><i class="fa-solid fa-circle-exclamation"></i></div>
       <div class="modal-msg" id="customAlertMsg">संदेश यहाँ दिखेगा</div>
-      <button class="btn-modal-ok" onclick="closeCustomAlert()">ठीक है (OK)</button>
+      <button class="btn-modal-ok" onclick="CustomAlert()"></button>
     </div>
   </div>
 
@@ -468,7 +494,7 @@
         const reader = new FileReader();
         reader.onload = function(e) {
           document.getElementById('userProfileImg').src = e.target.result;
-          showAlert("प्रोफाइल फोटो सफलतापूर्वक बदल दी गई!");
+          showAlert("✔️");
         };
         reader.readAsDataURL(file);
       }
@@ -486,7 +512,7 @@
 
     // Customer Service via Android Messenger (SMS Protocol)
     function openCustomerServiceSMS() {
-      const myPhoneNumber = "919876543210"; // यहाँ अपना डिलीवरी/कस्टमर केयर नंबर बदलें
+      const myPhoneNumber = "918690631139"; // यहाँ अपना डिलीवरी/कस्टमर केयर नंबर बदलें
       const defaultText = encodeURIComponent("नमस्ते Dhawan Mart, मुझे अपने ऑर्डर / ऐप में मदद चाहिए।");
       window.location.href = `sms:${myPhoneNumber}?body=${defaultText}`;
     }
@@ -533,6 +559,23 @@
     // Init
     loadProducts();
     updateCartUI();
+
+// गाँव की लिस्ट को टॉगल (Show/Hide) करने का फ़ंक्शन
+function toggleVillageList() {
+  const villageGroup = document.getElementById('villageRadioGroup');
+  const arrowIcon = document.getElementById('villageArrow');
+  
+  if (villageGroup.style.display === 'none' || villageGroup.style.display === '') {
+    villageGroup.style.display = 'flex';
+    arrowIcon.className = 'fa-solid fa-chevron-up';
+  } else {
+    villageGroup.style.display = 'none';
+    arrowIcon.className = 'fa-solid fa-chevron-down';
+  }
+}
+
+
+    
   </script>
 </body>
 </html>
