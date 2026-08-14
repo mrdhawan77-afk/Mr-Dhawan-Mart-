@@ -33,11 +33,10 @@
   },
   {
     "id": 5,
-    "category": "Drinks",
+     "Drinks",
     "name": "Coca Cola",
     "price": 40,
-    "weight": "750ml",
-    "img": "https://m.media-amazon.com/images/I/51v8nyxSOYL._SX300_SY300_QL70_FMwebp_.jpg"
+    "img": "https://i.pinimg.com/originals/66/36/88/6636889e7781ab791d5151332ee374d8.jpg"
   }
 ]
 
