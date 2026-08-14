@@ -210,11 +210,11 @@
       <h4>my Details)</h4>
       <div class="form-group" style="margin-top: 10px;">
         <label>नाम:</label>
-        <input type="text" id="custDetailName" value="मिस्टर धवन">
+        <input type="text" id="custDetailName" value=" ">
       </div>
       <div class="form-group">
         <label>मोबाइल नंबर:</label>
-        <input type="tel" id="custDetailPhone" value="9876543210">
+        <input type="tel" id="custDetailPhone" value=" ">
       </div>
       <div class="form-group">
         <label>पता:</label>
@@ -276,9 +276,16 @@
   </div>
 
   <div class="form-group">
+    <label>distric:</label>
+    <input type="text" id="pState" value="dausa">
+  </div>
+
+  <div class="form-group">
     <label>राज्य (State):</label>
     <input type="text" id="pState" value="Rajasthan">
   </div>
+
+  
   
   <button class="btn-submit-form" onclick="submitDeliveryBoyForm()">रजिस्ट्रेशन सबमिट करें</button>
 </div>
@@ -338,7 +345,7 @@
 
     function closeCustomAlert() {
       document.getElementById('customAlertModal').style.display = 'none';
-    }
+        }
 
     // Load Products from JSON
     async function loadProducts() {
@@ -573,6 +580,63 @@ function toggleVillageList() {
     arrowIcon.className = 'fa-solid fa-chevron-down';
   }
 }
+
+
+  // ==========================================
+  // STEP 2: इमेज चेक और मैसेज दिखाने का कोड
+  // ==========================================
+  function checkImage(imgElement) {
+      imgElement.onerror = null;
+      imgElement.src = 'https://via.placeholder.com/150?text=Dhawan+Mart';
+  }
+
+  function showMessage(text) {
+      const alertBox = document.getElementById('message-box');
+      if (alertBox) {
+          alertBox.innerText = text;
+          alertBox.style.display = 'block';
+          
+          setTimeout(() => {
+              alertBox.style.display = 'none';
+          }, 2000);
+      }
+  }
+
+  // ==========================================
+  // STEP 3: प्रोफ़ाइल डेटा सेव और लोड करने का कोड
+  // ==========================================
+  
+  // 1. डेटा को फ़ोन/ब्राउज़र की लोकल मेमोरी (localStorage) में सेव करने का फ़ंक्शन
+  function saveProfile(event) {
+      event.preventDefault(); // इससे फॉर्म सबमिट होने पर पेज रीलोड नहीं होगा
+
+      const profile = {
+          name: document.getElementById('nameInput').value,
+          phone: document.getElementById('phoneInput').value,
+          address: document.getElementById('addressInput').value
+      };
+
+      // डेटा सेव करें
+      localStorage.setItem('userProfile', JSON.stringify(profile));
+
+      // संदेश दिखाएं
+      showMessage('प्रोफ़ाइल सफलतापूर्वक सेव हो गई!');
+  }
+
+  // 2. पेज खुलते ही पुराना सेव किया हुआ डेटा वापस फ़ॉर्म के इनपुट बॉक्सेज़ में भरने का फ़ंक्शन
+  function loadProfile() {
+      const savedData = localStorage.getItem('userProfile');
+      
+      if (savedData) {
+          const profile = JSON.parse(savedData);
+          if (document.getElementById('nameInput')) document.getElementById('nameInput').value = profile.name || '';
+          if (document.getElementById('phoneInput')) document.getElementById('phoneInput').value = profile.phone || '';
+          if (document.getElementById('addressInput')) document.getElementById('addressInput').value = profile.address || '';
+      }
+  }
+
+  // जब भी प्रोफ़ाइल पेज लोड हो, ऑटोमैटिकली डेटा फ़िल कर दें
+  window.onload = loadProfile;
 
 
     
