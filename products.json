@@ -1,32 +1,43 @@
 [
-  { "id": 1, "name": "Matchbox Pack", "pkg": "Box", "price": 5, "img": "https://i.pinimg.com/originals/66/36/88/6636886e3790ec318c4e402e604f3fb0.jpg" },
-  { "id": 2, "name": "dairymilk Chocolates", "pkg": "box", "price": 10, "img": "https://m.media-amazon.com/images/I/61cGpU0YmBL._SL1000_.jpg" },
-  { "id": 3, "name": "coconut oil", "pkg": "Single Strip", "price": 10, "img": "https://tse3.mm.bing.net/th/id/OIP.RLQE307_uD9OqI6dJ_L2aAHaHa?pid=ImgDet&rs=1" },
-  { "id": 4, "name": "Clinic Plus Shampoo", "pkg": "Sachet", "price": 59, "img": "https://instamart-media-assets.swiggy.com/images/30397.jpg" },
-  { "id": 5, "name": "Bajaj Almond Hair Oil", "pkg": "Sachet", "price": 179, "img": "https://5.imimg.com/data5/SELLER/Default/2021/6/BW/ZZ/XW/13098555/bajaj-almond-drops-hair-oil.jpg" },
-  { "id": 6, "name": "Eno powder", "pkg": "Sachet", "price": 10, "img": "https://newassets.apollo247.com/pub/media/catalog/product/e/n/eno0002_1.jpg" },
-  { "id": 7, "name": "Parle-G Small Pack", "pkg": "Wrapper", "price": 99, "img": "https://5.imimg.com/data5/SELLER/Default/2021/4/QY/XH/GL/127118321/parle-g-biscuit.jpg" },
-  { "id": 8, "name": "Cello Butterflow Ball Pen", "pkg": "Single Pen", "price": 69, "img": "https://www.bbassets.com/static/v2631/images/products/40003504_2-cello-butterflow-ball-pen-blue.jpg" },
-  { "id": 9, "name": "Lifebuoy Soap Bar Mini", "pkg": "Wrapper", "price": 36, "img": "https://tse1.mm.bing.net/th/id/OIP.cQ5S2W_rS4s4wU_A4H6kGgHaHa?pid=ImgDet&rs=1" },
-  { "id": 10, "name": "Detergent Soap Bar", "pkg": "Wrapper", "price": 47, "img": "https://www.vridhistores.com/uploads/products/1614070258.jpg" },
-  { "id": 11, "name": "tomato Ketchup", "pkg": "Pouch", "price": 10, "img": "https://images.openfoodfacts.org/images/products/890/105/800/2250/front_en.3.400.jpg" },
-  { "id": 12, "name": "Crax Corn Rings", "pkg": "Packet", "price": 10, "img": "https://crax.in/wp-content/uploads/2024/02/Corn-Rings-Masala-10.png" },
-  { "id": 13, "name": "Colgate Toothpaste", "pkg": "Tube", "price": 10, "img": "https://i5.walmartimages.com/seo/Colgate-Cavity-Protection-Toothpaste-with-Fluoride-Great-Regular-Flavor-6-0-oz_39230ee0-36a6-42d4-a131-4828fbf695a7.80eebba39755b4b127ff2eeeb2ef137f.jpeg" },
-  { "id": 14, "name": "Goldiee Turmeric Powder", "pkg": "Pouch", "price": 72, "img": "https://www.goldieeonlinestore.com/cdn/shop/files/TurmericPowder100g.png" },
-  { "id": 15, "name": "Maggi 2-Minute Noodles", "pkg": "Pouch", "price": 46, "img": "https://m.media-amazon.com/images/I/813qO7u+lLL._SL1500_.jpg" },
-  { "id": 16, "name": "Oreo (3 pack)", "pkg": "wrapper", "price": 70, "img": "https://m.media-amazon.com/images/I/61RyeU1oA-L._SL1000_.jpg" },
-  { "id": 17, "name": "Lay's Potato Chips Salted", "pkg": "Packet", "price": 20, "img": "https://m.media-amazon.com/images/I/81A1G-1i-CL._SL1500_.jpg" },
-  { "id": 18, "name": "Kurkure Masala Munch", "pkg": "Packet", "price": 20, "img": "https://m.media-amazon.com/images/I/71Y+z4I2bNL._SL1500_.jpg" },
-  { "id": 19, "name": "Uncle Chipps Spicy Treat", "pkg": "Packet", "price": 70, "img": "https://m.media-amazon.com/images/I/71-0G5JqVYL._SL1500_.jpg" },
-  { "id": 20, "name": "Bingo Mad Angles", "pkg": "Packet", "price": 20, "img": "https://m.media-amazon.com/images/I/91TawXW+NBL._SL1500_.jpg" },
-  { "id": 21, "name": "Lizol Floor Cleaner Mini 100ml", "pkg": "Bottle", "price": 799, "img": "https://5.imimg.com/data5/SELLER/Default/2021/8/ZP/WW/OH/135973712/lizol-disinfectant-floor-cleaner-citrus.jpg" },
-  { "id": 22, "name": "Oswal Soap (pack of 4 pice)", "pkg": "Wrapper", "price": 140, "img": "https://m.media-amazon.com/images/I/719hU+kM4kL._SL1500_.jpg" },
-  { "id": 23, "name": "Gillette Guard Shaving Razor", "pkg": "Blister Pack", "price": 149, "img": "https://images.meesho.com/images/products/123456/1_512.jpg" },
-  { "id": 24, "name": "Cartridges & Shaving Razor", "pkg": "Blister Pack", "price": 70, "img": "https://images.meesho.com/images/products/654321/1_512.jpg" },
-  { "id": 25, "name": "Dabur Babool Toothpaste 50g", "pkg": "Tube", "price": 119, "img": "https://images.meesho.com/images/products/987654/1_512.jpg" },
-  { "id": 26, "name": "Tata Salt 1kg Pack", "pkg": "Pouch", "price": 34, "img": "https://cdn.justgotochef.com/uploads/1523428987-Tata%20Salt.jpg" },
-  { "id": 27, "name": "Oreo Vanilla Biscuit", "pkg": "Wrapper", "price": 10, "img": "https://m.media-amazon.com/images/I/61RyeU1oA-L._SL1000_.jpg" },
-  { "id": 28, "name": "Type-C OTG Adapter", "pkg": "Blister Pack", "price": 99, "img": "https://m.media-amazon.com/images/I/51wA1L-lG8L._SL1000_.jpg" },
-  { "id": 29, "name": "Britannia Bourbon Biscuits", "pkg": "Wrapper", "price": 50, "img": "https://m.media-amazon.com/images/I/71c6wP+DbaL._SL1500_.jpg" },
-  { "id": 30, "name": "Hide & Seek Chocolate Biscuits 200g", "pkg": "Wrapper", "price": 50, "img": "https://m.media-amazon.com/images/I/71I3uX5e4wL._SL1500_.jpg" }
+  {
+    "id": 1,
+    "category": "Snacks",
+    "name": "Lay's Magic Masala",
+    "price": 20,
+    "weight": "50g",
+    "img": "https://th.bing.com/th/id/OIP.-I58WkRguT11zXQoco4L3gHaHa?w=174&h=180&c=7&r=0&o=7&dpr=1.5&pid=1.7&rm=3"
+  },
+  {
+    "id": 2,
+    "category": "Snacks",
+    "name": "Kurkure Masala Munch",
+    "price": 20,
+    "weight": "50g",
+    "img": "https://m.media-amazon.com/images/I/81Tu78PWNUL._AC_UL480_FMwebp_QL65_.jpg"
+  },
+  {
+    "id": 3,
+    "category": "Biscuits",
+    "name": "Oreo Original",
+    "price": 35,
+    "weight": "120g",
+    "img": "https://th.bing.com/th/id/OIP.FywZLjJWKtlHr9pHZ5ichQHaHa?w=183&h=183&c=7&r=0&o=7&dpr=1.5&pid=1.7&rm=3"
+  },
+  {
+    "id": 4,
+    "category": "Atta & Oil",
+    "name": "Aashirvaad Atta",
+    "price": 260,
+    "weight": "5kg",
+    "img": "https://tse3.mm.bing.net/th/id/OIP.IVueFa1JIoL3nMKXUieEQAHaHa?r=0&pid=ImgDet&w=189&h=189&c=7&dpr=1.5&o=7&rm=3"
+  },
+  {
+    "id": 5,
+    "category": "Drinks",
+    "name": "Coca Cola",
+    "price": 40,
+    "weight": "750ml",
+    "img": "https://m.media-amazon.com/images/I/51v8nyxSOYL._SX300_SY300_QL70_FMwebp_.jpg"
+  }
 ]
+
