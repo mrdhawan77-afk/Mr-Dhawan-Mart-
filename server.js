@@ -1,96 +1,81 @@
 const express = require('express');
 const cors = require('cors');
-const fetch = require('node-fetch');
-const { GoogleGenerativeAI } = require('@google/generative-ai');
-require('dotenv').config();
+const fs = require('fs');
+const path = require('path');
 
 const app = express();
+const PORT = process.env.PORT || 3000;
+
 app.use(cors());
 app.use(express.json());
-app.use(express.static('.')); // Serve index.html
+app.use(express.static(__dirname));
 
-// Initialize Gemini AI
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
+const TELEGRAM_BOT_TOKEN = "8735436494:AAGWN69EV9j2b89kielRj5PSOPsh0JY4uxY";
+const TELEGRAM_CHAT_ID = "8024913770";
 
-// Telegram Bot Notification Function
-async function sendTelegramNotification(orderDetails) {
-  const botToken = process.env.TELEGRAM_BOT_TOKEN;
-  const chatId = process.env.TELEGRAM_CHAT_ID;
-
-  if (!botToken || !chatId) {
-    console.log("Telegram Bot Token or Chat ID missing in environment variables.");
-    return;
-  }
-
-  // Format Items List
-  const itemsList = orderDetails.items
-    .map(item => `• ${item.name} (${item.quantity}x) - ₹${item.price * item.quantity}`)
-    .join('\n');
-
-  // Format Telegram Message
-  const message = `🛒 *NEW ORDER RECEIVED! - Dhawan Mart*\n\n` +
-    `🆔 *Order ID:* \`${orderDetails.orderId}\` \n` +
-    `👤 *Customer:* ${orderDetails.customer.name}\n` +
-    `📞 *Phone:* ${orderDetails.customer.phone}\n` +
-    `📍 *Address:* ${orderDetails.customer.address}\n` +
-    `💳 *Payment Method:* ${orderDetails.customer.paymentMethod || 'Cash on Delivery'}\n\n` +
-    `📦 *Items Ordered:*\n${itemsList}\n\n` +
-    `💰 *Total Amount:* ₹${orderDetails.totalAmount}\n` +
-    `⏰ *Time:* ${new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}`;
-
-  const telegramUrl = `https://api.telegram.org/bot${botToken}/sendMessage`;
-
-  try {
-    await fetch(telegramUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        chat_id: chatId,
-        text: message,
-        parse_mode: 'Markdown'
-      })
+// API 1: Fetch Products from JSON
+app.get('/api/products', (req, res) => {
+    fs.readFile(path.join(__dirname, 'products.json'), 'utf8', (err, data) => {
+        if (err) {
+            return res.status(500).json({ success: false, message: 'Error loading products' });
+        }
+        res.json(JSON.parse(data));
     });
-    console.log("Telegram notification sent successfully!");
-  } catch (error) {
-    console.error("Error sending Telegram notification:", error);
-  }
-}
-
-// Order Route
-app.post('/api/orders', async (req, res) => {
-  try {
-    const { items, customer, totalAmount } = req.body;
-    const orderId = 'ORD-' + Math.floor(100000 + Math.random() * 900000);
-
-    const newOrder = { orderId, items, customer, totalAmount };
-
-    // Send instant Telegram Alert
-    await sendTelegramNotification(newOrder);
-
-    res.json({ success: true, orderId, message: "Order placed successfully!" });
-  } catch (error) {
-    console.error("Order processing error:", error);
-    res.status(500).json({ success: false, message: "Failed to place order" });
-  }
 });
 
-// AI Assistant Chat Route
-app.post('/api/chat', async (req, res) => {
-  try {
-    const { query } = req.body;
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-    const prompt = `User asks: "${query}". Provide a concise, helpful response about groceries, cooking tips, or product availability at Dhawan Mart. Keep it under 3 sentences.`;
+// API 2: Place Order Endpoint
+app.post('/api/order', async (req, res) => {
+    const { name, phone, address, payMode, cart, total } = req.body;
 
-    const result = await model.generateContent(prompt);
-    const response = await result.response;
-    res.json({ reply: response.text() });
-  } catch (error) {
-    console.error("AI Assistant Error:", error);
-    res.status(500).json({ reply: "Sorry, I'm having trouble connecting to the mart assistant." });
-  }
+    if (!name || !phone || !address || !cart) {
+        return res.status(400).json({ success: false, message: 'All details required' });
+    }
+
+    const itemsList = cart.map((i, idx) => `${idx + 1}. *${i.name}* x ${i.qty} = ₹${i.price * i.qty}`).join('\n');
+    const msg = `🛍️ *NEW ORDER - DHAWAN MART*\n---\n👤 *Name:* ${name}\n📞 *Phone:* ${phone}\n📍 *Address:* ${address}\n💳 *Payment:* ${payMode}\n\n🛒 *ITEMS:*\n${itemsList}\n\n💰 *TOTAL:* ₹${total}\n🚚 *Delivery:* 2 Days`;
+
+    try {
+        const response = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text: msg, parse_mode: 'Markdown' })
+        });
+        const data = await response.json();
+        if (data.ok) res.json({ success: true, message: 'Order Placed Successfully' });
+        else res.status(500).json({ success: false, message: 'Telegram Notification Failed' });
+    } catch (error) {
+        res.status(500).json({ success: false, message: 'Server Network Error' });
+    }
 });
 
-const PORT = process.env.PORT || 3000;
+// API 3: App Partner Endpoint
+app.post('/api/partner', async (req, res) => {
+    const { name, phone, age, gender } = req.body;
+
+    if (!name || !phone || !age) {
+        return res.status(400).json({ success: false, message: 'All details required' });
+    }
+
+    const msg = `🤝 *NEW APP PARTNER REQUEST*\n---\n👤 *Name:* ${name}\n📞 *Phone:* ${phone}\n🎂 *Age:* ${age}\n🚻 *Gender:* ${gender}`;
+
+    try {
+        const response = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text: msg, parse_mode: 'Markdown' })
+        });
+        const data = await response.json();
+        if (data.ok) res.json({ success: true, message: 'Application Sent' });
+        else res.status(500).json({ success: false, message: 'Failed to send' });
+    } catch (error) {
+        res.status(500).json({ success: false, message: 'Server Error' });
+    }
+});
+
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
+});
+
 app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
+    console.log(`Server running at http://localhost:${PORT}`);
 });
