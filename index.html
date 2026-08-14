@@ -1,645 +1,438 @@
 <!DOCTYPE html>
 <html lang="hi">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dhawan Mart</title>
-  <!-- Font Awesome CDN for Icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-    body { background-color: #f4f6f9; color: #333; padding-bottom: 70px; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dhawan Mart - Everything Delivered</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    /* Top Header */
-    header { background-color: #1b5e20; color: white; padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
-    .header-left { display: flex; align-items: center; gap: 10px; }
-    .app-logo { width: 38px; height: 38px; background: white; color: #1b5e20; border-radius: 8px; display: flex; justify-content: center; align-items: center; font-size: 20px; font-weight: bold; }
-    .brand-title { font-size: 18px; font-weight: bold; line-height: 1.1; }
-    .brand-sub { font-size: 11px; opacity: 0.9; }
-
-    /* Views / Sections */
-    .view-section { display: none; padding: 15px; max-width: 800px; margin: 0 auto; }
-    .view-section.active { display: block; }
-
-    /* Search Bar */
-    .search-container { margin-bottom: 15px; }
-    .search-input { width: 100%; padding: 12px 18px; font-size: 15px; border: 2px solid #1b5e20; border-radius: 25px; outline: none; }
-
-    /* Products Grid */
-    .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
-    .product-card { background: white; border-radius: 10px; padding: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.08); display: flex; flex-direction: column; justify-content: space-between; }
-    .product-img { width: 100%; height: 110px; object-fit: contain; border-radius: 6px; margin-bottom: 8px; }
-    .product-title { font-size: 13px; font-weight: 600; margin-bottom: 5px; height: 34px; overflow: hidden; line-height: 1.2; }
-    .product-price { font-size: 15px; font-weight: bold; color: #2e7d32; margin-bottom: 8px; }
-    .btn-add { background-color: #1b5e20; color: white; border: none; padding: 8px; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 13px; }
-
-    /* Categories Page */
-    .category-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
-    .category-card { background: white; padding: 20px; border-radius: 10px; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.08); cursor: pointer; border-left: 5px solid #1b5e20; }
-    .category-card i { font-size: 28px; color: #1b5e20; margin-bottom: 8px; }
-    .category-card h4 { font-size: 15px; color: #333; }
-
-    /* Cart Page */
-    .cart-item { background: white; border-radius: 8px; padding: 12px; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-    .cart-item-info { flex: 1; margin-left: 10px; }
-    .cart-item-title { font-size: 14px; font-weight: 600; }
-    .cart-item-price { font-size: 13px; color: #2e7d32; font-weight: bold; }
-    .qty-controls { display: flex; align-items: center; gap: 8px; margin-top: 5px; }
-    .btn-qty { background: #e0e0e0; border: none; width: 26px; height: 26px; border-radius: 4px; font-weight: bold; cursor: pointer; }
-    .cart-summary-box { background: white; padding: 15px; border-radius: 10px; margin-top: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.08); }
-    .btn-checkout-page { width: 100%; background: #ff6f00; color: white; border: none; padding: 12px; border-radius: 8px; font-size: 16px; font-weight: bold; margin-top: 10px; cursor: pointer; }
-
-    /* Profile Page */
-    .profile-header { background: white; padding: 20px; border-radius: 10px; text-align: center; margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.08); }
-    .profile-img-container { position: relative; width: 80px; height: 80px; margin: 0 auto 10px auto; }
-    .profile-img { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid #1b5e20; }
-    .btn-edit-img { position: absolute; bottom: 0; right: 0; background: #ff6f00; color: white; border: none; width: 26px; height: 26px; border-radius: 50%; cursor: pointer; font-size: 12px; }
-    .profile-menu { background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.08); }
-    .menu-item { padding: 15px 20px; border-bottom: 1px solid #eee; display: flex; align-items: center; justify-content: space-between; cursor: pointer; color: #333; font-weight: 500; }
-    .menu-item i { color: #1b5e20; margin-right: 12px; width: 20px; }
-    .menu-item:last-child { border-bottom: none; }
-    .menu-item.logout { color: #d32f2f; }
-    .menu-item.logout i { color: #d32f2f; }
-
-    /* Form Styles */
-    .form-container { background: white; padding: 15px; border-radius: 10px; margin-top: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.08); }
-    .form-group { margin-bottom: 12px; }
-    .form-group label { display: block; margin-bottom: 5px; font-weight: 600; font-size: 13px; }
-    .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; }
-    .radio-group { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 5px; }
-    .radio-label { background: #f0f0f0; padding: 6px 12px; border-radius: 15px; font-size: 12px; cursor: pointer; display: flex; align-items: center; gap: 5px; }
-    .radio-label input { width: auto; }
-    .btn-submit-form { background: #1b5e20; color: white; border: none; padding: 12px; width: 100%; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 10px; }
-
-    /* Bottom Navigation Bar */
-    .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: white; border-top: 1px solid #ddd; display: flex; justify-content: space-around; padding: 8px 0; z-index: 1000; }
-    .nav-item { display: flex; flex-direction: column; align-items: center; color: #666; text-decoration: none; font-size: 11px; cursor: pointer; width: 25%; position: relative; }
-    .nav-item i { font-size: 18px; margin-bottom: 2px; }
-    .nav-item.active { color: #1b5e20; font-weight: bold; }
-    .cart-badge { position: absolute; top: -2px; right: 22px; background: #d32f2f; color: white; font-size: 10px; font-weight: bold; padding: 2px 6px; border-radius: 10px; }
-  
-  .btn-toggle-village {
-  width: 100%;
-  padding: 10px 15px;
-  background-color: #e8f5e9;
-  color: #1b5e20;
-  border: 1px solid #1b5e20;
-  border-radius: 6px;
-  font-weight: 600;
-  font-size: 13px;
-  text-align: left;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  cursor: pointer;
-}
-
-
-                                                                 
-  </style>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        body { background-color: #f4f6fb; }
+        header { background-color: #0c831f; color: white; padding: 12px 16px; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .logo-container { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+        .md-logo { width: 36px; height: 36px; background: linear-gradient(135deg, #ffd700, #b8860b); color: #000; font-weight: 900; font-size: 16px; display: flex; align-items: center; justify-content: center; border-radius: 8px; border: 1px solid #fff; }
+        .brand-name { font-size: 20px; font-weight: 800; color: #fff; }
+        .delivery-badge { background-color: #fff; color: #0c831f; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 800; text-transform: uppercase; }
+        .search-container { position: relative; }
+        .search-container i { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #828282; }
+        .search-bar { width: 100%; padding: 12px 12px 12px 38px; border: none; border-radius: 10px; font-size: 14px; outline: none; background-color: #fff; }
+        
+        .page-section { display: none; padding-bottom: 80px; }
+        .page-section.active { display: block; }
+        
+        .categories { display: flex; overflow-x: auto; padding: 15px; gap: 12px; background: #fff; scrollbar-width: none; border-bottom:1px solid #eee;}
+        .categories::-webkit-scrollbar { display: none; }
+        .category-item { display: flex; flex-direction: column; align-items: center; min-width: 70px; font-size: 12px; color: #333; font-weight: 600; cursor: pointer; }
+        .category-img { width: 55px; height: 55px; background-color: #eef7f0; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 6px; font-size: 22px; color: #0c831f; }
+        
+        .section-title { padding: 15px 15px 5px 15px; font-size: 18px; font-weight: 700; color: #1c1c1c; display:flex; justify-content:space-between;}
+        .product-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 12px 15px; }
+        .product-card { background: #fff; border-radius: 12px; padding: 12px; border: 1px solid #e8e8e8; display: flex; flex-direction: column; justify-content: space-between; position: relative; cursor:pointer;}
+        .product-img { width: 100%; height: 110px; object-fit: contain; margin-bottom: 8px; }
+        .product-time { font-size: 10px; color: #666; background: #f0f0f0; padding: 2px 6px; border-radius: 4px; width: max-content; margin-bottom: 6px; font-weight: 600; }
+        .product-title { font-size: 13px; font-weight: 600; color: #222; line-height: 1.3; height: 34px; overflow: hidden; }
+        .product-weight { font-size: 11px; color: #666; margin: 4px 0 8px 0; }
+        .product-bottom { display: flex; justify-content: space-between; align-items: center; }
+        .price { font-size: 14px; font-weight: 700; color: #000; }
+        .add-btn { background-color: #f7fff9; color: #0c831f; border: 1px solid #0c831f; padding: 6px 16px; border-radius: 6px; font-weight: 700; font-size: 12px; cursor: pointer; text-transform: uppercase; z-index: 2; position: relative;}
+        
+        .cart-bar { position: fixed; bottom: 60px; left: 15px; right: 15px; background-color: #0c831f; color: white; padding: 12px 16px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 12px rgba(12, 131, 31, 0.4); cursor: pointer; z-index: 999; }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: #fff; display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid #eee; z-index: 1000; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; color: #777; text-decoration: none; font-size: 11px; font-weight: 500; cursor: pointer; }
+        .nav-item i { font-size: 18px; margin-bottom: 3px; }
+        .nav-item.active { color: #0c831f; font-weight: 700; }
+        
+        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); z-index: 2000; display: flex; justify-content: center; align-items: flex-end; }
+        .modal-box { background: #fff; width: 100%; max-width: 450px; border-radius: 20px 20px 0 0; padding: 20px; position: relative; max-height: 90vh; overflow-y: auto; animation: slideUp 0.3s ease-out; }
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+        .close-btn { position: absolute; top: 15px; right: 20px; background: none; border: none; font-size: 24px; color: #666; cursor: pointer; z-index:10; }
+        
+        .form-label { font-size: 12px; font-weight: 700; color: #333; margin: 8px 0 4px 0; display: block; }
+        .form-input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px; font-size: 13px; outline: none; margin-bottom:10px;}
+        .action-btn { width: 100%; background: #0c831f; color: white; border: none; padding: 12px; border-radius: 8px; font-weight: 700; margin-top: 10px; cursor: pointer; }
+        .pay-option { display: flex; align-items: center; gap: 10px; padding: 10px; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 8px; cursor: pointer; }
+        .qr-box { text-align: center; background: #f7fff9; padding: 12px; border-radius: 10px; border: 1px dashed #0c831f; margin-top: 10px; }
+        .profile-menu-item { display:flex; justify-content:space-between; align-items:center; padding:15px; background:#fff; margin-bottom:10px; border-radius:10px; box-shadow:0 1px 3px rgba(0,0,0,0.05); cursor:pointer; font-weight:600; color:#444;}
+        
+        .full-page-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #fff; z-index: 3000; overflow-y: auto; display: none; animation: fadeIn 0.2s ease-in; }
+        @keyframes fadeIn { from{opacity:0;} to{opacity:1;} }
+        .back-header { padding: 15px; position: sticky; top: 0; background: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.05); z-index: 10; }
+        .cart-item-list { max-height:180px; overflow-y:auto; border:1px solid #eee; border-radius:8px; padding:10px; margin-bottom:15px; background:#fafafa; font-size:13px;}
+        .cart-item-row { display:flex; justify-content:space-between; margin-bottom:8px; border-bottom:1px dashed #ddd; padding-bottom:8px;}
+    </style>
 </head>
 <body>
 
-  <!-- Top Header -->
-  <header>
-    <div class="header-left">
-      <div class="app-logo"><i class="fa-solid fa-basket-shopping"></i></div>
-      <div>
-        <div class="brand-title">Dhawan Mart</div>
-        <div class="brand-sub">delivery in 2 days</div>
-      </div>
-    </div>
-  </header>
-
-  <!-- 1. HOME SECTION -->
-  <section id="homeView" class="view-section active">
-    <div class="search-container">
-      <input type="text" id="searchInput" class="search-input" placeholder="आटा, दाल, तेल, मसाले, साबुन खोजें..." onkeyup="filterProducts()">
-    </div>
-    <div class="product-grid" id="productGrid">
-      <div style="grid-column: 1/-1; text-align: center; padding: 30px;">प्रोडक्ट्स लोड हो रहे हैं...</div>
-    </div>
-  </section>
-
-  <!-- 2. CATEGORIES SECTION -->
-  <section id="categoriesView" class="view-section">
-    <h3 style="margin-bottom: 15px; color: #1b5e20;">सभी कैटेगरीज (Categories)</h3>
-    <div class="category-grid">
-      <div class="category-card" onclick="filterByCategory('Atta')">
-        <i class="fa-solid fa-wheat-awn"></i>
-        <h4>आटा एवं अनाज</h4>
-      </div>
-      <div class="category-card" onclick="filterByCategory('Oil')">
-        <i class="fa-solid fa-bottle-droplet"></i>
-        <h4>तेल एवं घी</h4>
-      </div>
-      <div class="category-card" onclick="filterByCategory('Dal')">
-        <i class="fa-solid fa-bowl-rice"></i>
-        <h4>दाल एवं दालें</h4>
-      </div>
-      <div class="category-card" onclick="filterByCategory('Masala')">
-        <i class="fa-solid fa-pepper-hot"></i>
-        <h4>मसाले एवं नमक</h4>
-      </div>
-      <div class="category-card" onclick="filterByCategory('Snacks')">
-        <i class="fa-solid fa-cookie-bite"></i>
-        <h4>बिस्कुट एवं स्नैक्स</h4>
-      </div>
-      <div class="category-card" onclick="filterByCategory('Soap')">
-        <i class="fa-solid fa-soap"></i>
-        <h4>साबुन एवं डिटर्जेंट</h4>
-      </div>
-    </div>
-  </section>
-
-  <!-- 3. CART SECTION -->
-  <section id="cartView" class="view-section">
-    <h3 style="margin-bottom: 15px; color: #1b5e20;">आपकी कार्ट (Shopping Cart)</h3>
-    <div id="cartItemsList">
-      <!-- Dynamic Cart Items -->
-    </div>
-    <div class="cart-summary-box" id="cartSummaryBox" style="display: none;">
-      <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 16px;">
-        <span>कुल राशि (Total):</span>
-        <span id="cartTotalPrice">₹0</span>
-      </div>
-      <button class="btn-checkout-page" onclick="openCheckoutModal()">ऑर्डर करें (Proceed to Checkout)</button>
-    </div>
-  </section>
-
-  <!-- 4. PROFILE SECTION -->
-  <section id="profileView" class="view-section">
-    <div class="profile-header">
-      <div class="profile-img-container">
-        <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" id="userProfileImg" class="profile-img" alt="User Profile">
-        <button class="btn-edit-img" onclick="triggerProfileImageUpload()"><i class="fa-solid fa-camera"></i></button>
-        <input type="file" id="profileImgInput" accept="image/*" style="display: none;" onchange="changeProfileImage(event)">
-      </div>
-      <h3 id="profileNameDisplay">कस्टमर प्रोफाइल</h3>
-      <p style="font-size: 12px; color: #666;" id="profilePhoneDisplay">+91-XXXXXXXXXX</p>
-    </div>
-
-    <div class="profile-menu">
-      <div class="menu-item" onclick="toggleSubSection('detailsForm')">
-        <span><i class="fa-solid fa-user"></i> My Details (मेरी जानकारी)</span>
-        <i class="fa-solid fa-chevron-right"></i>
-      </div>
-      
-      <div class="menu-item" onclick="toggleSubSection('partnerForm')">
-        <span><i class="fa-solid fa-motorcycle"></i> become Partnership </span>
-        <i class="fa-solid fa-chevron-right"></i>
-      </div>
-
-      <div class="menu-item" onclick="toggleSubSection('feedbackForm')">
-        <span><i class="fa-solid fa-comment-dots"></i> Feedback (प्रतिक्रिया)</span>
-        <i class="fa-solid fa-chevron-right"></i>
-      </div>
-
-      <div class="menu-item" onclick="openCustomerServiceSMS()">
-        <span><i class="fa-solid fa-headset"></i> Customer Service (मदद लें)</span>
-        <i class="fa-solid fa-chevron-right"></i>
-      </div>
-
-      <div class="menu-item logout" onclick="handleLogout()">
-        <span><i class="fa-solid fa-right-from-bracket"></i> Logout (लॉग आउट)</span>
-      </div>
-    </div>
-
-    <!-- Sub Form 1: My Details -->
-    <div id="detailsForm" class="form-container" style="display: none;">
-      <h4>my Details)</h4>
-      <div class="form-group" style="margin-top: 10px;">
-        <label>नाम:</label>
-        <input type="text" id="custDetailName" value=" ">
-      </div>
-      <div class="form-group">
-        <label>मोबाइल नंबर:</label>
-        <input type="tel" id="custDetailPhone" value=" ">
-      </div>
-      <div class="form-group">
-        <label>पता:</label>
-        <textarea id="custDetailAddress">  </textarea>
-      </div>
-      <button class="btn-submit-form" onclick="saveCustomerDetails()">सेव करें</button>
-    </div>
-<!-- Sub Form 2: Delivery Boy Partnership -->
-<div id="partnerForm" class="form-container" style="display: none;">
-  <h4>Delivery Boy Registration Form</h4>
-  
-  <div class="form-group" style="margin-top: 10px;">
-    <label>पूरा नाम:</label>
-    <input type="text" id="pName" placeholder="आपका नाम">
-  </div>
-  
-  <div class="form-group">
-    <label>मोबाइल नंबर:</label>
-    <input type="tel" id="pMobile" placeholder="मोबाइल नंबर">
-  </div>
-  
-  <div class="form-group">
-    <label>व्हाट्सएप नंबर:</label>
-    <input type="tel" id="pWhatsapp" placeholder="व्हाट्सएप नंबर">
-  </div>
-  
-  <div class="form-group">
-    <label>ईमेल एड्रेस:</label>
-    <input type="email" id="pEmail" placeholder="example@gmail.com">
-  </div>
-  
-  <div class="form-group">
-    <label>पूरा पता:</label>
-    <textarea id="pAddress" placeholder="पता भरें"></textarea>
-  </div>
-  
-  <!-- गाँव की लिस्ट (छिपी हुई - Click करने पर खुलेगी) -->
-  <div class="form-group">
-    <label>गाँव (Village):</label>
-    <button type="button" class="btn-toggle-village" onclick="toggleVillageList()">
-      📍 अपना गाँव चुनें (Click to Select Village) <i class="fa-solid fa-chevron-down" id="villageArrow"></i>
-    </button>
-    
-    <!-- यह रेडियो बटन ग्रुप डिफ़ॉल्ट रूप से छिपा रहेगा (display: none) -->
-    <div class="radio-group" id="villageRadioGroup" style="display: none; margin-top: 10px;">
-      <label class="radio-label"><input type="radio" name="village" value="Lalsot" onclick="checkOtherVillage(false)"> Lalsot</label>
-      <label class="radio-label"><input type="radio" name="village" value="Shyampura" onclick="checkOtherVillage(false)"> Shyampura</label>
-      <label class="radio-label"><input type="radio" name="village" value="Sanwasa" onclick="checkOtherVillage(false)"> Sanwasa</label>
-      <label class="radio-label"><input type="radio" name="village" value="Thuniya Dhirajpura" onclick="checkOtherVillage(false)"> Thuniya Dhirajpura</label>
-      <label class="radio-label"><input type="radio" name="village" value="Choundiyash" onclick="checkOtherVillage(false)"> Choundiyash</label>
-      <label class="radio-label"><input type="radio" name="village" value="Ajabpura" onclick="checkOtherVillage(false)"> Ajabpura</label>
-      <label class="radio-label"><input type="radio" name="village" value="Ratanpura" onclick="checkOtherVillage(false)"> Ratanpura</label>
-      <label class="radio-label"><input type="radio" name="village" value="Chainpura" onclick="checkOtherVillage(false)"> Chainpura</label>
-      <label class="radio-label"><input type="radio" name="village" value="Nirjharna" onclick="checkOtherVillage(false)"> Nirjharna</label>
-      <label class="radio-label"><input type="radio" name="village" value="Other" onclick="checkOtherVillage(true)"> Other</label>
-    </div>
-    
-    <input type="text" id="otherVillageInput" placeholder="अपने गाँव का नाम लिखें" style="display: none; margin-top: 8px;">
-  </div>
-
-  <div class="form-group">
-    <label>distric:</label>
-    <input type="text" id="pState" value="dausa">
-  </div>
-
-  <div class="form-group">
-    <label>राज्य (State):</label>
-    <input type="text" id="pState" value="Rajasthan">
-  </div>
-
-  
-  
-  <button class="btn-submit-form" onclick="submitDeliveryBoyForm()">रजिस्ट्रेशन सबमिट करें</button>
-</div>
-
-
-    <!-- Sub Form 3: Feedback -->
-    <div id="feedbackForm" class="form-container" style="display: none;">
-      <h4> Feedback</h4>
-      <div class="form-group" style="margin-top: 10px;">
-        <label>संदेश / सुझाव:</label>
-        <textarea id="feedbackText" rows="4" placeholder="अपना सुझाव या समस्या यहाँ लिखें..."></textarea>
-      </div>
-      <button class="btn-submit-form" onclick="submitFeedback()">सबमिट करें</button>
-    </div>
-  </section>
-
-  <!-- CUSTOM ALERT POPUP (Replacing Default Browser Alert) -->
-  <div class="custom-modal" id="customAlertModal">
-    <div class="modal-card">
-      <button class="close-modal-btn" onclick="CustomAlert()"</button>
-      <div class="modal-icon"><i class="fa-solid fa-circle-exclamation"></i></div>
-      <div class="modal-msg" id="customAlertMsg">संदेश यहाँ दिखेगा</div>
-      <button class="btn-modal-ok" onclick="CustomAlert()"></button>
-    </div>
-  </div>
-
-  <!-- BOTTOM NAVIGATION BAR -->
-  <nav class="bottom-nav">
-    <div class="nav-item active" id="navHome" onclick="showSection('homeView', this)">
-      <i class="fa-solid fa-house"></i>
-      <span>Home</span>
-    </div>
-    <div class="nav-item" id="navCategories" onclick="showSection('categoriesView', this)">
-      <i class="fa-solid fa-list-check"></i>
-      <span>Category</span>
-    </div>
-    <div class="nav-item" id="navCart" onclick="showSection('cartView', this)">
-      <i class="fa-solid fa-cart-shopping"></i>
-      <span>Cart</span>
-      <span class="cart-badge" id="cartCountBadge" style="display: none;">0</span>
-    </div>
-    <div class="nav-item" id="navProfile" onclick="showSection('profileView', this)">
-      <i class="fa-solid fa-user"></i>
-      <span>Profile</span>
-    </div>
-  </nav>
-
-  <script>
-    let products = [];
-    let cart = [];
-
-    // Custom Alert Function (Replaces window.alert)
-    function showAlert(message) {
-      document.getElementById('customAlertMsg').innerText = message;
-      document.getElementById('customAlertModal').style.display = 'flex';
-    }
-
-    function closeCustomAlert() {
-      document.getElementById('customAlertModal').style.display = 'none';
-        }
-
-    // Load Products from JSON
-    async function loadProducts() {
-      try {
-        const response = await fetch('./products.json');
-        products = await response.json();
-        renderProducts(products);
-      } catch (error) {
-        console.error("Products load error:", error);
-        document.getElementById('productGrid').innerHTML = '<div style="grid-column: 1/-1; text-align: center;">प्रोडक्ट्स लोड करने में असमर्थ।</div>';
-      }
-    }
-
-    // Render Products
-    function renderProducts(items) {
-      const grid = document.getElementById('productGrid');
-      grid.innerHTML = '';
-      if (items.length === 0) {
-        grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 20px;">कोई प्रोडक्ट नहीं मिला!</div>';
-        return;
-      }
-      items.forEach(p => {
-        const card = document.createElement('div');
-        card.className = 'product-card';
-        card.innerHTML = `
-          <img src="${p.img}" class="product-img" alt="${p.name}">
-          <div class="product-title">${p.name}</div>
-          <div class="product-price">₹${p.price}</div>
-          <button class="btn-add" onclick="addToCart(${p.id})">+ कार्ट में जोड़ें</button>
-        `;
-        grid.appendChild(card);
-      });
-    }
-
-    // Filter Search
-    function filterProducts() {
-      const query = document.getElementById('searchInput').value.toLowerCase();
-      const filtered = products.filter(p => p.name.toLowerCase().includes(query));
-      renderProducts(filtered);
-    }
-
-    // Filter By Category
-    function filterByCategory(cat) {
-      showSection('homeView', document.getElementById('navHome'));
-      const filtered = products.filter(p => p.name.toLowerCase().includes(cat.toLowerCase()));
-      renderProducts(filtered);
-    }
-
-    // Add to Cart
-    function addToCart(id) {
-      const p = products.find(prod => prod.id === id);
-      const existing = cart.find(item => item.id === id);
-      if (existing) {
-        existing.quantity += 1;
-      } else {
-        cart.push({ ...p, quantity: 1 });
-      }
-      updateCartUI();
-      showAlert(`${p.name} कार्ट में जोड़ा गया!`);
-    }
-
-    // Update Cart UI
-    function updateCartUI() {
-      const badge = document.getElementById('cartCountBadge');
-      const totalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
-      if (totalCount > 0) {
-        badge.innerText = totalCount;
-        badge.style.display = 'block';
-      } else {
-        badge.style.display = 'none';
-      }
-
-      const cartList = document.getElementById('cartItemsList');
-      const cartSummaryBox = document.getElementById('cartSummaryBox');
-      
-      if (cart.length === 0) {
-        cartList.innerHTML = '<div style="text-align: center; padding: 40px; color: #777;">आपकी कार्ट खाली है!</div>';
-        cartSummaryBox.style.display = 'none';
-        return;
-      }
-
-      cartList.innerHTML = '';
-      let total = 0;
-
-      cart.forEach(item => {
-        total += item.price * item.quantity;
-        const div = document.createElement('div');
-        div.className = 'cart-item';
-        div.innerHTML = `
-          <img src="${item.img}" width="50" height="50" style="object-fit:contain;" alt="">
-          <div class="cart-item-info">
-            <div class="cart-item-title">${item.name}</div>
-            <div class="cart-item-price">₹${item.price} x ${item.quantity} = ₹${item.price * item.quantity}</div>
-            <div class="qty-controls">
-              <button class="btn-qty" onclick="changeQty(${item.id}, -1)">-</button>
-              <span>${item.quantity}</span>
-              <button class="btn-qty" onclick="changeQty(${item.id}, 1)">+</button>
+    <header id="mainHeader">
+        <div class="header-top">
+            <div class="logo-container" onclick="openLoginModal()">
+                <div class="md-logo">MD</div>
+                <div class="brand-name">Dhawan Mart</div>
             </div>
-          </div>
-          <button style="border:none; background:none; color:#d32f2f; cursor:pointer;" onclick="removeItem(${item.id})"><i class="fa-solid fa-trash"></i></button>
-        `;
-        cartList.appendChild(div);
-      });
+            <div class="delivery-badge"><i class="fa-solid fa-truck-fast"></i> 2 Days</div>
+        </div>
+        <div class="search-container">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" class="search-bar" placeholder="Search 'Atta', 'Lays', 'Biscuits'..." onkeyup="searchProduct(this.value)">
+        </div>
+    </header>
 
-      document.getElementById('cartTotalPrice').innerText = `₹${total}`;
-      cartSummaryBox.style.display = 'block';
-    }
+    <div id="homePage" class="page-section active">
+        <div class="categories">
+            <div class="category-item" onclick="filterCategory('Snacks')"><div class="category-img"><i class="fa-solid fa-box-archive"></i></div><span>Snacks</span></div>
+            <div class="category-item" onclick="filterCategory('Biscuits')"><div class="category-img"><i class="fa-solid fa-cookie"></i></div><span>Biscuits</span></div>
+            <div class="category-item" onclick="filterCategory('Atta & Oil')"><div class="category-img"><i class="fa-solid fa-bottle-droplet"></i></div><span>Atta & Oil</span></div>
+            <div class="category-item" onclick="filterCategory('Drinks')"><div class="category-img"><i class="fa-solid fa-bottle-water"></i></div><span>Drinks</span></div>
+            <div class="category-item" onclick="filterCategory('Chocolates')"><div class="category-img"><i class="fa-solid fa-candy-cane"></i></div><span>Chocolates</span></div>
+        </div>
 
-    function changeQty(id, delta) {
-      const item = cart.find(i => i.id === id);
-      if (item) {
-        item.quantity += delta;
-        if (item.quantity <= 0) {
-          cart = cart.filter(i => i.id !== id);
+        <div class="section-title">
+            <span id="currentCategoryTitle">All Products</span>
+            <span style="font-size:12px; color:#0c831f; cursor:pointer;" onclick="filterCategory('All')">Clear Filter</span>
+        </div>
+        
+        <div class="product-grid" id="productGridContainer"></div>
+    </div>
+
+    <div id="categoryPage" class="page-section" style="padding: 20px;">
+        <h2 style="margin-bottom: 15px; color:#1c1c1c;">All Categories</h2>
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;">
+            <div onclick="filterCategory('Snacks')" style="background:#fff; padding:20px; border-radius:10px; text-align:center; cursor:pointer;">
+                <i class="fa-solid fa-box-archive" style="font-size:30px; color:#0c831f; margin-bottom:10px;"></i><br><strong>Snacks</strong>
+            </div>
+            <div onclick="filterCategory('Biscuits')" style="background:#fff; padding:20px; border-radius:10px; text-align:center; cursor:pointer;">
+                <i class="fa-solid fa-cookie" style="font-size:30px; color:#0c831f; margin-bottom:10px;"></i><br><strong>Biscuits</strong>
+            </div>
+            <div onclick="filterCategory('Atta & Oil')" style="background:#fff; padding:20px; border-radius:10px; text-align:center; cursor:pointer;">
+                <i class="fa-solid fa-bottle-droplet" style="font-size:30px; color:#0c831f; margin-bottom:10px;"></i><br><strong>Atta & Oil</strong>
+            </div>
+            <div onclick="filterCategory('Drinks')" style="background:#fff; padding:20px; border-radius:10px; text-align:center; cursor:pointer;">
+                <i class="fa-solid fa-bottle-water" style="font-size:30px; color:#0c831f; margin-bottom:10px;"></i><br><strong>Drinks</strong>
+            </div>
+        </div>
+    </div>
+
+    <div id="profilePage" class="page-section" style="padding: 20px;">
+        <h2 style="margin-bottom: 20px; color:#0c831f; text-align:center;">My Profile</h2>
+        <div style="background:#fff; padding:15px; border-radius:12px; margin-bottom:20px;">
+            <div style="display:flex; align-items:center; gap:15px;">
+                <label for="dpUpload" style="cursor:pointer; position:relative;">
+                    <img id="profileDp" src="https://via.placeholder.com/70" style="width:70px; height:70px; border-radius:50%; border:2px solid #0c831f; object-fit:cover;">
+                </label>
+                <input type="file" id="dpUpload" accept="image/*" style="display:none;" onchange="updateProfilePic(event)">
+                
+                <div style="flex-grow: 1;">
+                    <input type="text" id="profileName" placeholder="Enter Your Name" style="font-size:18px; font-weight:bold; border:none; outline:none; width:100%; border-bottom:1px solid #ddd;">
+                    <p id="profilePhoneDisp" style="color:#666; font-size:13px; margin-top:5px; font-weight:bold;">Not Logged In</p>
+                </div>
+            </div>
+            <button class="action-btn" style="padding:8px; font-size:12px; margin-top:15px;" onclick="saveProfileName()">Save Profile Name</button>
+        </div>
+
+        <div class="profile-menu-item" onclick="document.getElementById('partnerModal').style.display='flex'">
+            <span><i class="fa-solid fa-handshake" style="color:#0c831f; margin-right:10px;"></i> Become an App Partner</span>
+            <i class="fa-solid fa-chevron-right" style="color:#ccc;"></i>
+        </div>
+        <div class="profile-menu-item" onclick="openLoginModal()">
+            <span><i class="fa-solid fa-sign-in-alt" style="color:#0c831f; margin-right:10px;"></i> Login / Sign Up</span>
+            <i class="fa-solid fa-chevron-right" style="color:#ccc;"></i>
+        </div>
+    </div>
+
+    <!-- MODALS -->
+    <div id="partnerModal" class="modal" style="display: none;">
+        <div class="modal-box">
+            <button class="close-btn" onclick="closeModal('partnerModal')">&times;</button>
+            <h3 style="text-align:center; margin-bottom:15px;">App Partner Registration</h3>
+            <label class="form-label">Full Name</label>
+            <input type="text" id="p_name" class="form-input" placeholder="Full Name">
+            <label class="form-label">Mobile Number</label>
+            <input type="tel" id="p_phone" class="form-input" placeholder="Phone Number" maxlength="10">
+            <label class="form-label">Age</label>
+            <input type="number" id="p_age" class="form-input" placeholder="Age">
+            <label class="form-label">Gender</label>
+            <div style="display:flex; gap:15px; margin: 10px 0;">
+                <label><input type="radio" name="p_gender" value="Male" checked> Male</label>
+                <label><input type="radio" name="p_gender" value="Female"> Female</label>
+            </div>
+            <button onclick="submitPartnerForm()" class="action-btn">Submit Application</button>
+        </div>
+    </div>
+
+    <div id="checkoutModal" class="modal" style="display: none;">
+        <div class="modal-box">
+            <button class="close-btn" onclick="closeModal('checkoutModal')">&times;</button>
+            <h3 style="color: #0c831f; text-align: center; margin-bottom: 15px;">Checkout</h3>
+            <div id="cartItemsList" class="cart-item-list"></div>
+
+            <label class="form-label">Full Name</label>
+            <input type="text" id="custName" class="form-input" placeholder="Full Name">
+
+            <label class="form-label">Phone</label>
+            <input type="tel" id="custPhone" class="form-input" placeholder="Phone Number" maxlength="10">
+
+            <label class="form-label">Address</label>
+            <textarea id="custAddress" class="form-input" rows="2" placeholder="Full Delivery Address"></textarea>
+
+            <label class="form-label">Payment Mode</label>
+            <div class="pay-option" onclick="setPayment('ONLINE')">
+                <input type="radio" name="pay" id="pOnline" checked>
+                <label for="pOnline">Online UPI QR</label>
+            </div>
+            <div class="pay-option" onclick="setPayment('COD')">
+                <input type="radio" name="pay" id="pCOD">
+                <label for="pCOD">Cash On Delivery (COD)</label>
+            </div>
+
+            <div id="qrBox" class="qr-box">
+                <p style="font-size: 12px; font-weight: 700; color: #0c831f;">Scan & Pay: <span id="payTotal">₹0</span></p>
+                <img id="upiQR" src="" style="width: 140px; height: 140px; margin: 8px 0; border: 2px solid #0c831f; border-radius: 8px;">
+            </div>
+
+            <button class="action-btn" onclick="placeOrder()">Confirm Order</button>
+        </div>
+    </div>
+
+    <div class="cart-bar" id="cartBar" style="display: none;" onclick="openCheckout()">
+        <div>
+            <div id="cartCount" style="font-weight: 700; font-size: 13px;">0 ITEM</div>
+            <div id="cartTotal" style="font-size: 15px; font-weight: 800;">₹0</div>
+        </div>
+        <div>View Cart <i class="fa-solid fa-caret-right"></i></div>
+    </div>
+
+    <nav class="bottom-nav">
+        <div class="nav-item active" onclick="switchTab('homePage', this)"><i class="fa-solid fa-house"></i><span>Home</span></div>
+        <div class="nav-item" onclick="switchTab('categoryPage', this)"><i class="fa-solid fa-border-all"></i><span>Categories</span></div>
+        <div class="nav-item" onclick="openCheckout()"><i class="fa-solid fa-cart-shopping"></i><span>Cart</span></div>
+        <div class="nav-item" onclick="switchTab('profilePage', this)"><i class="fa-solid fa-user"></i><span>Profile</span></div>
+    </nav>
+
+    <div id="loginModal" class="modal" style="display:none; align-items:center;">
+      <div class="modal-box" style="text-align:center;">
+        <span class="close-btn" onclick="closeLoginModal()">&times;</span>
+        <h2 style="color:#0c831f;">Login / Sign Up</h2>
+        <div id="mobileStep">
+          <input type="tel" id="userMobile" class="form-input" placeholder="Mobile Number" maxlength="10">
+          <button onclick="sendOTP()" class="action-btn">Send OTP</button>
+        </div>
+        <div id="otpStep" style="display: none;">
+          <input type="number" id="userOTP" class="form-input" placeholder="Enter OTP (1234)" maxlength="4">
+          <button onclick="verifyOTP()" class="action-btn">Verify</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+        const MY_UPI_ID = "8764578505@ybl";
+        let productsList = [];
+        let cart = [];
+        let payMode = 'ONLINE';
+
+        // Fetch Data from Backend API
+        async function fetchProducts() {
+            try {
+                const res = await fetch('/api/products');
+                productsList = await res.json();
+                renderProducts('All');
+            } catch (err) {
+                console.error("Products load nahi hue:", err);
+            }
         }
-      }
-      updateCartUI();
-    }
 
-    function removeItem(id) {
-      cart = cart.filter(i => i.id !== id);
-      updateCartUI();
-    }
+        function renderProducts(filterCat = 'All', searchKeyword = '') {
+            const grid = document.getElementById('productGridContainer');
+            grid.innerHTML = ''; 
+            document.getElementById('currentCategoryTitle').innerText = filterCat === 'All' ? 'All Products' : filterCat;
 
-    // Navigation Switcher
-    function showSection(sectionId, navElement) {
-      document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
-      document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
-      
-      document.getElementById(sectionId).classList.add('active');
-      if (navElement) navElement.classList.add('active');
-    }
+            const filtered = productsList.filter(prod => {
+                const matchesCategory = filterCat === 'All' || prod.category === filterCat;
+                const matchesSearch = prod.name.toLowerCase().includes(searchKeyword.toLowerCase());
+                return matchesCategory && matchesSearch;
+            });
 
-    // Toggle Profile Sub Sections
-    function toggleSubSection(id) {
-      const el = document.getElementById(id);
-      if (el.style.display === 'block') {
-        el.style.display = 'none';
-      } else {
-        document.querySelectorAll('.form-container').forEach(f => f.style.display = 'none');
-        el.style.display = 'block';
-      }
-    }
+            filtered.forEach(prod => {
+                let card = document.createElement('div');
+                card.className = 'product-card';
+                card.innerHTML = `
+                    <img src="${prod.img}" class="product-img">
+                    <div class="product-time"><i class="fa-regular fa-clock"></i> 2 Days</div>
+                    <div class="product-title">${prod.name}</div>
+                    <div class="product-weight">${prod.weight}</div>
+                    <div class="product-bottom">
+                        <div class="price">₹${prod.price}</div>
+                        <button class="add-btn" onclick="addToCart('${prod.name}', ${prod.price})">ADD</button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
 
-    // Profile Image Change
-    function triggerProfileImageUpload() {
-      document.getElementById('profileImgInput').click();
-    }
+        function searchProduct(query) { renderProducts('All', query); }
+        function filterCategory(catName) {
+            switchTab('homePage', document.querySelectorAll('.nav-item')[0]);
+            renderProducts(catName);
+        }
 
-    function changeProfileImage(event) {
-      const file = event.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          document.getElementById('userProfileImg').src = e.target.result;
-          showAlert("✔️");
-        };
-        reader.readAsDataURL(file);
-      }
-    }
+        document.addEventListener("DOMContentLoaded", () => {
+            fetchProducts();
+            loadProfileData();
+        });
 
-    // Village Other Input Check
-    function checkOtherVillage(isOther) {
-      const otherInput = document.getElementById('otherVillageInput');
-      if (isOther) {
-        otherInput.style.display = 'block';
-      } else {
-        otherInput.style.display = 'none';
-      }
-    }
+        function switchTab(pageId, navElement) {
+            document.querySelectorAll('.page-section').forEach(page => page.classList.remove('active'));
+            document.querySelectorAll('.bottom-nav .nav-item').forEach(nav => nav.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+            navElement.classList.add('active');
 
-    // Customer Service via Android Messenger (SMS Protocol)
-    function openCustomerServiceSMS() {
-      const myPhoneNumber = "918690631139"; // यहाँ अपना डिलीवरी/कस्टमर केयर नंबर बदलें
-      const defaultText = encodeURIComponent("नमस्ते Dhawan Mart, मुझे अपने ऑर्डर / ऐप में मदद चाहिए।");
-      window.location.href = `sms:${myPhoneNumber}?body=${defaultText}`;
-    }
+            if(pageId === 'profilePage') {
+                document.getElementById('mainHeader').style.display = 'none';
+                loadProfileData();
+            } else {
+                document.getElementById('mainHeader').style.display = 'block';
+            }
+        }
 
-    // Submissions
-    function saveCustomerDetails() {
-      showAlert("आपकी जानकारी सफलतापूर्वक सेव कर ली गई है!");
-      toggleSubSection('detailsForm');
-    }
+        function addToCart(name, price) {
+            let item = cart.find(i => i.name === name);
+            if (item) { item.qty++; } else { cart.push({ name, price, qty: 1 }); }
+            updateCartUI();
+        }
 
-    function submitDeliveryBoyForm() {
-      const name = document.getElementById('pName').value.trim();
-      const mobile = document.getElementById('pMobile').value.trim();
-      if (!name || !mobile) {
-        showAlert("कृपया अपना नाम और मोबाइल नंबर भरें!");
-        return;
-      }
-      showAlert("धन्यवाद! आपका डिलीवरी बॉय रजिस्ट्रेशन फॉर्म जमा हो गया है। हम जल्द ही आपसे संपर्क करेंगे।");
-      toggleSubSection('partnerForm');
-    }
+        function updateCartUI() {
+            let total = cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
+            let count = cart.reduce((sum, i) => sum + i.qty, 0);
 
-    function submitFeedback() {
-      const fb = document.getElementById('feedbackText').value.trim();
-      if (!fb) {
-        showAlert("कृपया अपनी प्रतिक्रिया दर्ज करें!");
-        return;
-      }
-      showAlert("आपकी बहुमूल्य प्रतिक्रिया के लिए धन्यवाद!");
-      document.getElementById('feedbackText').value = '';
-      toggleSubSection('feedbackForm');
-    }
+            let cartBar = document.getElementById('cartBar');
+            if (count > 0) {
+                cartBar.style.display = 'flex';
+                document.getElementById('cartCount').innerText = `${count} ITEMS`;
+                document.getElementById('cartTotal').innerText = `₹${total}`;
+            } else {
+                cartBar.style.display = 'none';
+            }
+        }
 
-    function handleLogout() {
-      showAlert("आप सफलतापूर्वक लॉग आउट हो गए हैं।");
-    }
+        function openCheckout() {
+            if (cart.length === 0) return Swal.fire('Cart Empty!', 'Add some products.', 'info');
+            
+            let cartHtml = '';
+            cart.forEach(item => {
+                cartHtml += `<div class="cart-item-row">
+                    <div><b>${item.name}</b> <br><small>Qty: ${item.qty} x ₹${item.price}</small></div>
+                    <div style="font-weight:bold; color:#0c831f;">₹${item.price * item.qty}</div>
+                </div>`;
+            });
+            document.getElementById('cartItemsList').innerHTML = cartHtml;
 
-    function openCheckoutModal() {
-      showAlert("ऑर्डर प्लेस करने के लिए धन्यवाद! आपका ऑर्डर दर्ज कर लिया गया है।");
-      cart = [];
-      updateCartUI();
-      showSection('homeView', document.getElementById('navHome'));
-    }
+            let total = cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
+            document.getElementById('payTotal').innerText = '₹' + total;
+            document.getElementById('upiQR').src = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=upi://pay?pa=${MY_UPI_ID}&pn=DhawanMart&am=${total}&cu=INR`;
+            
+            document.getElementById('checkoutModal').style.display = 'flex';
+        }
 
-    // Init
-    loadProducts();
-    updateCartUI();
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+        function setPayment(mode) {
+            payMode = mode;
+            document.getElementById('qrBox').style.display = mode === 'ONLINE' ? 'block' : 'none';
+        }
 
-// गाँव की लिस्ट को टॉगल (Show/Hide) करने का फ़ंक्शन
-function toggleVillageList() {
-  const villageGroup = document.getElementById('villageRadioGroup');
-  const arrowIcon = document.getElementById('villageArrow');
-  
-  if (villageGroup.style.display === 'none' || villageGroup.style.display === '') {
-    villageGroup.style.display = 'flex';
-    arrowIcon.className = 'fa-solid fa-chevron-up';
-  } else {
-    villageGroup.style.display = 'none';
-    arrowIcon.className = 'fa-solid fa-chevron-down';
-  }
-}
+        async function placeOrder() {
+            let name = document.getElementById('custName').value.trim();
+            let phone = document.getElementById('custPhone').value.trim();
+            let address = document.getElementById('custAddress').value.trim();
+            let total = cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
 
+            if (!name || !phone || !address) return alert('Saari details bharein.');
 
-  // ==========================================
-  // STEP 2: इमेज चेक और मैसेज दिखाने का कोड
-  // ==========================================
-  function checkImage(imgElement) {
-      imgElement.onerror = null;
-      imgElement.src = 'https://via.placeholder.com/150?text=Dhawan+Mart';
-  }
+            try {
+                let res = await fetch('/api/order', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, phone, address, payMode, cart, total })
+                });
+                let data = await res.json();
+                if(data.success) {
+                    Swal.fire('Success!', 'Order Placed Successfully!', 'success');
+                    cart = [];
+                    updateCartUI();
+                    closeModal('checkoutModal');
+                } else { Swal.fire('Error', data.message, 'error'); }
+            } catch (e) { Swal.fire('Error', 'Server issue', 'error'); }
+        }
 
-  function showMessage(text) {
-      const alertBox = document.getElementById('message-box');
-      if (alertBox) {
-          alertBox.innerText = text;
-          alertBox.style.display = 'block';
-          
-          setTimeout(() => {
-              alertBox.style.display = 'none';
-          }, 2000);
-      }
-  }
+        async function submitPartnerForm() {
+            let name = document.getElementById('p_name').value.trim();
+            let phone = document.getElementById('p_phone').value.trim();
+            let age = document.getElementById('p_age').value.trim();
+            let gender = document.querySelector('input[name="p_gender"]:checked').value;
 
-  // ==========================================
-  // STEP 3: प्रोफ़ाइल डेटा सेव और लोड करने का कोड
-  // ==========================================
-  
-  // 1. डेटा को फ़ोन/ब्राउज़र की लोकल मेमोरी (localStorage) में सेव करने का फ़ंक्शन
-  function saveProfile(event) {
-      event.preventDefault(); // इससे फॉर्म सबमिट होने पर पेज रीलोड नहीं होगा
+            if(!name || !phone || !age) return alert('Fill all details.');
 
-      const profile = {
-          name: document.getElementById('nameInput').value,
-          phone: document.getElementById('phoneInput').value,
-          address: document.getElementById('addressInput').value
-      };
+            try {
+                let res = await fetch('/api/partner', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, phone, age, gender })
+                });
+                let data = await res.json();
+                if(data.success) {
+                    Swal.fire('Success!', 'Request Submitted!', 'success');
+                    closeModal('partnerModal');
+                }
+            } catch(e) { Swal.fire('Error', 'Network Error', 'error'); }
+        }
 
-      // डेटा सेव करें
-      localStorage.setItem('userProfile', JSON.stringify(profile));
+        let generatedOTP = null;
+        function openLoginModal() { document.getElementById("loginModal").style.display = "flex"; }
+        function closeLoginModal() { document.getElementById("loginModal").style.display = "none"; }
 
-      // संदेश दिखाएं
-      showMessage('प्रोफ़ाइल सफलतापूर्वक सेव हो गई!');
-  }
+        function sendOTP() {
+            const mobile = document.getElementById("userMobile").value;
+            if (mobile.length === 10) {
+                generatedOTP = "1234";
+                alert("Testing OTP: 1234");
+                document.getElementById("mobileStep").style.display = "none";
+                document.getElementById("otpStep").style.display = "block";
+            }
+        }
 
-  // 2. पेज खुलते ही पुराना सेव किया हुआ डेटा वापस फ़ॉर्म के इनपुट बॉक्सेज़ में भरने का फ़ंक्शन
-  function loadProfile() {
-      const savedData = localStorage.getItem('userProfile');
-      
-      if (savedData) {
-          const profile = JSON.parse(savedData);
-          if (document.getElementById('nameInput')) document.getElementById('nameInput').value = profile.name || '';
-          if (document.getElementById('phoneInput')) document.getElementById('phoneInput').value = profile.phone || '';
-          if (document.getElementById('addressInput')) document.getElementById('addressInput').value = profile.address || '';
-      }
-  }
+        function verifyOTP() {
+            if (document.getElementById("userOTP").value === generatedOTP) {
+                localStorage.setItem("dhawan_mart_user", document.getElementById("userMobile").value);
+                closeLoginModal();
+                loadProfileData();
+            }
+        }
 
-  // जब भी प्रोफ़ाइल पेज लोड हो, ऑटोमैटिकली डेटा फ़िल कर दें
-  window.onload = loadProfile;
+        function loadProfileData() {
+            const phone = localStorage.getItem("dhawan_mart_user");
+            if(phone) document.getElementById("profilePhoneDisp").innerText = "+91 " + phone;
+        }
 
+        function saveProfileName() {
+            const newName = document.getElementById("profileName").value.trim();
+            if(newName) {
+                localStorage.setItem("dhawan_user_name", newName);
+                Swal.fire('Saved', 'Profile Updated!', 'success');
+            }
+        }
 
-    
-  </script>
+        function updateProfilePic(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('profileDp').src = e.target.result;
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+    </script>
 </body>
 </html>
+
