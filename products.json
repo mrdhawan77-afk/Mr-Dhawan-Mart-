@@ -31,13 +31,27 @@
     "weight": "5kg",
     "img": "https://tse3.mm.bing.net/th/id/OIP.IVueFa1JIoL3nMKXUieEQAHaHa?r=0&pid=ImgDet&w=189&h=189&c=7&dpr=1.5&o=7&rm=3"
   },
-  {
-    "id": 5,
-     "Drinks",
-    "name": "Coca Cola",
-    "price": 40,
-    "img": "https://i.pinimg.com/originals/66/36/88/6636889e7781ab791d5151332ee374d8.jpg"
-  }
+      {
+        "id": 5,
+        "category": "Drinks",
+        "name": "Coca Cola",
+        "price": 40,
+        "img": "https://i.pinimg.com/originals/66/36/88/6636889e7781ab791d5151332ee374d8.jpg"
+    },
+    {
+        "id": 6,
+        "category": "Chocolates",
+        "name": "Dairy Milk Silk",
+        "price": 80,
+        "weight": "150g",
+        "img": "https://m.media-amazon.com/images/I/61vGqnUElhL._SL1000_.jpg"
+    },
+
+   [
+            { id: 1, name: "Matchbox Pack", pkg: "Box", price: 5, img: "https://i.pinimg.com/originals/66/36/88/6636889e7781ab791d5151332ee374d8.jpg" },
+            { id: 2, name: "dairymilk Chocolates", pkg: "box", price: 10, img: "https://m.media-amazon.com/images/I/61qvMq1Pd0L.jpg"},
+            { id: 3, name: "coconut oil", pkg: "Single Strip", price: 10, img: "https://tse3.mm.bing.net/th/id/OIP.RlICOJThFdFr9Z-PBf81kwHaHa?r=0&rs=1&pid=ImgDetMain&o=7&rm=3"  },
 ]
+
 
 
