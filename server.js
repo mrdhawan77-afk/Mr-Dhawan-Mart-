@@ -79,3 +79,36 @@ app.get('*', (req, res) => {
 app.listen(PORT, () => {
     console.log(`Server running at http://localhost:${PORT}`);
 });
+
+// Server.js mein API Key aur OTP sending route
+
+const express = require('express');
+const app = express();
+app.use(express.json());
+
+// Fast2SMS API Key ko yaha paste karein
+const FAST2SMS_API_KEY = "BdbqY06oSshLIOD8R1TEtrG9lU7ucZ3AiyCXeVkW2wNnMQxzmfMTsJxvzLBobDlS6a9qtXdOCfyG07Km"; 
+
+app.post('/api/send-otp', async (req, res) => {
+    const { mobile } = req.body;
+    
+    // 4 digit ka random OTP generate karein
+    const generatedOTP = Math.floor(1000 + Math.random() * 9000); 
+
+    try {
+        // Fast2SMS API ko call karke SMS bhejna
+        const response = await fetch(`https://www.fast2sms.com/dev/bulkV2?authorization=${FAST2SMS_API_KEY}&route=otp&variables_values=${generatedOTP}&numbers=${mobile}`);
+        const data = await response.json();
+
+        if (data.return) {
+            res.json({ success: true, message: "OTP safaltapurvak bhej diya gaya hai!" });
+        } else {
+            res.status(400).json({ success: false, message: "OTP bhejne me dikkat aayi." });
+        }
+    } catch (error) {
+        res.status(500).json({ success: false, message: "Server issue aaya." });
+    }
+});
+
+
+    
