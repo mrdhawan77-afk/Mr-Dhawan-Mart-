@@ -232,16 +232,20 @@
         let cart = [];
         let payMode = 'ONLINE';
 
-        // Fetch Data from Backend API
-        async function fetchProducts() {
-            try {
-                const res = await fetch('/api/products');
-                productsList = await res.json();
-                renderProducts('All');
-            } catch (err) {
-                console.error("Products load nahi hue:", err);
-            }
+        // ✅ नया फ़ंक्शन (Local products.json फ़ाइल के लिए)
+async function fetchProducts() {
+    try {
+        const res = await fetch('products.json'); // लोकल JSON फ़ाइल से डेटा लाएगा
+        if (!res.ok) {
+            throw new Error(`File load nahi hui. Status: ${res.status}`);
         }
+        productsList = await res.json();
+        renderProducts('All'); // डेटा मिलते ही प्रोडक्ट्स UI पर दिखाएगा
+    } catch (err) {
+        console.error("Products load karne me dikkat aayi:", err);
+    }
+}
+
 
         function renderProducts(filterCat = 'All', searchKeyword = '') {
             const grid = document.getElementById('productGridContainer');
@@ -391,23 +395,63 @@
         function openLoginModal() { document.getElementById("loginModal").style.display = "flex"; }
         function closeLoginModal() { document.getElementById("loginModal").style.display = "none"; }
 
-        function sendOTP() {
-            const mobile = document.getElementById("userMobile").value;
-            if (mobile.length === 10) {
-                generatedOTP = "1234";
-                alert("Testing OTP: 1234");
-                document.getElementById("mobileStep").style.display = "none";
-                document.getElementById("otpStep").style.display = "block";
-            }
-        }
+        // ✅ असली OTP भेजने का फ़ंक्शन
+async function sendOTP() {
+    const mobile = document.getElementById("userMobile").value.trim();
+    if (mobile.length !== 10) {
+        return Swal.fire('Error', 'कृपया 10 अंकों का सही मोबाइल नंबर दर्ज करें', 'error');
+    }
 
-        function verifyOTP() {
-            if (document.getElementById("userOTP").value === generatedOTP) {
-                localStorage.setItem("dhawan_mart_user", document.getElementById("userMobile").value);
-                closeLoginModal();
-                loadProfileData();
-            }
+    try {
+        const res = await fetch('/api/send-otp', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ mobile })
+        });
+        const data = await res.json();
+
+        if (data.success) {
+            Swal.fire('Sent!', 'OTP आपके मोबाइल पर भेज दिया गया है.', 'success');
+            document.getElementById("mobileStep").style.display = "none";
+            document.getElementById("otpStep").style.display = "block";
+        } else {
+            Swal.fire('Error', data.message || 'OTP भेजने में विफलता', 'error');
         }
+    } catch (err) {
+        Swal.fire('Error', 'Server issue! OTP नहीं भेजा जा सका.', 'error');
+    }
+}
+
+// ✅ असली OTP वेरीफ़ाई करने का फ़ंक्शन
+async function verifyOTP() {
+    const mobile = document.getElementById("userMobile").value.trim();
+    const otp = document.getElementById("userOTP").value.trim();
+
+    if (!otp) {
+        return Swal.fire('Error', 'कृपया OTP दर्ज करें', 'error');
+    }
+
+    try {
+        const res = await fetch('/api/verify-otp', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ mobile, otp })
+        });
+        const data = await res.json();
+
+        if (data.success) {
+            localStorage.setItem("dhawan_mart_user", mobile);
+            closeLoginModal();
+            loadProfileData();
+            Swal.fire('Success', 'Login सफल रहा!', 'success');
+        } else {
+            Swal.fire('Error', data.message || 'गलत OTP!', 'error');
+        }
+    } catch (err) {
+        Swal.fire('Error', 'Verification fail ho gaya', 'error');
+    }
+}
+
 
         function loadProfileData() {
             const phone = localStorage.getItem("dhawan_mart_user");
