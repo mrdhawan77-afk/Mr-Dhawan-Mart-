@@ -47,11 +47,129 @@
         "img": "https://m.media-amazon.com/images/I/61vGqnUElhL._SL1000_.jpg"
     },
 
-   [
-            { id: 1, name: "Matchbox Pack", pkg: "Box", price: 5, img: "https://i.pinimg.com/originals/66/36/88/6636889e7781ab791d5151332ee374d8.jpg" },
-            { id: 2, name: "dairymilk Chocolates", pkg: "box", price: 10, img: "https://m.media-amazon.com/images/I/61qvMq1Pd0L.jpg"},
-            { id: 3, name: "coconut oil", pkg: "Single Strip", price: 10, img: "https://tse3.mm.bing.net/th/id/OIP.RlICOJThFdFr9Z-PBf81kwHaHa?r=0&rs=1&pid=ImgDetMain&o=7&rm=3"  },
+      [
+  {
+    "id": 1,
+    "category": "Snacks",
+    "name": "Lay's Magic Masala",
+    "price": 20,
+    "weight": "50g",
+    "img": "https://th.bing.com/th/id/OIP.-I58WkRguT11zXQoco4L3gHaHa?w=174&h=180&c=7&r=0&o=7&dpr=1.5&pid=1.7&rm=3"
+  },
+  {
+    "id": 2,
+    "category": "Snacks",
+    "name": "Kurkure Masala Munch",
+    "price": 20,
+    "weight": "50g",
+    "img": "https://m.media-amazon.com/images/I/81Tu78PWNUL._AC_UL480_FMwebp_QL65_.jpg"
+  },
+  {
+    "id": 3,
+    "category": "Biscuits",
+    "name": "Oreo Original",
+    "price": 35,
+    "weight": "120g",
+    "img": "https://th.bing.com/th/id/OIP.FywZLjWKtlHr9pHZ5ichQHaHa?w=183&h=183&c=7&r=0&o=7&dpr=1.5&pid=1.7&rm=3"
+  },
+  {
+    "id": 4,
+    "category": "Atta & Oil",
+    "name": "Aashirvaad Atta",
+    "price": 260,
+    "weight": "5kg",
+    "img": "https://tse3.mm.bing.net/th/id/OIP.IVueFa1JIoL3nMKXUieEQAHaHa?r=0&pid=ImgDet&w=189&h=189&c=7&dpr=1.5&o=7&rm=2"
+  },
+  {
+    "id": 5,
+    "category": "Drinks",
+    "name": "Coca Cola",
+    "price": 40,
+    "weight": "750ml",
+    "img": "https://i.pinimg.com/originals/66/36/88/6636889e7781ab791d5151332ee374d8.jpg"
+  },
+  {
+    "id": 6,
+    "category": "Snacks",
+    "name": "Uncle Chips Spicy Treat",
+    "price": 20,
+    "weight": "50g",
+    "img": "https://m.media-amazon.com/images/I/71Yv3P0O3gL._SL1500_.jpg"
+  },
+  {
+    "id": 7,
+    "category": "Biscuits",
+    "name": "Parle-G Gold",
+    "price": 10,
+    "weight": "100g",
+    "img": "https://m.media-amazon.com/images/I/61kYQGf-vFL._SL1000_.jpg"
+  },
+  {
+    "id": 8,
+    "category": "Biscuits",
+    "name": "Britannia Good Day",
+    "price": 30,
+    "weight": "150g",
+    "img": "https://m.media-amazon.com/images/I/61WfQ1wA1mL._SL1000_.jpg"
+  },
+  {
+    "id": 9,
+    "category": "Atta & Oil",
+    "name": "Fortune Sunlite Sunflower Oil",
+    "price": 140,
+    "weight": "1L",
+    "img": "https://m.media-amazon.com/images/I/61gVn-MvX-L._SL1000_.jpg"
+  },
+  {
+    "id": 10,
+    "category": "Atta & Oil",
+    "name": "Fortune Mustard Oil",
+    "price": 155,
+    "weight": "1L",
+    "img": "https://m.media-amazon.com/images/I/61VvJ1U5PFL._SL1000_.jpg"
+  },
+  {
+    "id": 11,
+    "category": "Drinks",
+    "name": "Sprite Soft Drink",
+    "price": 40,
+    "weight": "750ml",
+    "img": "https://m.media-amazon.com/images/I/61Q6U7lS6fL._SL1500_.jpg"
+  },
+  {
+    "id": 12,
+    "category": "Drinks",
+    "name": "Thums Up Soft Drink",
+    "price": 40,
+    "weight": "750ml",
+    "img": "https://m.media-amazon.com/images/I/61-d6aL-2eL._SL1500_.jpg"
+  },
+  {
+    "id": 13,
+    "category": "Chocolates",
+    "name": "Dairy Milk Silk",
+    "price": 80,
+    "weight": "150g",
+    "img": "https://m.media-amazon.com/images/I/61vGqnUElhL._SL1000_.jpg"
+  },
+  {
+    "id": 14,
+    "category": "Chocolates",
+    "name": "KitKat 4 Finger",
+    "price": 30,
+    "weight": "38g",
+    "img": "https://m.media-amazon.com/images/I/61+yBf0yLzL._SL1000_.jpg"
+  },
+  {
+    "id": 15,
+    "category": "Chocolates",
+    "name": "5 Star Chocolate",
+    "price": 20,
+    "weight": "40g",
+    "img": "https://m.media-amazon.com/images/I/61zBvDqWqFL._SL1000_.jpg"
+  }
 ]
+
 
 
 
