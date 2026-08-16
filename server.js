@@ -80,6 +80,11 @@ const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/dhawankart
 mongoose.connect(MONGO_URI)
   .then(async () => {
       console.log('MongoDB Connected Successfully!');
+
+
+      // Order ID generation logic (DM ki jagah DK)
+orderId: "DK" + Math.floor(100000 + Math.random() * 900000),
+
       
       // डेटाबेस में चेक करेंगे कि प्रोडक्ट्स हैं या नहीं
       const count = await Product.countDocuments();
