@@ -1,7 +1,7 @@
 {
-  "name": "dmawanmart",
+  "name": "dmawankart",
   "version": "1.0.0",
-  "description": "DMawanMart E-Commerce App",
+  "description": "DMawankart E-Commerce App",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
