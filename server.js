@@ -22,10 +22,51 @@ const limiter = rateLimit({
 });
 app.use('/api/', limiter);
 
-// MongoDB Connection
+// Sample Products Data
+const sampleProducts = [
+    {
+        name: "Wireless Earbuds",
+        category: "Electronics",
+        price: 1299,
+        rating: 4,
+        img: "https://via.placeholder.com/150"
+    },
+    {
+        name: "Smart Watch",
+        category: "Electronics",
+        price: 2499,
+        rating: 5,
+        img: "https://via.placeholder.com/150"
+    },
+    {
+        name: "Running Shoes",
+        category: "Fashion",
+        price: 999,
+        rating: 4,
+        img: "https://via.placeholder.com/150"
+    },
+    {
+        name: "Cotton T-Shirt",
+        category: "Fashion",
+        price: 499,
+        rating: 4,
+        img: "https://via.placeholder.com/150"
+    }
+];
+
+// MongoDB Connection with Auto-Seed Logic
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/dhawankart';
 mongoose.connect(MONGO_URI)
-  .then(() => console.log('MongoDB Connected Successfully!'))
+  .then(async () => {
+      console.log('MongoDB Connected Successfully!');
+      
+      // Check if products exist, if not insert sample products
+      const count = await Product.countDocuments();
+      if (count === 0) {
+          await Product.insertMany(sampleProducts);
+          console.log('Sample Products Added to MongoDB!');
+      }
+  })
   .catch(err => console.error('MongoDB Connection Error:', err));
 
 // MongoDB Schemas & Models
