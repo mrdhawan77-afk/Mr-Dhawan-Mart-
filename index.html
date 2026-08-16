@@ -3,122 +3,158 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dhawankart</title>
+    <title>DMawanMart</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
-        body { background-color: #fcfcfc; color: #1a1a1a; padding-bottom: 30px; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        body { background-color: #fcfcfc; color: #1a1a1a; padding-bottom: 70px; }
         
-        /* Top Navigation Header */
-        header { padding: 15px 20px 10px 20px; background: #fff; position: sticky; top: 0; z-index: 100; }
-        .top-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; }
+        /* Header */
+        header { padding: 15px 20px 10px 20px; background: #fff; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid #f0f0f0; }
+        .top-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
         .brand-logo { display: flex; align-items: center; gap: 8px; font-size: 20px; font-weight: 700; color: #1c1c1c; }
         .logo-badge { background: #4d82f3; color: white; padding: 4px 8px; border-radius: 8px; font-size: 14px; font-weight: bold; }
         .cart-icon-btn { background: #f0f4ff; color: #4d82f3; border: none; padding: 8px 14px; border-radius: 20px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px; }
 
-        /* Modern Rounded Search Bar */
+        /* Search Bar */
         .search-container { position: relative; width: 100%; }
-        .search-container input { width: 100%; padding: 12px 16px 12px 42px; border: 1px solid #f0f0f0; background: #f7f8fa; border-radius: 25px; outline: none; font-size: 14px; color: #333; }
-        .search-container i { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #999; font-size: 15px; }
+        .search-container input { width: 100%; padding: 12px 16px 12px 42px; border: 1px solid #f0f0f0; background: #f7f8fa; border-radius: 25px; outline: none; font-size: 14px; }
+        .search-container i { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #999; }
 
         .main-content { padding: 0 20px; max-width: 600px; margin: 0 auto; }
-        
-        /* Section Titles */
         .section-title { font-size: 18px; font-weight: 700; margin: 20px 0 12px 0; color: #2c2c2c; }
 
         /* Banner Slider */
-        .banner-scroll { display: flex; gap: 15px; overflow-x: auto; scrollbar-width: none; padding-bottom: 5px; }
+        .banner-scroll { display: flex; gap: 15px; overflow-x: auto; scrollbar-width: none; }
         .banner-scroll::-webkit-scrollbar { display: none; }
-        .banner-card { min-width: 230px; height: 120px; border-radius: 18px; padding: 15px; color: white; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        .banner-card { min-width: 230px; height: 110px; border-radius: 18px; padding: 15px; color: white; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
         .banner-1 { background: linear-gradient(135deg, #ff7e5f, #feb47b); }
         .banner-2 { background: linear-gradient(135deg, #6a11cb, #2575fc); }
-        .banner-text { font-size: 16px; font-weight: 800; text-transform: uppercase; line-height: 1.2; }
+        .banner-text { font-size: 16px; font-weight: 800; text-transform: uppercase; }
 
-        /* Grid Layout */
+        /* Grid & Cards */
         .product-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
-        
-        /* Card UI */
         .p-card { background: #fff; border-radius: 20px; padding: 12px; border: 1px solid #f2f2f2; display: flex; flex-direction: column; justify-content: space-between; position: relative; box-shadow: 0 2px 8px rgba(0,0,0,0.03); }
         .p-img { width: 100%; height: 110px; object-fit: contain; margin: 8px 0; }
         .p-price { font-size: 16px; font-weight: 700; color: #111; }
-        .rating { color: #f4c430; font-size: 11px; margin: 4px 0 10px 0; }
-        
-        /* ADD Button */
-        .add-btn { background: #5c8cf6; color: white; border: none; width: 100%; padding: 10px 0; border-radius: 12px; font-weight: 600; font-size: 13px; cursor: pointer; transition: background 0.2s; }
-        .add-btn:active { background: #3b71e8; }
+        .add-btn { background: #5c8cf6; color: white; border: none; width: 100%; padding: 10px 0; border-radius: 12px; font-weight: 600; cursor: pointer; margin-top: 8px; }
 
-        /* Cart Slide Modal */
-        .cart-modal { display: none; position: fixed; top: 0; right: 0; width: 100%; max-width: 350px; height: 100%; background: white; box-shadow: -2px 0 10px rgba(0,0,0,0.1); padding: 20px; z-index: 200; }
+        /* Bottom Nav Bar */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: #ffffff; display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid #f0f0f0; z-index: 1000; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; color: #8e8e93; font-size: 11px; cursor: pointer; font-weight: 500; }
+        .nav-item i { font-size: 18px; margin-bottom: 3px; }
+        .nav-item.active { color: #5c8cf6; font-weight: 700; }
+
+        .tab-view { display: none; }
+        .tab-view.active-tab { display: block; }
+
+        /* Cart Modal */
+        .cart-modal { display: none; position: fixed; top: 0; right: 0; width: 100%; max-width: 350px; height: 100%; background: white; box-shadow: -2px 0 10px rgba(0,0,0,0.1); padding: 20px; z-index: 1100; }
         .cart-modal.open { display: block; }
-        .close-btn { float: right; font-size: 22px; cursor: pointer; color: #666; }
-        .checkout-btn { background: #5c8cf6; color: white; width: 100%; border: none; padding: 12px; border-radius: 12px; font-weight: 700; cursor: pointer; margin-top: 15px; }
     </style>
 </head>
 <body>
 
     <header>
         <div class="top-row">
-            <div class="brand-logo">
-                <span class="logo-badge">MD</span> Dhawankart
-            </div>
+            <div class="brand-logo"><span class="logo-badge">MD</span> Dhawankart</div>
             <button class="cart-icon-btn" onclick="toggleCart()">
                 <i class="fa-solid fa-bag-shopping"></i> <span id="cartCount">0</span>
             </button>
         </div>
         <div class="search-container">
             <i class="fa-solid fa-magnifying-glass"></i>
-            <input type="text" id="searchInput" placeholder="Search..." onkeyup="handleSearch()">
+            <input type="text" id="searchInput" placeholder="Search products..." onkeyup="handleSearch()">
         </div>
     </header>
 
     <div class="main-content">
-        <!-- Banners Section -->
-        <div class="section-title">Offers</div>
-        <div class="banner-scroll">
-            <div class="banner-card banner-1">
-                <div class="banner-text"> Todays Best<br>Offer</div>
-                <i class="fa-solid fa-basket-shopping" style="font-size: 40px; opacity: 0.8;"></i>
+        <!-- Tab 1: HOME -->
+        <div id="homeTab" class="tab-view active-tab">
+            <div class="section-title"> </div>
+            <div class="banner-scroll">
+                <div class="banner-card banner-1">
+                    <div class="banner-text">today's best<br>OFFER</div>
+                    <i class="fa-solid fa-basket-shopping" style="font-size: 35px; opacity:0.8;"></i>
+                </div>
+                <div class="banner-card banner-2">
+                    <div class="banner-text">today's best<br>DEALS</div>
+                    <i class="fa-solid fa-tag" style="font-size: 35px; opacity:0.8;"></i>
+                </div>
             </div>
-            <div class="banner-card banner-2">
-                <div class="banner-text">Today's Best<br>DEALS</div>
-                <i class="fa-solid fa-tag" style="font-size: 40px; opacity: 0.8;"></i>
+            <div class="section-title">Products</div>
+            <div class="product-grid" id="productContainer"></div>
+        </div>
+
+        <!-- Tab 2: CATEGORY -->
+        <div id="categoryTab" class="tab-view">
+            <div class="section-title">Categories</div>
+            <div style="display:flex; flex-direction:column; gap:10px;">
+                <button class="add-btn" onclick="filterCategory('Electronics')">Electronics</button>
+                <button class="add-btn" onclick="filterCategory('Fashion')">Fashion</button>
+                <button class="add-btn" onclick="filterCategory('Grocery')">Grocery</button>
+                <button class="add-btn" style="background:#8e8e93;" onclick="filterCategory('All')">Show All</button>
             </div>
         </div>
 
-        <!-- Products Section -->
-        <div class="section-title"></div>
-        <div class="product-grid" id="productContainer">
-            <!-- Dynamic Products Loading -->
+        <!-- Tab 3: ORDERS -->
+        <div id="ordersTab" class="tab-view">
+            <div class="section-title">My Orders</div>
+            <div id="orderHistoryContainer"><p>Loading orders...</p></div>
+        </div>
+
+        <!-- Tab 4: PROFILE -->
+        <div id="profileTab" class="tab-view">
+            <div class="section-title">My Profile</div>
+            <div class="p-card" style="padding:20px; text-align:center;">
+                <i class="fa-solid fa-circle-user" style="font-size: 50px; color:#5c8cf6; margin-bottom:10px;"></i>
+                <h3>Welcome User</h3>
+                <p style="color:#666; margin-top:5px;">Dhawankart Member</p>
+            </div>
         </div>
     </div>
 
-    <!-- Cart Slide UI -->
+    <!-- Bottom Navigation Bar -->
+    <div class="bottom-nav">
+        <div class="nav-item active" onclick="switchTab('homeTab', this)">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+        </div>
+        <div class="nav-item" onclick="switchTab('categoryTab', this)">
+            <i class="fa-solid fa-layer-group"></i>
+            <span>Category</span>
+        </div>
+        <div class="nav-item" onclick="switchTab('ordersTab', this)">
+            <i class="fa-solid fa-box"></i>
+            <span>Orders</span>
+        </div>
+        <div class="nav-item" onclick="switchTab('profileTab', this)">
+            <i class="fa-solid fa-user"></i>
+            <span>Profile</span>
+        </div>
+    </div>
+
+    <!-- Slide Cart -->
     <div class="cart-modal" id="cartModal">
-        <span class="close-btn" onclick="toggleCart()">✕</span>
-        <h3 style="margin-bottom:15px;">Your Shopping Bag</h3>
-        <hr style="border:0; border-top:1px solid #eee; margin-bottom:15px;">
+        <span style="float:right; font-size:20px; cursor:pointer;" onclick="toggleCart()">✕</span>
+        <h3 style="margin-bottom:15px;">Your Bag</h3>
         <div id="cartItems"></div>
         <h4 style="margin-top: 20px; display:flex; justify-content:space-between;">
             <span>Total:</span> <span>₹<span id="cartTotal">0</span></span>
         </h4>
-        <button class="checkout-btn" onclick="checkout()">Place Order</button>
+        <button class="add-btn" style="margin-top:15px; padding:12px;" onclick="checkout()">Place Order</button>
     </div>
 
     <script>
         let cart = [];
+        if(!localStorage.getItem('user_token')) localStorage.setItem('user_token', 'demo_token');
 
-        if(!localStorage.getItem('user_token')) {
-            localStorage.setItem('user_token', 'demo_token');
-        }
-
-        async function fetchProducts(search = '') {
+        async function fetchProducts(category = 'All', search = '') {
             try {
-                const res = await fetch(`/api/products?search=${search}`);
+                const res = await fetch(`/api/products?category=${category}&search=${search}`);
                 const data = await res.json();
                 if (data.success) renderProducts(data.products);
-            } catch(e) {
-                console.error("Fetch Error:", e);
-            }
+            } catch(e) { console.error(e); }
         }
 
         function renderProducts(products) {
@@ -133,13 +169,8 @@
                     <div class="p-card">
                         <img src="${p.img}" class="p-img" alt="${p.name}">
                         <div>
+                            <div style="font-size:13px; font-weight:600; margin-bottom:4px;">${p.name}</div>
                             <div class="p-price">₹${p.price}</div>
-                            <div class="rating">
-                                <i class="fa-solid fa-star"></i>
-                                <i class="fa-solid fa-star"></i>
-                                <i class="fa-solid fa-star"></i>
-                                <i class="fa-regular fa-star"></i>
-                            </div>
                         </div>
                         <button class="add-btn" onclick="addToCart('${p.name}', ${p.price})">ADD</button>
                     </div>
@@ -147,9 +178,21 @@
             });
         }
 
+        function switchTab(tabId, element) {
+            document.querySelectorAll('.tab-view').forEach(tab => tab.classList.remove('active-tab'));
+            document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active-tab');
+            element.classList.add('active');
+            if (tabId === 'ordersTab') fetchOrderHistory();
+        }
+
+        function filterCategory(cat) {
+            fetchProducts(cat, '');
+            switchTab('homeTab', document.querySelectorAll('.nav-item')[0]);
+        }
+
         function handleSearch() {
-            const query = document.getElementById('searchInput').value;
-            fetchProducts(query);
+            fetchProducts('All', document.getElementById('searchInput').value);
         }
 
         function addToCart(name, price) {
@@ -164,11 +207,7 @@
             let total = 0;
             cart.forEach((item, index) => {
                 total += item.price;
-                cartItems.innerHTML += `
-                    <div style="display:flex; justify-content:space-between; margin:10px 0; font-size:14px;">
-                        <span>${item.name}</span>
-                        <b>₹${item.price}</b>
-                    </div>`;
+                cartItems.innerHTML += `<div style="display:flex; justify-content:space-between; margin:10px 0;"><span>${item.name}</span><b>₹${item.price}</b></div>`;
             });
             document.getElementById('cartTotal').innerText = total;
         }
@@ -185,29 +224,49 @@
             try {
                 const res = await fetch('/api/place-order', {
                     method: 'POST',
-                    headers: { 
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    },
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
                     body: JSON.stringify({ items: cart, totalAmount, paymentMode: 'COD' })
                 });
 
                 const data = await res.json();
                 if (data.success) {
-                    alert(`Order Placed Successfully! Order ID: ${data.orderId}`);
+                    alert(`Order Placed! ID: ${data.orderId}`);
                     cart = [];
                     updateCart();
                     toggleCart();
-                } else {
-                    alert(data.message);
                 }
-            } catch(e) {
-                alert("Order submission failed!");
-            }
+            } catch(e) { alert("Order failed!"); }
+        }
+
+        async function fetchOrderHistory() {
+            const token = localStorage.getItem('user_token');
+            const container = document.getElementById('orderHistoryContainer');
+            try {
+                const res = await fetch('/api/my-orders', { headers: { 'Authorization': `Bearer ${token}` } });
+                const data = await res.json();
+                if (data.success && data.orders.length > 0) {
+                    container.innerHTML = '';
+                    data.orders.forEach(o => {
+                        container.innerHTML += `
+                            <div class="p-card" style="margin-bottom:12px;">
+                                <div style="display:flex; justify-content:space-between; font-weight:bold;">
+                                    <span>ID: ${o.orderId}</span>
+                                    <span style="color:#388e3c;">${o.status}</span>
+                                </div>
+                                <div style="font-size:13px; color:#666; margin:8px 0;">Items: ${o.items.length}</div>
+                                <div style="font-weight:bold; color:#111;">Total: ₹${o.totalAmount}</div>
+                            </div>
+                        `;
+                    });
+                } else {
+                    container.innerHTML = '<p style="text-align:center; color:#888;">No orders yet.</p>';
+                }
+            } catch(err) { container.innerHTML = '<p>Failed to load orders.</p>'; }
         }
 
         fetchProducts();
     </script>
 </body>
 </html>
+
 
