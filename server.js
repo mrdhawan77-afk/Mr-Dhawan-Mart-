@@ -22,7 +22,7 @@ const limiter = rateLimit({
 });
 app.use('/api/', limiter);
 
-// 2. MongoDB Schemas & Models (इनको हमेशा कनेक्शन से पहले डिफाइन करते हैं)
+// 2. Mongoose Schemas & Models
 const productSchema = new mongoose.Schema({
     name: { type: String, required: true },
     category: { type: String, required: true },
@@ -43,7 +43,7 @@ const orderSchema = new mongoose.Schema({
 });
 const Order = mongoose.model('Order', orderSchema);
 
-// 3. Sample Products (अगर DB खाली हो तो यह डेटा अपने आप इंसर्ट होगा)
+// 3. Initial Sample Products (Dhawankart Data)
 const initialProducts = [
     {
         name: "Wireless Earbuds",
@@ -75,22 +75,16 @@ const initialProducts = [
     }
 ];
 
-// 4. MongoDB Connection
+// 4. MongoDB Connection & Auto-Insert Logic
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/dhawankart';
 mongoose.connect(MONGO_URI)
   .then(async () => {
       console.log('MongoDB Connected Successfully!');
-
-
-      // Order ID generation logic (DM ki jagah DK)
-orderId: "DK" + Math.floor(100000 + Math.random() * 900000),
-
-      
-      // डेटाबेस में चेक करेंगे कि प्रोडक्ट्स हैं या नहीं
+      // Check if products exist, if empty insert sample products
       const count = await Product.countDocuments();
       if (count === 0) {
           await Product.insertMany(initialProducts);
-          console.log('Initial sample products added to Database!');
+          console.log('Sample Dhawankart products added successfully!');
       }
   })
   .catch(err => console.error('MongoDB Connection Error:', err));
@@ -112,6 +106,8 @@ function authenticateToken(req, res, next) {
 }
 
 // 6. API Routes
+
+// Get All Products
 app.get('/api/products', async (req, res) => {
     try {
         const { category, search } = req.query;
@@ -127,18 +123,18 @@ app.get('/api/products', async (req, res) => {
         const products = await Product.find(filter);
         res.json({ success: true, products });
     } catch (err) {
-        console.error("Fetch Products Error:", err);
         res.status(500).json({ success: false, message: "Database Error", error: err.message });
     }
 });
 
+// Place Order
 app.post('/api/place-order', authenticateToken, async (req, res) => {
     try {
         const { items, totalAmount, paymentMode } = req.body;
         if (!items || items.length === 0) return res.status(400).json({ success: false, message: "Cart empty" });
 
         const newOrder = new Order({
-            orderId: "DM" + Math.floor(100000 + Math.random() * 900000),
+            orderId: "DK" + Math.floor(100000 + Math.random() * 900000),
             userMobile: req.user.mobile || "9999999999",
             items: items,
             totalAmount: totalAmount,
@@ -152,6 +148,7 @@ app.post('/api/place-order', authenticateToken, async (req, res) => {
     }
 });
 
+// User Orders
 app.get('/api/my-orders', authenticateToken, async (req, res) => {
     try {
         const userMobile = req.user.mobile || "9999999999";
@@ -166,5 +163,5 @@ app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT, () => console.log(`Dhawankart Server running on port ${PORT}`));
 
