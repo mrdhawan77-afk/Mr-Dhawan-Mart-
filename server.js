@@ -10,7 +10,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const JWT_SECRET = process.env.JWT_SECRET || 'fallback_secret_key';
 
-// Security Middlewares
+// 1. Middlewares
 app.use(helmet({ contentSecurityPolicy: false }));
 app.use(express.json());
 app.use(express.static(path.join(__dirname)));
@@ -22,8 +22,29 @@ const limiter = rateLimit({
 });
 app.use('/api/', limiter);
 
-// Sample Products Data
-const sampleProducts = [
+// 2. MongoDB Schemas & Models (इनको हमेशा कनेक्शन से पहले डिफाइन करते हैं)
+const productSchema = new mongoose.Schema({
+    name: { type: String, required: true },
+    category: { type: String, required: true },
+    price: { type: Number, required: true },
+    rating: { type: Number, default: 4 },
+    img: { type: String, required: true }
+});
+const Product = mongoose.model('Product', productSchema);
+
+const orderSchema = new mongoose.Schema({
+    orderId: { type: String, required: true },
+    userMobile: { type: String, required: true },
+    items: Array,
+    totalAmount: Number,
+    paymentMode: String,
+    status: { type: String, default: 'Pending' },
+    createdAt: { type: Date, default: Date.now }
+});
+const Order = mongoose.model('Order', orderSchema);
+
+// 3. Sample Products (अगर DB खाली हो तो यह डेटा अपने आप इंसर्ट होगा)
+const initialProducts = [
     {
         name: "Wireless Earbuds",
         category: "Electronics",
@@ -54,43 +75,22 @@ const sampleProducts = [
     }
 ];
 
-// MongoDB Connection with Auto-Seed Logic
+// 4. MongoDB Connection
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/dhawankart';
 mongoose.connect(MONGO_URI)
   .then(async () => {
       console.log('MongoDB Connected Successfully!');
       
-      // Check if products exist, if not insert sample products
+      // डेटाबेस में चेक करेंगे कि प्रोडक्ट्स हैं या नहीं
       const count = await Product.countDocuments();
       if (count === 0) {
-          await Product.insertMany(sampleProducts);
-          console.log('Sample Products Added to MongoDB!');
+          await Product.insertMany(initialProducts);
+          console.log('Initial sample products added to Database!');
       }
   })
   .catch(err => console.error('MongoDB Connection Error:', err));
 
-// MongoDB Schemas & Models
-const productSchema = new mongoose.Schema({
-    name: { type: String, required: true },
-    category: { type: String, required: true },
-    price: { type: Number, required: true },
-    rating: { type: Number, default: 4 },
-    img: { type: String, required: true }
-});
-const Product = mongoose.model('Product', productSchema);
-
-const orderSchema = new mongoose.Schema({
-    orderId: { type: String, required: true },
-    userMobile: { type: String, required: true },
-    items: Array,
-    totalAmount: Number,
-    paymentMode: String,
-    status: { type: String, default: 'Pending' },
-    createdAt: { type: Date, default: Date.now }
-});
-const Order = mongoose.model('Order', orderSchema);
-
-// JWT Middleware
+// 5. JWT Middleware
 function authenticateToken(req, res, next) {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
@@ -98,7 +98,7 @@ function authenticateToken(req, res, next) {
 
     jwt.verify(token, JWT_SECRET, (err, user) => {
         if (err) {
-            req.user = { mobile: "9999999999" }; // Fallback Demo User
+            req.user = { mobile: "9999999999" };
         } else {
             req.user = user;
         }
@@ -106,7 +106,7 @@ function authenticateToken(req, res, next) {
     });
 }
 
-// API Routes
+// 6. API Routes
 app.get('/api/products', async (req, res) => {
     try {
         const { category, search } = req.query;
@@ -122,7 +122,8 @@ app.get('/api/products', async (req, res) => {
         const products = await Product.find(filter);
         res.json({ success: true, products });
     } catch (err) {
-        res.status(500).json({ success: false, message: "Database Error" });
+        console.error("Fetch Products Error:", err);
+        res.status(500).json({ success: false, message: "Database Error", error: err.message });
     }
 });
 
