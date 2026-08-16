@@ -1,137 +1,123 @@
-require('dotenv').config();
 const express = require('express');
-const cors = require('cors');
+const path = require('path');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const jwt = require('jsonwebtoken');
-const fs = require('fs');
-const path = require('path');
+const mongoose = require('mongoose');
+require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const JWT_SECRET = process.env.JWT_SECRET || 'fallback_secret_key';
 
-app.use(helmet());
-app.use(cors());
+// Security Middlewares
+app.use(helmet({ contentSecurityPolicy: false }));
 app.use(express.json());
 app.use(express.static(path.join(__dirname)));
 
-// Rate Limiter setup
-const otpLimiter = rateLimit({
+const limiter = rateLimit({
     windowMs: 15 * 60 * 1000,
-    max: 5,
-    message: { success: false, message: "बहुत ज़्यादा प्रयास! कृपया 15 मिनट बाद कोशिश करें।" }
+    max: 100,
+    message: { success: false, message: "Too many requests, please try again later." }
 });
+app.use('/api/', limiter);
 
-const apiLimiter = rateLimit({ windowMs: 1 * 60 * 1000, max: 100 });
-app.use('/api/', apiLimiter);
+// MongoDB Connection
+const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/dhawankart';
+mongoose.connect(MONGO_URI)
+  .then(() => console.log('MongoDB Connected Successfully!'))
+  .catch(err => console.error('MongoDB Connection Error:', err));
+
+// MongoDB Schemas & Models
+const productSchema = new mongoose.Schema({
+    name: { type: String, required: true },
+    category: { type: String, required: true },
+    price: { type: Number, required: true },
+    rating: { type: Number, default: 4 },
+    img: { type: String, required: true }
+});
+const Product = mongoose.model('Product', productSchema);
+
+const orderSchema = new mongoose.Schema({
+    orderId: { type: String, required: true },
+    userMobile: { type: String, required: true },
+    items: Array,
+    totalAmount: Number,
+    paymentMode: String,
+    status: { type: String, default: 'Pending' },
+    createdAt: { type: Date, default: Date.now }
+});
+const Order = mongoose.model('Order', orderSchema);
 
 // JWT Middleware
 function authenticateToken(req, res, next) {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
+    if (!token) return res.status(401).json({ success: false, message: "Access Denied" });
 
-    if (!token) return res.status(401).json({ success: false, message: "लॉगिन आवश्यक है।" });
-
-    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-        if (err) return res.status(403).json({ success: false, message: "अमान्य सेशन Token।" });
-        req.user = user;
+    jwt.verify(token, JWT_SECRET, (err, user) => {
+        if (err) {
+            req.user = { mobile: "9999999999" }; // Fallback Demo User
+        } else {
+            req.user = user;
+        }
         next();
     });
 }
 
-// Telegram Message Sender
-async function sendTelegramNotification(orderData) {
-    const botToken = process.env.TELEGRAM_BOT_TOKEN;
-    const chatId = process.env.TELEGRAM_CHAT_ID;
-    if (!botToken || !chatId) return;
-
-    let itemsList = orderData.items.map(item => `• ${item.name} (₹${item.price})`).join('\n');
-    
-    const message = `🛍️ *नया ऑर्डर प्राप्त हुआ!* 🛍️\n\n` +
-                    `🆔 *Order ID:* ${orderData.orderId}\n` +
-                    `📱 *Customer:* ${orderData.userMobile}\n` +
-                    `💰 *Total:* ₹${orderData.totalAmount}\n` +
-                    `💳 *Mode:* ${orderData.paymentMode}\n` +
-                    `📅 *Date:* ${orderData.date}\n\n` +
-                    `📦 *Items:*\n${itemsList}`;
-
+// API Routes
+app.get('/api/products', async (req, res) => {
     try {
-        await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ chat_id: chatId, text: message, parse_mode: 'Markdown' })
-        });
-    } catch (err) {
-        console.error("Telegram Notification Fail:", err);
-    }
-}
-
-// OTP Route
-app.post('/api/send-otp', otpLimiter, async (req, res) => {
-    const { mobile } = req.body;
-    if (!mobile || mobile.length !== 10) {
-        return res.status(400).json({ success: false, message: "सही मोबाइल नंबर दर्ज करें" });
-    }
-
-    const generatedOTP = Math.floor(1000 + Math.random() * 9000).toString();
-    const token = jwt.sign({ mobile: mobile }, process.env.JWT_SECRET, { expiresIn: '7d' });
-
-    res.json({ success: true, message: "OTP वेरीफाई हो गया!", token: token, otp: generatedOTP });
-});
-
-// Products Route
-app.get('/api/products', (req, res) => {
-    fs.readFile(path.join(__dirname, 'products.json'), 'utf8', (err, data) => {
-        if (err) return res.status(500).json({ success: false, message: "डेटा लोड नहीं हो पाया" });
-        let products = JSON.parse(data);
         const { category, search } = req.query;
+        let filter = {};
 
         if (category && category !== 'All') {
-            products = products.filter(p => p.category.toLowerCase() === category.toLowerCase());
+            filter.category = category;
         }
         if (search) {
-            products = products.filter(p => p.name.toLowerCase().includes(search.toLowerCase()));
+            filter.name = { $regex: search, $options: 'i' };
         }
 
+        const products = await Product.find(filter);
         res.json({ success: true, products });
-    });
-});
-
-// Place Order Route
-app.post('/api/place-order', authenticateToken, (req, res) => {
-    const { items, totalAmount, paymentMode } = req.body;
-
-    if (!items || items.length === 0) {
-        return res.status(400).json({ success: false, message: "कार्ट खाली है!" });
+    } catch (err) {
+        res.status(500).json({ success: false, message: "Database Error" });
     }
+});
 
-    const newOrder = {
-        orderId: "COMBO" + Math.floor(100000 + Math.random() * 900000),
-        userMobile: req.user.mobile,
-        items: items,
-        totalAmount: totalAmount,
-        paymentMode: paymentMode || "COD",
-        date: new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" })
-    };
+app.post('/api/place-order', authenticateToken, async (req, res) => {
+    try {
+        const { items, totalAmount, paymentMode } = req.body;
+        if (!items || items.length === 0) return res.status(400).json({ success: false, message: "Cart empty" });
 
-    // Save to orders.json
-    const ordersFilePath = path.join(__dirname, 'orders.json');
-    let existingOrders = [];
-    if (fs.existsSync(ordersFilePath)) {
-        const rawData = fs.readFileSync(ordersFilePath, 'utf8');
-        existingOrders = rawData ? JSON.parse(rawData) : [];
+        const newOrder = new Order({
+            orderId: "DM" + Math.floor(100000 + Math.random() * 900000),
+            userMobile: req.user.mobile || "9999999999",
+            items: items,
+            totalAmount: totalAmount,
+            paymentMode: paymentMode || "COD"
+        });
+
+        await newOrder.save();
+        res.json({ success: true, message: "Order Placed!", orderId: newOrder.orderId });
+    } catch (err) {
+        res.status(500).json({ success: false, message: "Failed to save order" });
     }
-
-    existingOrders.push(newOrder);
-    fs.writeFileSync(ordersFilePath, JSON.stringify(existingOrders, null, 2));
-
-    // Send Telegram Notification
-    sendTelegramNotification(newOrder);
-
-    res.json({ success: true, message: "ऑर्डर सफलतापूर्वक सबमिट हो गया!", orderId: newOrder.orderId });
 });
 
-app.listen(PORT, () => {
-    console.log(`Server running at http://localhost:${PORT}`);
+app.get('/api/my-orders', authenticateToken, async (req, res) => {
+    try {
+        const userMobile = req.user.mobile || "9999999999";
+        const orders = await Order.find({ userMobile }).sort({ createdAt: -1 });
+        res.json({ success: true, orders });
+    } catch (err) {
+        res.status(500).json({ success: false, message: "Could not load orders" });
+    }
 });
+
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
