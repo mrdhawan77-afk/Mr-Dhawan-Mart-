@@ -110,5 +110,43 @@ app.post('/api/send-otp', async (req, res) => {
     }
 });
 
+// 1. Product Schema
+const productSchema = new mongoose.Schema({
+    name: String,
+    category: String,
+    price: Number,
+    weight: String,
+    img: String
+});
+const Product = mongoose.model('Product', productSchema);
+
+// 2. Paginated Fetch API Route
+app.get('/api/products', async (req, res) => {
+    try {
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 20; // एक बार में 20 प्रोडक्ट्स
+        const category = req.query.category || 'All';
+        const search = req.query.search || '';
+
+        let filter = {};
+        if (category !== 'All') filter.category = category;
+        if (search) filter.name = { $regex: search, $options: 'i' };
+
+        const products = await Product.find(filter)
+            .skip((page - 1) * limit)
+            .limit(limit);
+
+        const total = await Product.countDocuments(filter);
+
+        res.json({
+            success: true,
+            products,
+            totalPages: Math.ceil(total / limit),
+            currentPage: page
+        });
+    } catch (err) {
+        res.status(500).json({ success: false, message: "Data fetch fail ho gaya" });
+    }
+});
 
     
