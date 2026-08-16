@@ -276,48 +276,68 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 
-        // ✅ नया फ़ंक्शन (Local products.json फ़ाइल के लिए)
-async function fetchProducts() {
+        // Step 2: 1000+ Products ke liye Paginated Fetch & Render Logic
+
+let currentPage = 1;
+let currentCategory = 'All';
+let currentSearch = '';
+
+// 1. Backend se Page ke hisab se Products mangana
+async function fetchProducts(cat = 'All', search = '', page = 1) {
+    currentCategory = cat;
+    currentSearch = search;
+    currentPage = page;
+
     try {
-        const res = await fetch('products.json'); // लोकल JSON फ़ाइल से डेटा लाएगा
-        if (!res.ok) {
-            throw new Error(`File load nahi hui. Status: ${res.status}`);
+        const res = await fetch(`/api/products?page=${page}&limit=50&category=${cat}&search=${search}`);
+        const data = await res.json();
+
+        if (data.success) {
+            // Agar page 1 hai toh purane products hata kar naye dikhao, varna aage jodo
+            renderProducts(data.products, page === 1);
+        } else {
+            console.error("Data load nahi hua:", data.message);
         }
-        productsList = await res.json();
-        renderProducts('All'); // डेटा मिलते ही प्रोडक्ट्स UI पर दिखाएगा
     } catch (err) {
-        console.error("Products load karne me dikkat aayi:", err);
+        console.error("Products fetch karne me error:", err);
     }
 }
 
+// 2. Screen par Products render (show) karna
+function renderProducts(products, isFirstPage = true) {
+    const grid = document.getElementById('productGridContainer');
+    
+    // Naye category ya search par grid ko pehle khali karein
+    if (isFirstPage) grid.innerHTML = ''; 
 
-        function renderProducts(filterCat = 'All', searchKeyword = '') {
-            const grid = document.getElementById('productGridContainer');
-            grid.innerHTML = ''; 
-            document.getElementById('currentCategoryTitle').innerText = filterCat === 'All' ? 'All Products' : filterCat;
+    if (products.length === 0 && isFirstPage) {
+        grid.innerHTML = '<p style="padding:20px; text-align:center; grid-column:span 2;">Koi product nahi mila.</p>';
+        return;
+    }
 
-            const filtered = productsList.filter(prod => {
-                const matchesCategory = filterCat === 'All' || prod.category === filterCat;
-                const matchesSearch = prod.name.toLowerCase().includes(searchKeyword.toLowerCase());
-                return matchesCategory && matchesSearch;
-            });
+    products.forEach(prod => {
+        let card = document.createElement('div');
+        card.className = 'product-card';
+        card.innerHTML = `
+            <img src="${prod.img}" class="product-img">
+            <div class="product-time"><i class="fa-regular fa-clock"></i> 2 Days</div>
+            <div class="product-title">${prod.name}</div>
+            <div class="product-weight">${prod.weight || ''}</div>
+            <div class="product-bottom">
+                <div class="price">₹${prod.price}</div>
+                <button class="add-btn" onclick="addToCart('${prod.name}', ${prod.price})">ADD</button>
+            </div>
+        `;
+        grid.appendChild(card);
+    });
+}
 
-            filtered.forEach(prod => {
-                let card = document.createElement('div');
-                card.className = 'product-card';
-                card.innerHTML = `
-                    <img src="${prod.img}" class="product-img">
-                    <div class="product-time"><i class="fa-regular fa-clock"></i> 2 Days</div>
-                    <div class="product-title">${prod.name}</div>
-                    <div class="product-weight">${prod.weight}</div>
-                    <div class="product-bottom">
-                        <div class="price">₹${prod.price}</div>
-                        <button class="add-btn" onclick="addToCart('${prod.name}', ${prod.price})">ADD</button>
-                    </div>
-                `;
-                grid.appendChild(card);
-            });
-        }
+// Page load hote hi pehla page load karein
+document.addEventListener("DOMContentLoaded", () => {
+    fetchProducts('All', '', 1);
+    loadProfileData();
+});
+
 
         function searchProduct(query) { renderProducts('All', query); }
         function filterCategory(catName) {
