@@ -1,152 +1,137 @@
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
+const jwt = require('jsonwebtoken');
 const fs = require('fs');
 const path = require('path');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+app.use(helmet());
 app.use(cors());
 app.use(express.json());
-app.use(express.static(__dirname));
+app.use(express.static(path.join(__dirname)));
 
-const TELEGRAM_BOT_TOKEN = "8735436494:AAGWN69EV9j2b89kielRj5PSOPsh0JY4uxY";
-const TELEGRAM_CHAT_ID = "8024913770";
+// Rate Limiter setup
+const otpLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 5,
+    message: { success: false, message: "बहुत ज़्यादा प्रयास! कृपया 15 मिनट बाद कोशिश करें।" }
+});
 
-// API 1: Fetch Products from JSON
+const apiLimiter = rateLimit({ windowMs: 1 * 60 * 1000, max: 100 });
+app.use('/api/', apiLimiter);
+
+// JWT Middleware
+function authenticateToken(req, res, next) {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+
+    if (!token) return res.status(401).json({ success: false, message: "लॉगिन आवश्यक है।" });
+
+    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+        if (err) return res.status(403).json({ success: false, message: "अमान्य सेशन Token।" });
+        req.user = user;
+        next();
+    });
+}
+
+// Telegram Message Sender
+async function sendTelegramNotification(orderData) {
+    const botToken = process.env.TELEGRAM_BOT_TOKEN;
+    const chatId = process.env.TELEGRAM_CHAT_ID;
+    if (!botToken || !chatId) return;
+
+    let itemsList = orderData.items.map(item => `• ${item.name} (₹${item.price})`).join('\n');
+    
+    const message = `🛍️ *नया ऑर्डर प्राप्त हुआ!* 🛍️\n\n` +
+                    `🆔 *Order ID:* ${orderData.orderId}\n` +
+                    `📱 *Customer:* ${orderData.userMobile}\n` +
+                    `💰 *Total:* ₹${orderData.totalAmount}\n` +
+                    `💳 *Mode:* ${orderData.paymentMode}\n` +
+                    `📅 *Date:* ${orderData.date}\n\n` +
+                    `📦 *Items:*\n${itemsList}`;
+
+    try {
+        await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ chat_id: chatId, text: message, parse_mode: 'Markdown' })
+        });
+    } catch (err) {
+        console.error("Telegram Notification Fail:", err);
+    }
+}
+
+// OTP Route
+app.post('/api/send-otp', otpLimiter, async (req, res) => {
+    const { mobile } = req.body;
+    if (!mobile || mobile.length !== 10) {
+        return res.status(400).json({ success: false, message: "सही मोबाइल नंबर दर्ज करें" });
+    }
+
+    const generatedOTP = Math.floor(1000 + Math.random() * 9000).toString();
+    const token = jwt.sign({ mobile: mobile }, process.env.JWT_SECRET, { expiresIn: '7d' });
+
+    res.json({ success: true, message: "OTP वेरीफाई हो गया!", token: token, otp: generatedOTP });
+});
+
+// Products Route
 app.get('/api/products', (req, res) => {
     fs.readFile(path.join(__dirname, 'products.json'), 'utf8', (err, data) => {
-        if (err) {
-            return res.status(500).json({ success: false, message: 'Error loading products' });
+        if (err) return res.status(500).json({ success: false, message: "डेटा लोड नहीं हो पाया" });
+        let products = JSON.parse(data);
+        const { category, search } = req.query;
+
+        if (category && category !== 'All') {
+            products = products.filter(p => p.category.toLowerCase() === category.toLowerCase());
         }
-        res.json(JSON.parse(data));
+        if (search) {
+            products = products.filter(p => p.name.toLowerCase().includes(search.toLowerCase()));
+        }
+
+        res.json({ success: true, products });
     });
 });
 
-// API 2: Place Order Endpoint
-app.post('/api/order', async (req, res) => {
-    const { name, phone, address, payMode, cart, total } = req.body;
+// Place Order Route
+app.post('/api/place-order', authenticateToken, (req, res) => {
+    const { items, totalAmount, paymentMode } = req.body;
 
-    if (!name || !phone || !address || !cart) {
-        return res.status(400).json({ success: false, message: 'All details required' });
+    if (!items || items.length === 0) {
+        return res.status(400).json({ success: false, message: "कार्ट खाली है!" });
     }
 
-    const itemsList = cart.map((i, idx) => `${idx + 1}. *${i.name}* x ${i.qty} = ₹${i.price * i.qty}`).join('\n');
-    const msg = `🛍️ *NEW ORDER - DHAWAN MART*\n---\n👤 *Name:* ${name}\n📞 *Phone:* ${phone}\n📍 *Address:* ${address}\n💳 *Payment:* ${payMode}\n\n🛒 *ITEMS:*\n${itemsList}\n\n💰 *TOTAL:* ₹${total}\n🚚 *Delivery:* 2 Days`;
+    const newOrder = {
+        orderId: "COMBO" + Math.floor(100000 + Math.random() * 900000),
+        userMobile: req.user.mobile,
+        items: items,
+        totalAmount: totalAmount,
+        paymentMode: paymentMode || "COD",
+        date: new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" })
+    };
 
-    try {
-        const response = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text: msg, parse_mode: 'Markdown' })
-        });
-        const data = await response.json();
-        if (data.ok) res.json({ success: true, message: 'Order Placed Successfully' });
-        else res.status(500).json({ success: false, message: 'Telegram Notification Failed' });
-    } catch (error) {
-        res.status(500).json({ success: false, message: 'Server Network Error' });
-    }
-});
-
-// API 3: App Partner Endpoint
-app.post('/api/partner', async (req, res) => {
-    const { name, phone, age, gender } = req.body;
-
-    if (!name || !phone || !age) {
-        return res.status(400).json({ success: false, message: 'All details required' });
+    // Save to orders.json
+    const ordersFilePath = path.join(__dirname, 'orders.json');
+    let existingOrders = [];
+    if (fs.existsSync(ordersFilePath)) {
+        const rawData = fs.readFileSync(ordersFilePath, 'utf8');
+        existingOrders = rawData ? JSON.parse(rawData) : [];
     }
 
-    const msg = `🤝 *NEW APP PARTNER REQUEST*\n---\n👤 *Name:* ${name}\n📞 *Phone:* ${phone}\n🎂 *Age:* ${age}\n🚻 *Gender:* ${gender}`;
+    existingOrders.push(newOrder);
+    fs.writeFileSync(ordersFilePath, JSON.stringify(existingOrders, null, 2));
 
-    try {
-        const response = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text: msg, parse_mode: 'Markdown' })
-        });
-        const data = await response.json();
-        if (data.ok) res.json({ success: true, message: 'Application Sent' });
-        else res.status(500).json({ success: false, message: 'Failed to send' });
-    } catch (error) {
-        res.status(500).json({ success: false, message: 'Server Error' });
-    }
-});
+    // Send Telegram Notification
+    sendTelegramNotification(newOrder);
 
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
+    res.json({ success: true, message: "ऑर्डर सफलतापूर्वक सबमिट हो गया!", orderId: newOrder.orderId });
 });
 
 app.listen(PORT, () => {
     console.log(`Server running at http://localhost:${PORT}`);
 });
 
-// Server.js mein API Key aur OTP sending route
-
-const express = require('express');
-const app = express();
-app.use(express.json());
-
-// Fast2SMS API Key ko yaha paste karein
-const FAST2SMS_API_KEY = "BdbqY06oSshLIOD8R1TEtrG9lU7ucZ3AiyCXeVkW2wNnMQxzmfMTsJxvzLBobDlS6a9qtXdOCfyG07Km"; 
-
-app.post('/api/send-otp', async (req, res) => {
-    const { mobile } = req.body;
-    
-    // 4 digit ka random OTP generate karein
-    const generatedOTP = Math.floor(1000 + Math.random() * 9000); 
-
-    try {
-        // Fast2SMS API ko call karke SMS bhejna
-        const response = await fetch(`https://www.fast2sms.com/dev/bulkV2?authorization=${FAST2SMS_API_KEY}&route=otp&variables_values=${generatedOTP}&numbers=${mobile}`);
-        const data = await response.json();
-
-        if (data.return) {
-            res.json({ success: true, message: "OTP safaltapurvak bhej diya gaya hai!" });
-        } else {
-            res.status(400).json({ success: false, message: "OTP bhejne me dikkat aayi." });
-        }
-    } catch (error) {
-        res.status(500).json({ success: false, message: "Server issue aaya." });
-    }
-});
-
-// 1. Product Schema
-const productSchema = new mongoose.Schema({
-    name: String,
-    category: String,
-    price: Number,
-    weight: String,
-    img: String
-});
-const Product = mongoose.model('Product', productSchema);
-
-// 2. Paginated Fetch API Route
-app.get('/api/products', async (req, res) => {
-    try {
-        const page = parseInt(req.query.page) || 1;
-        const limit = parseInt(req.query.limit) || 20; // एक बार में 20 प्रोडक्ट्स
-        const category = req.query.category || 'All';
-        const search = req.query.search || '';
-
-        let filter = {};
-        if (category !== 'All') filter.category = category;
-        if (search) filter.name = { $regex: search, $options: 'i' };
-
-        const products = await Product.find(filter)
-            .skip((page - 1) * limit)
-            .limit(limit);
-
-        const total = await Product.countDocuments(filter);
-
-        res.json({
-            success: true,
-            products,
-            totalPages: Math.ceil(total / limit),
-            currentPage: page
-        });
-    } catch (err) {
-        res.status(500).json({ success: false, message: "Data fetch fail ho gaya" });
-    }
-});
-
-    
