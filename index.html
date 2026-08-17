@@ -145,13 +145,17 @@
         <button class="add-btn" style="margin-top:15px; padding:12px;" onclick="checkout()">Place Order</button>
     </div>
 
-    <script>
+    <    <script>
+        // Render ka live backend URL
+        const API_BASE = "https://mr-dhawan-mart.onrender.com";
+
         let cart = [];
         if(!localStorage.getItem('user_token')) localStorage.setItem('user_token', 'demo_token');
 
         async function fetchProducts(category = 'All', search = '') {
             try {
-                const res = await fetch(`/api/products?category=${category}&search=${search}`);
+                // Line 154 Fix: Render URL se products load karna
+                const res = await fetch(`${API_BASE}/api/products?category=${category}&search=${search}`);
                 const data = await res.json();
                 if (data.success) renderProducts(data.products);
             } catch(e) { console.error(e); }
@@ -222,7 +226,8 @@
             const totalAmount = cart.reduce((sum, item) => sum + item.price, 0);
 
             try {
-                const res = await fetch('/api/place-order', {
+                // Line 225 Fix: Render URL par order b भेजना
+                const res = await fetch(`${API_BASE}/api/place-order`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
                     body: JSON.stringify({ items: cart, totalAmount, paymentMode: 'COD' })
@@ -242,7 +247,8 @@
             const token = localStorage.getItem('user_token');
             const container = document.getElementById('orderHistoryContainer');
             try {
-                const res = await fetch('/api/my-orders', { headers: { 'Authorization': `Bearer ${token}` } });
+                // Line 245 Fix: Render URL se order history load karna
+                const res = await fetch(`${API_BASE}/api/my-orders`, { headers: { 'Authorization': `Bearer ${token}` } });
                 const data = await res.json();
                 if (data.success && data.orders.length > 0) {
                     container.innerHTML = '';
@@ -266,6 +272,7 @@
 
         fetchProducts();
     </script>
+
 </body>
 </html>
 
